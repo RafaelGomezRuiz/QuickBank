@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using QuickBank.Core.Application.Interfaces.Helpers;
-using QuickBank.Core.Domain.Entities;
 
 namespace QuickBank.Core.Application.Helpers
 {
@@ -18,24 +17,24 @@ namespace QuickBank.Core.Application.Helpers
             this.config = config;
         }
 
-        public void SetUser(UserEntity user)
-        {
-            httpContextAccessor.HttpContext.Session.Set(userKeySession, user);
-        }
+        //public void SetUser(UserEntity user)
+        //{
+        //    httpContextAccessor.HttpContext.Session.Set(userKeySession, user);
+        //}
 
-        public UserEntity? GetUser()
-        {
-            return httpContextAccessor.HttpContext.Session.Get<UserEntity>(userKeySession);
-        }
+        //public UserEntity? GetUser()
+        //{
+        //    return httpContextAccessor.HttpContext.Session.Get<UserEntity>(userKeySession);
+        //}
 
-        public void RemoveUser()
-        {
-            httpContextAccessor.HttpContext.Session.Remove(userKeySession);
-        }
+        //public void RemoveUser()
+        //{
+        //    httpContextAccessor.HttpContext.Session.Remove(userKeySession);
+        //}
 
-        public bool HasUser()
-        {
-            return GetUser() != null;
-        }
+        //public bool HasUser()
+        //{
+        //    return GetUser() != null;
+        //}
     }
 }
