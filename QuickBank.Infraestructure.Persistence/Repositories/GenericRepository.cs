@@ -1,5 +1,7 @@
 ﻿
 
+using QuickBank.Core.Application.Interfaces.Repositories;
+
 namespace QuickBank.Infraestructure.Persistence.Repositories
 {
     public class GenericRepository<Entity> : IGenericRepository<Entity> where Entity : class
@@ -22,7 +24,7 @@ namespace QuickBank.Infraestructure.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public virtual async Task<IEnumerable<Entity>> GetAllAsync()
+        public virtual async Task<List<Entity>> GetAllAsync()
         {
             return await _dbContext.Set<Entity>().ToListAsync();
         }
@@ -37,16 +39,22 @@ namespace QuickBank.Infraestructure.Persistence.Repositories
             return await query.ToListAsync();
         }
 
+        public Task<List<Entity>> GetAllWithIncludeAsync(List<string> properties)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual async Task<Entity> GetByIdAsync(int id)
         {
             return await _dbContext.Set<Entity>().FindAsync(id);
         }
 
-        public virtual async Task UpdateAsync(Entity entity, int id)
+        public virtual async Task<Entity> UpdateAsync(Entity entity, int entityId)
         {
-            Entity entry = await _dbContext.Set<Entity>().FindAsync(id);
+            Entity entry = await _dbContext.Set<Entity>().FindAsync(entityId);
             _dbContext.Entry(entry).CurrentValues.SetValues(entity);
             await _dbContext.SaveChangesAsync();
+            return entry;
         }
     }
 }

@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Domain.Settings;
+using QuickBank.Infraestructure.Shared.Services;
 
 namespace QuickBank.Infraestructure.Shared
 {
-    public class ServiceRegistration
+    public static class ServiceRegistration
     {
+        public static void AddSharedInfraestructure(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+            services.AddTransient<IEmailService, EmailService>();
+        }
     }
 }

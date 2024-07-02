@@ -1,7 +1,13 @@
+
+using QuickBank.Infraestructure.Shared;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSharedInfraestructure(builder.Configuration);
+
 
 var app = builder.Build();
 
