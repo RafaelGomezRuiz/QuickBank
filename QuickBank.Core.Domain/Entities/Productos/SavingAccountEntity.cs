@@ -9,5 +9,8 @@
         public int Status { get; set; }
         public bool Principal { get; set; }
         public string? UserId { get; set; }
+
+        // Navegation properties
+        public ICollection<BeneficeEntity>? Benefices { get; set; }
     }
 }

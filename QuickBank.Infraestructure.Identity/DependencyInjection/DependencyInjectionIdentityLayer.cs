@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Services;
 using QuickBank.Infrastructure.Identity.Context;
 using QuickBank.Infrastructure.Identity.Entities;
@@ -26,6 +27,13 @@ namespace QuickBank.Infrastructure.Identity.DependencyInjection
             else
             {
                 var connectionString = configuration.GetConnectionString("IdentityConnection");
+
+                // ----------------------| THIS WILL BE TEMPORALLY
+                string[] connectionStringArray = connectionString.Split('.');
+                connectionStringArray[0] += EnvironmentVariablesHelper.GetValue("DOTNET_SERVER_NAME");
+                connectionString = string.Join("", connectionStringArray);
+                // ----------------------| THIS WILL BE TEMPORALLY
+
                 services.AddDbContext<IdentityContext>(options =>
                 {
                     options.UseSqlServer(connectionString, a => a.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName));
