@@ -6,7 +6,7 @@ namespace QuickBank.Core.Application.Mappings
     {
         public GeneralProfile() 
         {
-            
+            //hola
         }
     }
 }
