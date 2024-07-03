@@ -1,16 +1,19 @@
-
-using QuickBank.Infraestructure.Shared;
-using QuickBank.Infraestructure.Identity;
+using QuickBank.Infrastructure.Shared.DependencyInjection;
+using QuickBank.Infrastructure.Identity.DependencyInjection;
+using QuickBank.Infrastructure.Persistence.DependencyInjection;
+using QuickBank.Core.Application.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSession();
 
 // Add services to the container.
+builder.Services.AddSession();
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddSharedInfraestructure(builder.Configuration);
-builder.Services.AddIdentityInfraestructure(builder.Configuration);
+builder.Services.AddPersistenceDependency(builder.Configuration);
+builder.Services.AddApplicationDependency();
+builder.Services.AddSharedDependency(builder.Configuration);
+builder.Services.AddIdentityDependency(builder.Configuration);
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
 var app = builder.Build();

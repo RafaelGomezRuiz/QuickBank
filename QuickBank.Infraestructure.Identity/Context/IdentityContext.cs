@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using QuickBank.Infraestructure.Identity.Entities;
+using QuickBank.Infrastructure.Identity.Entities;
 
-namespace QuickBank.Infraestructure.Identity.Context
+namespace QuickBank.Infrastructure.Identity.Context
 {
     public class IdentityContext : IdentityDbContext<ApplicationUser>
     {

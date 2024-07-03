@@ -1,6 +1,4 @@
-﻿
-
-namespace QuickBank.Core.Application.Enums
+﻿namespace QuickBank.Core.Application.Enums
 {
     public enum Roles
     {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickBank", "QuickBank\QuickBank.csproj", "{D0C53F70-7899-48FE-BD47-14705D0122BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickBank", "QuickBank\QuickBank.csproj", "{D0C53F70-7899-48FE-BD47-14705D0122BA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{A31486B8-1162-4BD4-8F82-44CE4ADC58A4}"
 EndProject
@@ -11,17 +11,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApp", "WebApp", "{72B81A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1D265683-5AC8-49F5-A1FF-0C8ADC727DBB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infraestructure", "Infraestructure", "{F9E7B0D9-788D-49AB-9A59-961934244193}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{F9E7B0D9-788D-49AB-9A59-961934244193}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickBank.Infraestructure.Identity", "QuickBank.Infraestructure.Identity\QuickBank.Infraestructure.Identity.csproj", "{FD3F36C1-5A03-43C0-B5C8-DE9BA26A2A45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickBank.Infrastructure.Identity", "QuickBank.Infraestructure.Identity\QuickBank.Infrastructure.Identity.csproj", "{FD3F36C1-5A03-43C0-B5C8-DE9BA26A2A45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickBank.Infraestructure.Persistence", "QuickBank.Infraestructure.Persistence\QuickBank.Infraestructure.Persistence.csproj", "{2E204B2B-E86A-4B1F-B04D-796BCD492300}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickBank.Infrastructure.Persistence", "QuickBank.Infraestructure.Persistence\QuickBank.Infrastructure.Persistence.csproj", "{2E204B2B-E86A-4B1F-B04D-796BCD492300}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickBank.Infraestructure.Shared", "QuickBank.Infraestructure.Shared\QuickBank.Infraestructure.Shared.csproj", "{E05AC93C-13F4-4DC5-97CA-1E7533686F34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickBank.Infrastructure.Shared", "QuickBank.Infraestructure.Shared\QuickBank.Infrastructure.Shared.csproj", "{E05AC93C-13F4-4DC5-97CA-1E7533686F34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickBank.Core.Application", "QuickBank.Core.Application\QuickBank.Core.Application.csproj", "{B4F9DCCF-7D4B-4B9E-96B3-2A734EF7972E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickBank.Core.Application", "QuickBank.Core.Application\QuickBank.Core.Application.csproj", "{B4F9DCCF-7D4B-4B9E-96B3-2A734EF7972E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickBank.Core.Domain", "QuickBank.Core.Domain\QuickBank.Core.Domain.csproj", "{37C5A27B-F50A-47AD-840B-FAA6D94BDE68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickBank.Core.Domain", "QuickBank.Core.Domain\QuickBank.Core.Domain.csproj", "{37C5A27B-F50A-47AD-840B-FAA6D94BDE68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,60 +1,59 @@
-﻿
-
+﻿using Microsoft.EntityFrameworkCore;
 using QuickBank.Core.Application.Interfaces.Repositories;
+using QuickBank.Infrastructure.Persistence.Contexts;
 
-namespace QuickBank.Infraestructure.Persistence.Repositories
+namespace QuickBank.Infrastructure.Persistence.Repositories
 {
     public class GenericRepository<Entity> : IGenericRepository<Entity> where Entity : class
     {
-        private readonly ApplicationContext _dbContext;
-        public GenericRepository(ApplicationContext _dbContext)
+        private readonly ApplicationContext context;
+
+        public GenericRepository(ApplicationContext context)
         {
-            this._dbContext = _dbContext;
+            this.context = context;
         }
+
         public virtual async Task<Entity> AddAsync(Entity entity)
         {
-            await _dbContext.Set<Entity>().AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
+            await context.Set<Entity>().AddAsync(entity);
+            await context.SaveChangesAsync();
+            return entity;
+        }
+
+        public virtual async Task<Entity> UpdateAsync(Entity entity, int entityId)
+        {
+            Entity entityToModify = await context.Set<Entity>().FindAsync(entityId);
+            context.Entry(entityToModify).CurrentValues.SetValues(entity);
+            await context.SaveChangesAsync();
             return entity;
         }
 
         public virtual async Task DeleteAsync(Entity entity)
         {
-            _dbContext.Set<Entity>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            context.Set<Entity>().Remove(entity);
+            await context.SaveChangesAsync();
         }
 
         public virtual async Task<List<Entity>> GetAllAsync()
         {
-            return await _dbContext.Set<Entity>().ToListAsync();
+            return await context.Set<Entity>().ToListAsync();
         }
 
-        public virtual async Task<IEnumerable<Entity>> GetAllWithIncludeAsync(IEnumerable<string> properties)
+        public virtual async Task<List<Entity>> GetAllWithIncludeAsync(List<string> properties)
         {
-            var query = _dbContext.Set<Entity>().AsQueryable();
+            var query = context.Set<Entity>().AsQueryable();
+
             foreach (var property in properties)
             {
                 query = query.Include(property);
             }
+
             return await query.ToListAsync();
         }
 
-        public Task<List<Entity>> GetAllWithIncludeAsync(List<string> properties)
+        public virtual async Task<Entity?> GetByIdAsync(int entityId)
         {
-            throw new NotImplementedException();
-        }
-
-        public virtual async Task<Entity> GetByIdAsync(int id)
-        {
-            return await _dbContext.Set<Entity>().FindAsync(id);
-        }
-
-        public virtual async Task<Entity> UpdateAsync(Entity entity, int entityId)
-        {
-            Entity entry = await _dbContext.Set<Entity>().FindAsync(entityId);
-            _dbContext.Entry(entry).CurrentValues.SetValues(entity);
-            await _dbContext.SaveChangesAsync();
-            return entry;
+            return await context.Set<Entity>().FindAsync(entityId);
         }
     }
 }

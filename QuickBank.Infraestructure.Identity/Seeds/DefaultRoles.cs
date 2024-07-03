@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using QuickBank.Core.Application.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace QuickBank.Infraestructure.Identity.Seeds
+namespace QuickBank.Infrastructure.Identity.Seeds
 {
     public static class DefaultRoles
     {

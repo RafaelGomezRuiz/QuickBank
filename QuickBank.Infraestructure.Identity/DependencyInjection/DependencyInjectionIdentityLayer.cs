@@ -4,21 +4,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuickBank.Core.Application.Interfaces.Services;
-using QuickBank.Infraestructure.Identity.Context;
-using QuickBank.Infraestructure.Identity.Entities;
-using QuickBank.Infraestructure.Identity.Seeds;
-using QuickBank.Infraestructure.Identity.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using QuickBank.Infrastructure.Identity.Context;
+using QuickBank.Infrastructure.Identity.Entities;
+using QuickBank.Infrastructure.Identity.Seeds;
+using QuickBank.Infrastructure.Identity.Services;
 
-namespace QuickBank.Infraestructure.Identity
+namespace QuickBank.Infrastructure.Identity.DependencyInjection
 {
-    public static class ServiceRegistration
+    public static class DependencyInjectionIdentityLayer
     {
-        public static void AddIdentityInfraestructure(this IServiceCollection services, IConfiguration configuration)
+        public static void AddIdentityDependency(this IServiceCollection services, IConfiguration configuration)
         {
             #region Context
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
@@ -48,8 +43,10 @@ namespace QuickBank.Infraestructure.Identity
                 options.LoginPath = "/user";
                 //falta el de acceso denegado
             });
+
             services.AddAuthentication();
             #endregion
+
             #region Services
             services.AddTransient<IAccountService, AccountService>();
             #endregion
