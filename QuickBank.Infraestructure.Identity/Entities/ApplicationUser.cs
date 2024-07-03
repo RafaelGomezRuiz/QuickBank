@@ -13,7 +13,7 @@ namespace QuickBank.Infraestructure.Identity.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string? IdCard { get; set; }
-        public UserStatus Status { get; set; }
+        public int Status { get; set; }
 
     }
 }
