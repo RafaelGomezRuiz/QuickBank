@@ -6,7 +6,7 @@
         public DateTime CreationDate { get; set; }
         public string AccountNumber { get; set; }
         public double Balance { get; set; }
-        public bool Status { get; set; }
+        public int Status { get; set; }
         public bool Principal { get; set; }
         public string? UserId { get; set; }
     }
