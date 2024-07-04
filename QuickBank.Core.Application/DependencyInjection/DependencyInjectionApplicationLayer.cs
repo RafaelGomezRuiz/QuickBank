@@ -14,7 +14,9 @@ namespace QuickBank.Core.Application.DependencyInjection
             services.AddTransient<IBeneficeService, BeneficeService>();
             services.AddTransient<ILoanService, LoanService>();
             services.AddTransient<ICreditCardService, CreditCardService>();
-
+            services.AddTransient<ISavingAccountService, SavingAccountService>();
+            services.AddTransient<IPayService, PayService>();
+            services.AddTransient<ILogService, LogService>();
         }
     }
 }
