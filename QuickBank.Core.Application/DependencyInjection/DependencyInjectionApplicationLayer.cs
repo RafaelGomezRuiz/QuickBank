@@ -11,6 +11,10 @@ namespace QuickBank.Core.Application.DependencyInjection
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IGenericService<,,>), typeof(GenericService<,,>));
+            services.AddTransient<IBeneficeService, BeneficeService>();
+            services.AddTransient<ILoanService, LoanService>();
+            services.AddTransient<ICreditCardService, CreditCardService>();
+
         }
     }
 }
