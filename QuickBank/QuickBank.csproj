@@ -25,6 +25,9 @@
 
   <ItemGroup>
     <Folder Include="Middlewares\" />
+    <Folder Include="Views\Facility\" />
+    <Folder Include="Views\User\" />
+    <Folder Include="Views\Pay\" />
   </ItemGroup>
 
 </Project>
