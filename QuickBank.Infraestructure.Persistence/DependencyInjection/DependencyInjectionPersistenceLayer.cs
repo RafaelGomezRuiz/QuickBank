@@ -35,6 +35,12 @@ namespace QuickBank.Infrastructure.Persistence.DependencyInjection
 
             #region Repositories
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IPayLogRepository, PayLogRepository>();
+            services.AddTransient<ITransferLogRepository, TransferLogRepository>();
+            services.AddTransient<ICreditCardRepository, CreditCardRepository>();
+            services.AddTransient<ILoanRepository, LoanRepository>();
+            services.AddTransient<ISavingAccountRepository, SavingAccountRepository>();
+            services.AddTransient<IBeneficeRepository, BeneficeRepository>();
             #endregion
         }
     }
