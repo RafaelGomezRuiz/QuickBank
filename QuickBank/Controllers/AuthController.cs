@@ -2,7 +2,7 @@
 
 namespace QuickBank.Controllers
 {
-    public class UserController : Controller
+    public class AuthController : Controller
     {
         
     }
