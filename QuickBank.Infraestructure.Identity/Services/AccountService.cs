@@ -22,7 +22,25 @@ namespace QuickBank.Infrastructure.Identity.Services
             this.signInManager = signInManager;
             this.emailService = emailService;
         }
+        public async Task<AuthenticationResponse> FindByIdAsync(string id)
+        {
+            ApplicationUser user = await userManager.FindByIdAsync(id);
+            AuthenticationResponse response = new();
 
+            response.Id = user.Id;
+            response.FirstName = user.FirstName;
+            response.LastName = user.LastName;
+            response.UserName = user.UserName;
+            response.Email = user.Email;
+            response.PhoneNumber = user.PhoneNumber;
+            response.Status = user.Status;
+            response.IdCard = user.IdCard;
+            var rolesList = await userManager.GetRolesAsync(user).ConfigureAwait(false);
+
+            response.Roles = rolesList.ToList();
+            response.IsVerified = user.EmailConfirmed;
+            return response;
+        }
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {
             AuthenticationResponse response = new();
@@ -148,12 +166,12 @@ namespace QuickBank.Infrastructure.Identity.Services
             {
                 HasError = false
             };
-            ApplicationUser user = await userManager.FindByNameAsync(request.UserName);
+            ApplicationUser user = await userManager.FindByEmailAsync(request.Email);
 
             if (user == null)
             {
                 response.HasError = true;
-                response.ErrorDescription = $"There are no user registered with this '{request.UserName}' username";
+                response.ErrorDescription = $"There are no user registered with this '{request.Email}' emailaddress";
                 return response;
             }
 
@@ -182,11 +200,11 @@ namespace QuickBank.Infrastructure.Identity.Services
             {
                 HasError = false
             };
-            var user = await userManager.FindByEmailAsync(request.UserName);
+            var user = await userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
                 response.HasError = true;
-                response.ErrorDescription = $"No accounts registered with this '{request.UserName}' username ";
+                response.ErrorDescription = $"No accounts registered with this '{request.Email}' email address ";
                 return response;
             }
             request.Token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
@@ -197,7 +215,6 @@ namespace QuickBank.Infrastructure.Identity.Services
                 response.ErrorDescription = $"An error has ocurred rsetting the password try again";
                 return response;
             }
-
             return response;
         }
 

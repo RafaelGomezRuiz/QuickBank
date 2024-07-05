@@ -1,3 +1,41 @@
-﻿@{
+﻿@using QuickBank.Core.Application.ViewModels.Auth;
+@model LoginViewModel
+@{
     ViewData["Title"] = "Login";
 }
+
+<div class="container-fluid">
+    <div class="col-6 offset-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                @if(Model.HasError)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <p>@Model.ErrorDescription</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                <form method="post" asp-controller="User" asp-action="Index">
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input class="form-control" asp-for="Email">
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" asp-for="Password">
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a asp-controller="User" asp-action="ForgotPassword" class="btn btn-link">Olvidé mi contraseña</a>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

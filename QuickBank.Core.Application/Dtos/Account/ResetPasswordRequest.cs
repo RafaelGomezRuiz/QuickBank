@@ -3,7 +3,7 @@
     public class ResetPasswordRequest
     {
         //enum caso de que sea por email se cambia
-        public string? UserName { get; set; }
+        public string? Email { get; set; }
         public string? Token { get; set; }
         public string? Password { get; set; }
     }
