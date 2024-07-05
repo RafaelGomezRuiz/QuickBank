@@ -82,7 +82,6 @@ namespace QuickBank.Infrastructure.Persistence.Contexts
             #endregion
 
 
-
             #region Seedings
 
             //Product
