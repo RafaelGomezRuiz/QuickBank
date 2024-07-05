@@ -15,7 +15,6 @@ namespace QuickBank.Core.Application.Services
             this._accountService = _accountService;
             this._mapper = _mapper;
         }
-
         public async Task<UserSaveViewModel> FindyByIdAsync(string id)
         {
             AuthenticationResponse response = await _accountService.FindByIdAsync(id);
@@ -30,13 +29,13 @@ namespace QuickBank.Core.Application.Services
             return registerResponse;
         }
 
-        //public async Task<UserSaveViewModel> UpdateUserAsync(UserSaveViewModel saveUserViewModel)
-        //{
-        //    AuthenticationResponse response = _mapper.Map<AuthenticationResponse>(saveUserViewModel);
-        //    response = await _accountService.UpdateUserAsync(response);
-        //    SaveUserViewModel userUpdated = _mapper.Map<SaveUserViewModel>(response);
-        //    return userUpdated;
-        //}
+        public async Task<UserSaveViewModel> UpdateUserAsync(UserSaveViewModel saveUserViewModel)
+        {
+            AuthenticationResponse response = _mapper.Map<AuthenticationResponse>(saveUserViewModel);
+            response = await _accountService.UpdateUserAsync(response);
+            UserSaveViewModel userUpdated = _mapper.Map<UserSaveViewModel>(response);
+            return userUpdated;
+        }
 
         public async Task<AuthenticationResponse> LoginAsync(LoginViewModel vm)
         {
@@ -49,7 +48,6 @@ namespace QuickBank.Core.Application.Services
         {
             await _accountService.SignOutAsync();
         }
-
 
         public async Task<string> ConfirmEmailAsync(string userId, string token)
         {

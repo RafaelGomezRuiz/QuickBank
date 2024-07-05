@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Dtos.Email;
 using QuickBank.Core.Application.Enums;
@@ -117,7 +118,7 @@ namespace QuickBank.Infrastructure.Identity.Services
                 UserName = request.UserName,
                 Email = request.Email,
                 IdCard = request.IdCard,
-                PhoneNumber = request.PhoneNumber, // OJO CON EL TELEFONO
+                PhoneNumber = request.PhoneNumber, 
             };
 
             var userCreated = await userManager.CreateAsync(user, request.Password);
@@ -140,6 +141,7 @@ namespace QuickBank.Infrastructure.Identity.Services
             }
             return response;
         }
+        //LeftJoinExpression the method to AdminUser
 
         public async Task<string> ConfirmAccountAsync(string userId, string token)
         {
@@ -218,25 +220,71 @@ namespace QuickBank.Infrastructure.Identity.Services
             return response;
         }
 
-        //public async Task<string> UpdateUser(RegisterResponse response)
-        //{
-        //    ApplicationUser user = new()
-        //    {
-        //        Id = response.Id,
-        //        UserName=response.UserName,
-        //        Email = response.Email,
-        //        PhoneNumber = response.PhoneNumber,
-        //        ProfilePhoto = response.ProfilePhoto,
+        public async Task<AuthenticationResponse> UpdateUserAsync(AuthenticationResponse responseUserVm)
+        {
+            AuthenticationResponse response = new()
+            {
+                HasError = false
+            };
+            ApplicationUser userToUpdate = await userManager.FindByIdAsync(responseUserVm.Id);
 
-        //    };
-        //    var userUpdated = await _userManager.UpdateAsync(user);
+            if (userToUpdate == null)
+            {
+                response.HasError = true;
+                response.ErrorDescription = "User not found";
+                return response;
+            }
 
-        //    if (!userUpdated.Succeeded)
-        //    {
-        //        return $"User {user.UserName} updated successfully";
-        //    }
-        //    return $"Has ocurred an error updating the user try again!";
-        //}
+            if (userToUpdate.UserName != responseUserVm.UserName)
+            {
+                var DuplicateUserName = await userManager.FindByNameAsync(responseUserVm.UserName);
+                if (DuplicateUserName != null)
+                {
+                    response.HasError = true;
+                    response.ErrorDescription = $"this UserName '{responseUserVm.UserName}' in use";
+                    return response;
+                }
+            }
+
+            if (userToUpdate.Email != responseUserVm.Email)
+            {
+                var DuplicateEmail = await userManager.FindByEmailAsync(responseUserVm.Email);
+                if (DuplicateEmail != null)
+                {
+                    response.HasError = true;
+                    response.ErrorDescription = $"this Email '{responseUserVm.Email}' is already registered";
+                    return response;
+                }
+            }
+
+            userToUpdate.Id = responseUserVm.Id;
+            userToUpdate.FirstName = responseUserVm.FirstName;
+            userToUpdate.LastName = responseUserVm.LastName;
+            userToUpdate.UserName = responseUserVm.UserName;
+            userToUpdate.IdCard = responseUserVm.IdCard;
+            userToUpdate.Status = responseUserVm.Status;
+            userToUpdate.Email = responseUserVm.Email;
+            userToUpdate.PhoneNumber = responseUserVm.PhoneNumber;
+
+            var userUpdatedSuccessfully = await userManager.UpdateAsync(userToUpdate);
+            if (!userUpdatedSuccessfully.Succeeded)
+            {
+                response.HasError = true;
+                response.ErrorDescription = "An ocurred an error updating the user try again";
+                return response;
+            }
+            ApplicationUser userUpdated = await userManager.FindByIdAsync(responseUserVm.Id);
+            response.Id = userUpdated.Id;
+            response.UserName = userUpdated.UserName;
+            response.Email = userUpdated.Email;
+            response.PhoneNumber = userUpdated.PhoneNumber;
+            var rolesList = await userManager.GetRolesAsync(userUpdated).ConfigureAwait(false);
+
+            response.Roles = rolesList.ToList();
+            response.IsVerified = userUpdated.EmailConfirmed;
+
+            return response;
+        }
 
         private async Task<string> SendForgotPasswordUri(string origin)
         {

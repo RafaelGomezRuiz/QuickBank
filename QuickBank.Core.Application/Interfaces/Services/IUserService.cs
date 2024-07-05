@@ -13,7 +13,7 @@ namespace QuickBank.Core.Application.Interfaces.Services
     {
         Task<UserSaveViewModel> FindyByIdAsync(string id);
         Task<RegisterResponse> RegisterAsync(UserSaveViewModel vm, string origin);
-        //Task<UserSaveViewModel> UpdateUserAsync(UserSaveViewModel saveUserViewModel);
+        Task<UserSaveViewModel> UpdateUserAsync(UserSaveViewModel saveUserViewModel);
         Task SignOutAsync();
         Task<string> ConfirmEmailAsync(string userId, string token);
         Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordViewModel forgotPasswordVm, string origin);
