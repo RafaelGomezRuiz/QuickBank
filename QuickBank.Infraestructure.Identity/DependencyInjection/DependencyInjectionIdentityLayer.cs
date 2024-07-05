@@ -67,7 +67,7 @@ namespace QuickBank.Infrastructure.Identity.DependencyInjection
 
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     await DefaultBasicUsers.SeedAsync(userManager);
-
+                    await DefaultAdminUsers.SeedAsync(userManager);
                 }
                 catch (Exception ex)
                 {
