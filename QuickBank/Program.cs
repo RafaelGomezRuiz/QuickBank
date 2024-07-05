@@ -2,6 +2,9 @@ using QuickBank.Infrastructure.Shared.DependencyInjection;
 using QuickBank.Infrastructure.Identity.DependencyInjection;
 using QuickBank.Infrastructure.Persistence.DependencyInjection;
 using QuickBank.Core.Application.DependencyInjection;
+using QuickBank.Middlewares;
+using QuickBank.Core.Application.Interfaces.Helpers;
+using QuickBank.Core.Application.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,8 @@ builder.Services.AddSharedDependency(builder.Configuration);
 builder.Services.AddIdentityDependency(builder.Configuration);
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+builder.Services.AddTransient<IUserHelper, UserHelper>();
+builder.Services.AddScoped<LoginAuthorize>();
 
 var app = builder.Build();
 await app.AddIdentitySeeds();
