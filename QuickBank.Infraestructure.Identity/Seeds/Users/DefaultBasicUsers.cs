@@ -15,10 +15,22 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
         {
             ApplicationUser defaultUser = new()
             {
+                Id = "f294u-ewrdm-woj93-hj3dn-8937w",
                 UserName = "user",
                 Email = "user@email.com",
                 FirstName = "user",
                 LastName = "user",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true
+            };
+
+            ApplicationUser defaultUser2 = new()
+            {
+                Id = "n8d7x-qsj3p-lf9b2-hu6zr-4579y",
+                UserName = "user2",
+                Email = "user2@email.com",
+                FirstName = "user2",
+                LastName = "user2",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
             };
@@ -30,6 +42,15 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
                 // Si el usuario no existe, créalo
                 await userManager.CreateAsync(defaultUser, "123Pa$$Word!");
                 await userManager.AddToRoleAsync(defaultUser, Roles.BASIC.ToString());
+            }
+
+            var user2 = await userManager.FindByEmailAsync(defaultUser2.Email);
+
+            if (user2 == null)
+            {
+                // Si el usuario no existe, créalo
+                await userManager.CreateAsync(defaultUser2, "123Pa$$Word!");
+                await userManager.AddToRoleAsync(defaultUser2, Roles.BASIC.ToString());
             }
         }
     }
