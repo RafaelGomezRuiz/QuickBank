@@ -42,5 +42,15 @@ namespace QuickBank.Controllers
             }
             return View(loginVm);
         }
+        public async Task<IActionResult> SignOut()
+        {
+            await userService.SignOutAsync();  
+            userHelper.RemoveUser();
+            return RedirectToRoute(new {controller="Auth",action="Index"});
+        }
+        public async Task<IActionResult> AccessDenied()
+        {
+            return View();
+        }
     }
 }

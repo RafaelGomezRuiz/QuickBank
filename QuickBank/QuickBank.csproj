@@ -26,7 +26,6 @@
   <ItemGroup>
     <Folder Include="Middlewares\NewFolder\" />
     <Folder Include="Views\Facility\" />
-    <Folder Include="Views\AdministrationUser\" />
     <Folder Include="Views\Benefice\" />
     <Folder Include="Views\Pay\" />
   </ItemGroup>
