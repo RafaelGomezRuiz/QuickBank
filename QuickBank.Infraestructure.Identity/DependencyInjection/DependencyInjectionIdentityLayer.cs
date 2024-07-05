@@ -9,6 +9,7 @@ using QuickBank.Infrastructure.Identity.Context;
 using QuickBank.Infrastructure.Identity.Entities;
 using QuickBank.Infrastructure.Identity.Seeds;
 using QuickBank.Infrastructure.Identity.Services;
+using QuickBank.Infrastructure.Persistence.Seeds.Users;
 
 namespace QuickBank.Infrastructure.Identity.DependencyInjection
 {
@@ -63,6 +64,10 @@ namespace QuickBank.Infrastructure.Identity.DependencyInjection
                 {
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     await DefaultRoles.SeedAsync(roleManager);
+
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    await DefaultBasicUsers.SeedAsync(userManager);
+
                 }
                 catch (Exception ex)
                 {
