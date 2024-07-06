@@ -86,8 +86,8 @@ namespace QuickBank.Infrastructure.Persistence.Contexts
 
             //Product
             modelBuilder.Entity<CreditCardEntity>().HasData(
-                new CreditCardEntity { Id = 1, CardNumber = "123456789", Balance = 1500.00, LimitCredit = 5000.00, Status = 0, CreationDate = DateTime.Parse("2023-01-15"), ExpirationDate = DateTime.Parse("2026-01-15") },
-                new CreditCardEntity { Id = 2, CardNumber = "234567890", Balance = 2500.00, LimitCredit = 7000.00, Status = 0, CreationDate = DateTime.Parse("2023-02-10"), ExpirationDate = DateTime.Parse("2026-02-10") },
+                new CreditCardEntity { Id = 1, CardNumber = "123456789", Balance = 1500.00, LimitCredit = 5000.00, Status = 1, CreationDate = DateTime.Parse("2023-01-15"), ExpirationDate = DateTime.Parse("2026-01-15"), UserId = "f294u-ewrdm-woj93-hj3dn-8937w" },
+                new CreditCardEntity { Id = 2, CardNumber = "234567890", Balance = 2500.00, LimitCredit = 7000.00, Status = 1, CreationDate = DateTime.Parse("2023-02-10"), ExpirationDate = DateTime.Parse("2026-02-10"), UserId = "f294u-ewrdm-woj93-hj3dn-8937w" },
                 new CreditCardEntity { Id = 3, CardNumber = "345678901", Balance = 3000.00, LimitCredit = 8000.00, Status = 0, CreationDate = DateTime.Parse("2023-03-05"), ExpirationDate = DateTime.Parse("2026-03-05") },
                 new CreditCardEntity { Id = 4, CardNumber = "456789012", Balance = 1200.00, LimitCredit = 6000.00, Status = 0, CreationDate = DateTime.Parse("2023-04-20"), ExpirationDate = DateTime.Parse("2026-04-20") },
                 new CreditCardEntity { Id = 5, CardNumber = "567890123", Balance = 500.00, LimitCredit = 4000.00, Status = 0, CreationDate = DateTime.Parse("2023-05-30"), ExpirationDate = DateTime.Parse("2026-05-30") },
@@ -100,7 +100,7 @@ namespace QuickBank.Infrastructure.Persistence.Contexts
 
             //Loan  
             modelBuilder.Entity<LoanEntity>().HasData(
-                new LoanEntity { Id = 1, LoanNumber = "LN000001", Amount = 50000.00, Deadline = DateTime.Parse("2025-01-15"), InterestRate = 5.0, Description = "Car loan", Status = 0, ApplicationDate = DateTime.Parse("2023-01-01"), AprovalDate = DateTime.Parse("2023-01-10") },
+                new LoanEntity { Id = 1, LoanNumber = "LN000001", Amount = 50000.00, Deadline = DateTime.Parse("2025-01-15"), InterestRate = 5.0, Description = "Car loan", Status = 1, ApplicationDate = DateTime.Parse("2023-01-01"), AprovalDate = DateTime.Parse("2023-01-10"), UserId = "n8d7x-qsj3p-lf9b2-hu6zr-4579y" },
                 new LoanEntity { Id = 2, LoanNumber = "LN000002", Amount = 75000.00, Deadline = DateTime.Parse("2026-02-20"), InterestRate = 4.5, Description = "Home loan", Status = 0, ApplicationDate = DateTime.Parse("2023-02-01"), AprovalDate = DateTime.Parse("2023-02-15") },
                 new LoanEntity { Id = 3, LoanNumber = "LN000003", Amount = 20000.00, Deadline = DateTime.Parse("2024-03-10"), InterestRate = 6.0, Description = "Personal loan", Status = 0, ApplicationDate = DateTime.Parse("2023-03-01"), AprovalDate = DateTime.Parse("2023-03-05") },
                 new LoanEntity { Id = 4, LoanNumber = "LN000004", Amount = 30000.00, Deadline = DateTime.Parse("2025-04-25"), InterestRate = 5.5, Description = "Education loan", Status = 0, ApplicationDate = DateTime.Parse("2023-04-01"), AprovalDate = DateTime.Parse("2023-04-10") },
@@ -114,9 +114,9 @@ namespace QuickBank.Infrastructure.Persistence.Contexts
 
             //SavingAccount
             modelBuilder.Entity<SavingAccountEntity>().HasData(
-                new SavingAccountEntity { Id = 1, CreationDate = DateTime.Parse("2023-01-01"), AccountNumber = "SAV000001", Balance = 15000.00, Status = 0, Principal = false },
-                new SavingAccountEntity { Id = 2, CreationDate = DateTime.Parse("2023-02-01"), AccountNumber = "SAV000002", Balance = 25000.00, Status = 0, Principal = false },
-                new SavingAccountEntity { Id = 3, CreationDate = DateTime.Parse("2023-03-01"), AccountNumber = "SAV000003", Balance = 18000.00, Status = 0, Principal = false },
+                new SavingAccountEntity { Id = 1, CreationDate = DateTime.Parse("2023-01-01"), AccountNumber = "SAV000001", Balance = 15000.00, Status = 1, Principal = true, UserId = "f294u-ewrdm-woj93-hj3dn-8937w" },
+                new SavingAccountEntity { Id = 2, CreationDate = DateTime.Parse("2023-02-01"), AccountNumber = "SAV000002", Balance = 25000.00, Status = 1, Principal = true, UserId = "n8d7x-qsj3p-lf9b2-hu6zr-4579y" },
+                new SavingAccountEntity { Id = 3, CreationDate = DateTime.Parse("2023-03-01"), AccountNumber = "SAV000003", Balance = 18000.00, Status = 1, Principal = false, UserId = "n8d7x-qsj3p-lf9b2-hu6zr-4579y" },
                 new SavingAccountEntity { Id = 4, CreationDate = DateTime.Parse("2023-04-01"), AccountNumber = "SAV000004", Balance = 30000.00, Status = 0, Principal = false },
                 new SavingAccountEntity { Id = 5, CreationDate = DateTime.Parse("2023-05-01"), AccountNumber = "SAV000005", Balance = 20000.00, Status = 0, Principal = false },
                 new SavingAccountEntity { Id = 6, CreationDate = DateTime.Parse("2023-06-01"), AccountNumber = "SAV000006", Balance = 35000.00, Status = 0, Principal = false },
