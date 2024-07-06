@@ -6,7 +6,12 @@ namespace QuickBank.Controllers
     [Authorize(Roles = "BASIC, ADMIN")]
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public IActionResult AdminHome()
+        {
+            return View();
+        }
+
+        public IActionResult BasicHome()
         {
             return View();
         }

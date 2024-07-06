@@ -1,0 +1,22 @@
+﻿@using QuickBank.Core.Application.Interfaces.Helpers
+@{
+    ViewData["Title"] = "Basic Home";
+
+    // Current user logged
+    var user = userHelper.GetUser();
+}
+@inject IUserHelper userHelper
+
+<div class="container-fluid">
+    <div class="card shadow col-5 offset-4 p-4">
+        <h1 class="fw-light text-center">Hi, @($"{user.FirstName} {user.LastName} 😀")</h1>
+        <hr class="my-4">
+        <div class="d-flex gap-3 align-items-center">
+            <p>Roles:</p>
+            @foreach (var rol in user.Roles)
+            {
+                <p class="p-1 bg-primary text-light rounded-3">@rol</p>
+            }
+        </div>
+    </div>
+</div>

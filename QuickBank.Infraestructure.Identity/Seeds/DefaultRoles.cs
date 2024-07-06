@@ -7,9 +7,9 @@ namespace QuickBank.Infrastructure.Identity.Seeds
     {
         public static async Task SeedAsync(RoleManager<IdentityRole> roleManager)
         {
-            await roleManager.CreateAsync(new IdentityRole(Roles.SUPERADMIN.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.ADMIN.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.BASIC.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(ERoles.SUPERADMIN.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(ERoles.ADMIN.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(ERoles.BASIC.ToString()));
         }
     }
 }

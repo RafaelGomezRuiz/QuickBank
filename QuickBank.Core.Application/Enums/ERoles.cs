@@ -1,6 +1,6 @@
 ﻿namespace QuickBank.Core.Application.Enums
 {
-    public enum Roles
+    public enum ERoles
     {
         SUPERADMIN,
         ADMIN,

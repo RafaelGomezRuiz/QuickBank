@@ -30,7 +30,7 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
             {
                 // Si el usuario no existe, créalo
                 await userManager.CreateAsync(defaultUser, "123Pa$$Word!");
-                await userManager.AddToRoleAsync(defaultUser, Roles.ADMIN.ToString());
+                await userManager.AddToRoleAsync(defaultUser, ERoles.ADMIN.ToString());
             }
         }
     }

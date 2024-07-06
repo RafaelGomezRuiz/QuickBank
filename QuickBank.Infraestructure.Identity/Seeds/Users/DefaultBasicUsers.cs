@@ -41,7 +41,7 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
             {
                 // Si el usuario no existe, créalo
                 await userManager.CreateAsync(defaultUser, "123Pa$$Word!");
-                await userManager.AddToRoleAsync(defaultUser, Roles.BASIC.ToString());
+                await userManager.AddToRoleAsync(defaultUser, ERoles.BASIC.ToString());
             }
 
             var user2 = await userManager.FindByEmailAsync(defaultUser2.Email);
@@ -50,7 +50,7 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
             {
                 // Si el usuario no existe, créalo
                 await userManager.CreateAsync(defaultUser2, "123Pa$$Word!");
-                await userManager.AddToRoleAsync(defaultUser2, Roles.BASIC.ToString());
+                await userManager.AddToRoleAsync(defaultUser2, ERoles.BASIC.ToString());
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace QuickBank.Core.Application.Enums
 {
-    public enum UserStatus
+    public enum EUserStatus
     {
         ACTIVE,
         INACTIVE,

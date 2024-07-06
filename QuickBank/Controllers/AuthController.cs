@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuickBank.Core.Application.Dtos.Account;
+using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.Interfaces.Services;
 using QuickBank.Core.Application.ViewModels.Auth;
@@ -34,11 +35,23 @@ namespace QuickBank.Controllers
             {
                 return View(loginVm);
             }
+
             AuthenticationResponse responseLogin = await userService.LoginAsync(loginVm);
             if (responseLogin != null && responseLogin.HasError != true)
             {
                 userHelper.SetUser(responseLogin);
-                return RedirectToRoute(new { controller = "Home", action = "Index" });
+
+                string actionToReditect;
+                string principalRole = responseLogin.Roles![^1];
+
+                switch (principalRole)
+                {
+                    case nameof(ERoles.BASIC): actionToReditect = "BasicHome"; break;
+                    case nameof(ERoles.ADMIN): actionToReditect = "AdminHome"; break;
+                    default: actionToReditect = "UNDEFINIED-ROLE"; break;
+                }
+
+                return RedirectToRoute(new { controller = "Home", action = actionToReditect });
             }
             return View(loginVm);
         }

@@ -1,6 +1,6 @@
 ﻿namespace QuickBank.Core.Application.Enums
 {
-    public enum ProductStatus
+    public enum EProductStatus
     {
         ACTIVE,
         INACTIVE

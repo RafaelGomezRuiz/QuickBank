@@ -124,7 +124,7 @@ namespace QuickBank.Infrastructure.Identity.Services
             var userCreated = await userManager.CreateAsync(user, request.Password);
             if (userCreated.Succeeded)
             {
-                await userManager.AddToRoleAsync(user, Roles.BASIC.ToString());
+                await userManager.AddToRoleAsync(user, ERoles.BASIC.ToString());
                 var verificationUri = await SendVerificationEmailUri(user, origin);
                 await emailService.SendAsync(new EmailRequest
                 {
