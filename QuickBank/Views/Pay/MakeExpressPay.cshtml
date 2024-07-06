@@ -1,0 +1,48 @@
+﻿@using QuickBank.Core.Application.ViewModels.Payments
+@{
+    ViewData["Title"] = "Make Express Payment";
+}
+@model ExpressPaySaveViewModel
+
+<div class="container-fluid">
+    <div class="card shadow col-5 offset-4 p-4">
+        <div class="card-header bg-danger">
+            <h1 class="text-center">EXPRESS PAYMENT</h1>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-controller="Pay" asp-action="ExpressPay">
+                <div class="mb-3">
+                    <label asp-for="NumberAccountToPay">Account number to credit </label>
+                    <input asp-for="NumberAccountToPay" maxlength="9">
+                    <span asp-validation-for="NumberAccountToPay" class="text-danger">
+                        <i class="bi bi-exclamation-octagon-fill"></i>
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Amount">Amount </label>
+                    <input asp-for="Amount" max="@double.MaxValue" min="@double.MinValue">
+                    <span asp-validation-for="Amount" class="text-danger">
+                        <i class="bi bi-exclamation-octagon-fill"></i>
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="AccountIdFromPay">Account to be debited</label>
+                    <select asp-for="AccountIdFromPay" asp-items="@(new SelectList(Model.Accounts,"Id","AccountNumber"))">
+                        <option value="0">Select an option</option>
+                    </select>
+                    <span asp-validation-for="NumberAccountToPay" class="text-danger">
+                        <i class="bi bi-exclamation-octagon-fill"></i>
+                    </span>
+                </div>
+
+                <div class="input-group">
+                    <a asp-controller="Home" asp-action="BasicHome">cancel</a>
+                    <button type="submit" class="btn btn-primary">pay</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
