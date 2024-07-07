@@ -5,6 +5,6 @@ namespace QuickBank.Core.Application.Interfaces.Services
 {
     public interface ISavingAccountService : IGenericService<SavingAccountViewModel, SavingAccountViewModel, SavingAccountEntity>
     {
-
+        Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId);
     }
 }

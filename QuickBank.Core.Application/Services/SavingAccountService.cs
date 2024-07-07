@@ -16,5 +16,10 @@ namespace QuickBank.Core.Application.Services
             this.savingAccountRepository = savingAccountRepository;
             this.mapper = mapper;
         }
+
+        public async Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId)
+        {
+            return (await base.GetAllAsync()).Where(savm => savm.UserId == userId).ToList();
+        }
     }
 }

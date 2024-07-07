@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.Interfaces.Services;
@@ -9,11 +10,18 @@ namespace QuickBank.Controllers
     public class PayController : Controller
     {
         private readonly IPayService payService;
-        private readonly IUserHelper userHelper;
+        private readonly ISavingAccountService savingAccountService;
+        private readonly IUserHelper userHelper; // NO ESTA EN USO
 
-        public PayController(IPayService payService)
+        public PayController(
+            IPayService payService,
+            ISavingAccountService savingAccountService,
+            IUserHelper userHelper
+        )
         {
             this.payService = payService;
+            this.savingAccountService = savingAccountService;
+            this.userHelper = userHelper;
         }
 
         public IActionResult PayOptions()
@@ -21,17 +29,25 @@ namespace QuickBank.Controllers
             return View();
         }
 
-        public IActionResult ExpressPay()
+        public async Task<IActionResult> ExpressPay()
         {
-            return View("MakeExpressPay", new ExpressPaySaveViewModel());
+            // Fill the model wih data
+            var epsvm = new ExpressPaySaveViewModel();
+            epsvm.Accounts = await savingAccountService.GetAllByUserIdAsync(userHelper.GetUser().Id);
+
+            return View("MakeExpressPay", epsvm);
         }
 
         [HttpPost]
-        public IActionResult ExpressPay(ExpressPaySaveViewModel epsvm)
+        public async Task<IActionResult> ExpressPay(ExpressPaySaveViewModel epsvm)
         {
-            if (!ModelState.IsValid) return View(epsvm);
+            //var aditionalValidations = ModelState.;
 
-            // Things
+            //if (!modelWithAditionalErrors.IsValid) {
+            //    epsvm.Accounts = await savingAccountService.GetAllByUserIdAsync(userHelper.GetUser().Id);
+            //    return View("MakeExpressPay", epsvm); 
+            //}
+            //var payStatus = await payService.MakeExpressPay(epsvm);
 
             return RedirectRoutesHelper.routeBasicHome;
         }

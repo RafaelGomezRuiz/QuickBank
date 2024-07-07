@@ -9,6 +9,7 @@ namespace QuickBank.Core.Application.ViewModels.Products
         public string AccountNumber { get; set; }
         public double Balance { get; set; }
         public int Status { get; set; }
+        public bool Principal { get; set; }
         public string? UserId { get; set; }
 
         // Navegation properties

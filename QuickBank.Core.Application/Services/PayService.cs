@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Repositories;
 using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.ViewModels.Payments;
 
 namespace QuickBank.Core.Application.Services
 {
@@ -35,6 +37,19 @@ namespace QuickBank.Core.Application.Services
             this.mapper = mapper;
         }
 
+        public async Task MakeExpressPay(ExpressPaySaveViewModel epsvm)
+        {
 
+            //// Validations of model
+            //if (epsvm.Amount < BusinessLogicConstantsHelper.MinimumPaymentAmount)
+            //{
+            //    errorDictionary.Add("InvalidAmount", $"You must enter a valid amount, greater than {BusinessLogicConstantsHelper.MinimumPaymentAmount}");
+            //}
+            //if (epsvm.NumberAccountToPay != null && epsvm.NumberAccountToPay.Length > BusinessLogicConstantsHelper.MaxLengthNumberAccount)
+            //{
+            //    errorDictionary.Add("InvalidNumberCharacters", $"Invalid number of characters, minimun {BusinessLogicConstantsHelper.MaxLengthNumberAccount}");
+            //}
+            //if (errorDictionary.Count != 0) return errorDictionary;
+        }
     }
 }
