@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuickBank.Core.Application.Helpers;
-using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.Interfaces.Services.User;
 using QuickBank.Infrastructure.Identity.Context;
 using QuickBank.Infrastructure.Identity.Entities;
 using QuickBank.Infrastructure.Identity.Seeds;

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using QuickBank.Core.Application.Dtos.Account;
-using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.Interfaces.Services.User;
 using QuickBank.Core.Application.ViewModels.Auth;
 using QuickBank.Core.Application.ViewModels.User;
 
-namespace QuickBank.Core.Application.Services
+namespace QuickBank.Core.Application.Services.User
 {
     public class UserService : IUserService
     {

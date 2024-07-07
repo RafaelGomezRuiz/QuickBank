@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.Interfaces.Services.Facilities;
 using QuickBank.Core.Domain.Settings;
 using QuickBank.Infraestructure.Shared.Services;
 

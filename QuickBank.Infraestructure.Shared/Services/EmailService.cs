@@ -3,7 +3,7 @@ using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using QuickBank.Core.Application.Dtos.Email;
-using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.Interfaces.Services.Facilities;
 using QuickBank.Core.Domain.Settings;
 
 namespace QuickBank.Infraestructure.Shared.Services

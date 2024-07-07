@@ -1,7 +1,15 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using QuickBank.Core.Application.Interfaces.Services;
-using QuickBank.Core.Application.Services;
+using QuickBank.Core.Application.Interfaces.Services.Commons;
+using QuickBank.Core.Application.Interfaces.Services.Facilities;
+using QuickBank.Core.Application.Interfaces.Services.Logs;
+using QuickBank.Core.Application.Interfaces.Services.Products;
+using QuickBank.Core.Application.Interfaces.Services.User;
+using QuickBank.Core.Application.Services.Commons;
+using QuickBank.Core.Application.Services.Facilities;
+using QuickBank.Core.Application.Services.Log;
+using QuickBank.Core.Application.Services.Products;
+using QuickBank.Core.Application.Services.User;
 
 namespace QuickBank.Core.Application.DependencyInjection
 {

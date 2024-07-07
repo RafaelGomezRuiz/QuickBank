@@ -4,7 +4,7 @@ using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Helpers;
-using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.Interfaces.Services.User;
 using QuickBank.Core.Application.ViewModels.Auth;
 using QuickBank.Middlewares;
 

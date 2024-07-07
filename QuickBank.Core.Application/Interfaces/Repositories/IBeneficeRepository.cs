@@ -1,4 +1,4 @@
-﻿using QuickBank.Core.Domain.Entities;
+﻿using QuickBank.Core.Domain.Entities.Facilities;
 
 namespace QuickBank.Core.Application.Interfaces.Repositories
 {

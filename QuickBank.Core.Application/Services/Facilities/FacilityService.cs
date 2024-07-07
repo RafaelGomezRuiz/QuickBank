@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using QuickBank.Core.Application.Interfaces.Repositories;
-using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.Interfaces.Services.Facilities;
+using QuickBank.Core.Application.Interfaces.Services.Logs;
 
-namespace QuickBank.Core.Application.Services
+namespace QuickBank.Core.Application.Services.Facilities
 {
     public class FacilityService : IFacilityService
     {
@@ -28,6 +29,6 @@ namespace QuickBank.Core.Application.Services
             this.logService = logService;
             this.mapper = mapper;
         }
-        
+
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace QuickBank.Core.Domain.Entities.Productos
+﻿using QuickBank.Core.Domain.Entities.Facilities;
+
+namespace QuickBank.Core.Domain.Entities.Productos
 {
     public class SavingAccountEntity
     {

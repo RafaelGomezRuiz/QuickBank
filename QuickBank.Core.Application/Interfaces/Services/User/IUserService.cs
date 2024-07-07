@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuickBank.Core.Application.Interfaces.Services
+namespace QuickBank.Core.Application.Interfaces.Services.User
 {
     public interface IUserService
     {

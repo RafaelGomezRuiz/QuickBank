@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using QuickBank.Core.Application.Interfaces.Repositories;
-using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.Interfaces.Services.Commons;
 
 
-namespace QuickBank.Core.Application.Services
+namespace QuickBank.Core.Application.Services.Commons
 {
-    public class GenericService<SaveViewModel, ViewModel, Entity> : IGenericService<SaveViewModel, ViewModel,Entity> 
+    public class GenericService<SaveViewModel, ViewModel, Entity> : IGenericService<SaveViewModel, ViewModel, Entity>
         where SaveViewModel : class
         where ViewModel : class
         where Entity : class

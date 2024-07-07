@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QuickBank.Core.Domain.Entities;
+using QuickBank.Core.Domain.Entities.Facilities;
 using QuickBank.Core.Domain.Entities.Logs;
 using QuickBank.Core.Domain.Entities.Productos;
 

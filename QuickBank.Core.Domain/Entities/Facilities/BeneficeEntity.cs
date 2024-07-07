@@ -1,6 +1,6 @@
 ﻿using QuickBank.Core.Domain.Entities.Productos;
 
-namespace QuickBank.Core.Domain.Entities
+namespace QuickBank.Core.Domain.Entities.Facilities
 {
     public class BeneficeEntity
     {

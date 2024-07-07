@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using QuickBank.Helpers;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Helpers;
-using QuickBank.Core.Application.Interfaces.Services;
 using QuickBank.Core.Application.ViewModels.Payments;
+using QuickBank.Core.Application.Interfaces.Services.Products;
+using QuickBank.Core.Application.Interfaces.Services.Facilities;
 
 namespace QuickBank.Controllers
 {
@@ -11,7 +12,7 @@ namespace QuickBank.Controllers
     {
         private readonly IPayService payService;
         private readonly ISavingAccountService savingAccountService;
-        private readonly IUserHelper userHelper; // NO ESTA EN USO
+        private readonly IUserHelper userHelper;
 
         public PayController(
             IPayService payService,
@@ -41,13 +42,14 @@ namespace QuickBank.Controllers
         [HttpPost]
         public async Task<IActionResult> ExpressPay(ExpressPaySaveViewModel epsvm)
         {
-            //var aditionalValidations = ModelState.;
+            //ModelState.AddModelErrorRange(payValidationService.ExpressPayValidation(epsvm));
+            if (!ModelState.IsValid)
+            {
+                epsvm.Accounts = await savingAccountService.GetAllByUserIdAsync(userHelper.GetUser().Id);
+                return View("MakeExpressPay", epsvm);
+            }
 
-            //if (!modelWithAditionalErrors.IsValid) {
-            //    epsvm.Accounts = await savingAccountService.GetAllByUserIdAsync(userHelper.GetUser().Id);
-            //    return View("MakeExpressPay", epsvm); 
-            //}
-            //var payStatus = await payService.MakeExpressPay(epsvm);
+            await payService.MakeExpressPay(epsvm);
 
             return RedirectRoutesHelper.routeBasicHome;
         }

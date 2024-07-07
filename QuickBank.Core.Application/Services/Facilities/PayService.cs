@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Repositories;
-using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.Interfaces.Services.Facilities;
+using QuickBank.Core.Application.Interfaces.Services.Logs;
 using QuickBank.Core.Application.ViewModels.Payments;
 
-namespace QuickBank.Core.Application.Services
+namespace QuickBank.Core.Application.Services.Facilities
 {
     public class PayService : IPayService
     {

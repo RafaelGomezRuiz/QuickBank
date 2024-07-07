@@ -1,4 +1,4 @@
-﻿namespace QuickBank.Core.Application.Interfaces.Services
+﻿namespace QuickBank.Core.Application.Interfaces.Services.Commons
 {
     public interface IGenericService<SaveViewModel, ViewModel, Entity>
         where SaveViewModel : class

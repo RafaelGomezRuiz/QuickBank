@@ -1,6 +1,6 @@
 ﻿using QuickBank.Core.Application.ViewModels.Payments;
 
-namespace QuickBank.Core.Application.Interfaces.Services
+namespace QuickBank.Core.Application.Interfaces.Services.Facilities
 {
     public interface IPayService
     {

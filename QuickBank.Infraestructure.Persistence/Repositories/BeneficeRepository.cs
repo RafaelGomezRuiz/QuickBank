@@ -1,5 +1,5 @@
 ﻿using QuickBank.Core.Application.Interfaces.Repositories;
-using QuickBank.Core.Domain.Entities;
+using QuickBank.Core.Domain.Entities.Facilities;
 using QuickBank.Infrastructure.Persistence.Contexts;
 
 namespace QuickBank.Infrastructure.Persistence.Repositories

@@ -5,7 +5,8 @@ using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Dtos.Email;
 using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
-using QuickBank.Core.Application.Interfaces.Services;
+using QuickBank.Core.Application.Interfaces.Services.Facilities;
+using QuickBank.Core.Application.Interfaces.Services.User;
 using QuickBank.Infrastructure.Identity.Entities;
 using System.Text;
 

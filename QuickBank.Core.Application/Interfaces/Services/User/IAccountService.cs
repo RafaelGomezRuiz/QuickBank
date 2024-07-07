@@ -1,6 +1,6 @@
 ﻿using QuickBank.Core.Application.Dtos.Account;
 
-namespace QuickBank.Core.Application.Interfaces.Services
+namespace QuickBank.Core.Application.Interfaces.Services.User
 {
     public interface IAccountService
     {

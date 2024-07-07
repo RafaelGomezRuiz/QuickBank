@@ -3,7 +3,7 @@ using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.ViewModels.Auth;
 using QuickBank.Core.Application.ViewModels.Facilities.Benefice;
 using QuickBank.Core.Application.ViewModels.Products;
-using QuickBank.Core.Domain.Entities;
+using QuickBank.Core.Domain.Entities.Facilities;
 using QuickBank.Core.Domain.Entities.Productos;
 
 namespace QuickBank.Core.Application.Mappings
