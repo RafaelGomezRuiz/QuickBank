@@ -2,8 +2,8 @@
 {
     public enum EUserStatus
     {
-        ACTIVE,
         INACTIVE,
+        ACTIVE,
         SUSPENDED,
         BANNED
     }

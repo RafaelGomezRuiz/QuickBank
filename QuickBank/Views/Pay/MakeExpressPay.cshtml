@@ -19,11 +19,13 @@
                     <input asp-for="NumberAccountToPay" class="form-control" maxlength="9">
                     <span asp-validation-for="NumberAccountToPay" class="text-danger"></span>
                     @Html.ValidationMessage("InvalidNumberCharacters", "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("InvalidNumberAccount", "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("InvalidSavingAccount", "", new { @class = "text-danger" })
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="Amount" class="form-label">Amount </label>
-                    <input asp-for="Amount" class="form-control" type="number">
+                    <input asp-for="Amount" class="form-control">
                     <span asp-validation-for="Amount" class="text-danger"></span>
                     @Html.ValidationMessage("InvalidAmount", "", new { @class = "text-danger" })
                 </div>
@@ -34,7 +36,15 @@
                         <option value="0">Select an option</option>
                     </select>
                     <span asp-validation-for="AccountIdFromPay" class="text-danger"></span>
+                    @Html.ValidationMessage("InvalidBalance", "", new { @class = "text-danger" })
                 </div>
+
+                @* Load the necesary data for the accounts *@
+                @for (int i = 0; i < Model.Accounts.Count; i++)
+                {
+                    <input type="hidden" asp-for="@Model.Accounts[i].Id" />
+                    <input type="hidden" asp-for="@Model.Accounts[i].AccountNumber" />
+                }
 
                 <div class="input-group float-end">
                     <a asp-controller="Home" asp-action="BasicHome" class="btn btn-warning">cancel</a>

@@ -11,16 +11,19 @@ namespace QuickBank.Controllers
     public class PayController : Controller
     {
         private readonly IPayService payService;
+        private readonly IPayValidationService payValidationService;
         private readonly ISavingAccountService savingAccountService;
         private readonly IUserHelper userHelper;
 
         public PayController(
             IPayService payService,
+            IPayValidationService payValidationService,
             ISavingAccountService savingAccountService,
             IUserHelper userHelper
         )
         {
             this.payService = payService;
+            this.payValidationService = payValidationService;
             this.savingAccountService = savingAccountService;
             this.userHelper = userHelper;
         }
@@ -33,8 +36,10 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> ExpressPay()
         {
             // Fill the model wih data
-            var epsvm = new ExpressPaySaveViewModel();
-            epsvm.Accounts = await savingAccountService.GetAllByUserIdAsync(userHelper.GetUser().Id);
+            var epsvm = new ExpressPaySaveViewModel()
+            {
+                Accounts = await savingAccountService.GetAllByUserIdAsync(userHelper.GetUser().Id)
+            };
 
             return View("MakeExpressPay", epsvm);
         }
@@ -42,12 +47,9 @@ namespace QuickBank.Controllers
         [HttpPost]
         public async Task<IActionResult> ExpressPay(ExpressPaySaveViewModel epsvm)
         {
-            //ModelState.AddModelErrorRange(payValidationService.ExpressPayValidation(epsvm));
-            if (!ModelState.IsValid)
-            {
-                epsvm.Accounts = await savingAccountService.GetAllByUserIdAsync(userHelper.GetUser().Id);
-                return View("MakeExpressPay", epsvm);
-            }
+            // Validations before the payment
+            ModelState.AddModelErrorRange(await payValidationService.ExpressPayValidation(epsvm));
+            if (!ModelState.IsValid) return View("MakeExpressPay", epsvm);
 
             await payService.MakeExpressPay(epsvm);
 

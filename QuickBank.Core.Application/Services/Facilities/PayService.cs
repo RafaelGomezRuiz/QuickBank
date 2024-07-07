@@ -40,17 +40,7 @@ namespace QuickBank.Core.Application.Services.Facilities
 
         public async Task MakeExpressPay(ExpressPaySaveViewModel epsvm)
         {
-
-            //// Validations of model
-            //if (epsvm.Amount < BusinessLogicConstantsHelper.MinimumPaymentAmount)
-            //{
-            //    errorDictionary.Add("InvalidAmount", $"You must enter a valid amount, greater than {BusinessLogicConstantsHelper.MinimumPaymentAmount}");
-            //}
-            //if (epsvm.NumberAccountToPay != null && epsvm.NumberAccountToPay.Length > BusinessLogicConstantsHelper.MaxLengthNumberAccount)
-            //{
-            //    errorDictionary.Add("InvalidNumberCharacters", $"Invalid number of characters, minimun {BusinessLogicConstantsHelper.MaxLengthNumberAccount}");
-            //}
-            //if (errorDictionary.Count != 0) return errorDictionary;
+            
         }
     }
 }
