@@ -17,5 +17,10 @@ namespace QuickBank.Core.Application.Services.Products
             this.creditCardRepository = creditCardRepository;
             this.mapper = mapper;
         }
+
+        public async Task<List<CreditCardViewModel>?> GetAllByUserIdAsync(string userId)
+        {
+            return (await base.GetAllAsync()).Where(savm => savm.UserId == userId).ToList();
+        }
     }
 }

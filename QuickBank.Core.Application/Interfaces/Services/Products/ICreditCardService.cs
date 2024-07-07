@@ -6,5 +6,6 @@ namespace QuickBank.Core.Application.Interfaces.Services.Products
 {
     public interface ICreditCardService : IGenericService<CreditCardViewModel, CreditCardViewModel, CreditCardEntity>
     {
+        Task<List<CreditCardViewModel>?> GetAllByUserIdAsync(string userId);
     }
 }

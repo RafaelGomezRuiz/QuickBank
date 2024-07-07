@@ -22,8 +22,10 @@ namespace QuickBank.Core.Application.Mappings
 
             CreateMap<SavingAccountEntity, SavingAccountViewModel>()
                 .ReverseMap();
-
-
+            CreateMap<CreditCardEntity, CreditCardViewModel>()
+                .ReverseMap();
+            CreateMap<LoanEntity, LoanViewModel>()
+                .ReverseMap();
 
             #endregion
 

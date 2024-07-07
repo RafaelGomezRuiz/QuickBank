@@ -17,5 +17,10 @@ namespace QuickBank.Core.Application.Services.Products
             this.loanRepository = loanRepository;
             this.mapper = mapper;
         }
+
+        public async Task<List<LoanViewModel>?> GetAllByUserIdAsync(string userId)
+        {
+            return (await base.GetAllAsync()).Where(savm => savm.UserId == userId).ToList();
+        }
     }
 }
