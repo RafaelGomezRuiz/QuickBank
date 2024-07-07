@@ -1,6 +1,14 @@
-﻿@model string
+﻿@using QuickBank.Core.Application.Dtos.Account
+@using QuickBank.Core.Application.Interfaces.Helpers;
+@using QuickBank.Core.Application.Enums;
+
+@inject IUserHelper userHelper;
+@model string
+
 @{
     ViewData["Title"] = "access denied";
+    AuthenticationResponse userLogged = userHelper.GetUser();
+    string? principalUserRol = userLogged?.Roles![^1];
 }
 
 <div class="row mt-5">
@@ -8,7 +16,15 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <h2>No tiene permiso para acceder a esta seccion - <a class="btn btn-warning" asp-controller="Home" asp-action="Index"> Home</a></h2>
+                    @switch (principalUserRol)
+                    {
+                        case nameof(ERoles.BASIC):
+                            <h2>No tiene permiso para acceder a esta seccion - <a class="btn btn-warning" asp-controller=Home asp-action="BasicHome"> Home</a></h2>
+                            break;
+                        case nameof(ERoles.ADMIN):
+                            <h2>No tiene permiso para acceder a esta seccion - <a class="btn btn-warning" asp-controller=Home asp-action="AdminHome"> Home</a></h2>
+                        break;
+                    }
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>

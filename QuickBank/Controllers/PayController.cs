@@ -5,9 +5,11 @@ using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.ViewModels.Payments;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.Facilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuickBank.Controllers
 {
+    [Authorize(Roles = "BASIC")]
     public class PayController : Controller
     {
         private readonly IPayService payService;

@@ -31,15 +31,15 @@ namespace QuickBank.Controllers
             this.userHelper = userHelper;
         }
 
-
+        [Authorize(Roles = "ADMIN")]
         public IActionResult AdminHome()
         {
             return View();
         }
 
+        [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> BasicHome()
         {
-
             var user = userHelper.GetUser();
 
             var savingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id);
