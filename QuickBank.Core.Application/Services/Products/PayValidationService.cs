@@ -21,38 +21,42 @@ namespace QuickBank.Core.Application.Services.Products
             var savingAccountToPay = await savingAccountService.GetViewModelByNumberAccountAsync(epsvm.NumberAccountToPay);
             var savingAccountFromPay = await savingAccountService.GetByIdAsync(epsvm.AccountIdFromPay);
 
-            // Conditional vars
+            #region Amount
+
+            // Conditionals
+            bool amountIsNull = epsvm.Amount == null;
             bool amountIsValid = epsvm.Amount >= BusinessLogicConstantsHelper.MinimumPaymentAmount;
-            bool numberAccountCharactersIsValid = epsvm.NumberAccountToPay != null && epsvm.NumberAccountToPay.Length == BusinessLogicConstantsHelper.MaxLengthNumberAccount;
-            bool savingAccountToPayExists = numberAccountCharactersIsValid && savingAccountToPay != null;
+
+            if (amountIsNull) errors.Add("InvalidAmountNull", "The amount field cannot be empty");
+            else if (!amountIsValid) errors.Add("InvalidAmount", $"You must enter a valid amount, ${BusinessLogicConstantsHelper.MinimumPaymentAmount} minimun");
+
+            #endregion
+
+            #region Number_Account
+
+            // Conditionals
+            bool numberAccountIsNull = string.IsNullOrEmpty(epsvm.NumberAccountToPay);
+            bool numberAccountCharactersIsValid = !numberAccountIsNull && epsvm.NumberAccountToPay.Length == BusinessLogicConstantsHelper.MaxLengthNumberAccount;
+            bool savingAccountToPayExists = savingAccountToPay != null;
             bool savingAccountToPayIsValid = savingAccountToPayExists && savingAccountToPay.Status == (int)EProductStatus.ACTIVE;
-            bool savingAccountFromPayHasEnoughMoney = savingAccountFromPay != null && savingAccountFromPay.Balance >= epsvm.Amount;
 
+            if (numberAccountIsNull) errors.Add("InvalidNumberAccountNull", "The number account field cannot be empty");
+            else if (!numberAccountCharactersIsValid) errors.Add("InvalidNumberCharacters", $"The number of characters is {BusinessLogicConstantsHelper.MaxLengthNumberAccount} minimun");
+            else if (!savingAccountToPayExists) errors.Add("InvalidNumberAccount", $"The account number is not valid");
+            else if (!savingAccountToPayIsValid) errors.Add("InvalidSavingAccount", $"This account is not available to deposit");
 
-            // Insuficient money to do the payment
-            if (!amountIsValid)
-            {
-                errors.Add("InvalidAmount", $"You must enter a valid amount, {BusinessLogicConstantsHelper.MinimumPaymentAmount} minimun");
-            }
-            
-            if (!numberAccountCharactersIsValid) // Invalid number of characters in account number
-            {
-                errors.Add("InvalidNumberCharacters", $"The number of characters is {BusinessLogicConstantsHelper.MaxLengthNumberAccount} minimun");
-            }
-            else if (!savingAccountToPayExists) // Invalid number account to pay
-            {
-                errors.Add("InvalidNumberAccount", $"The account number is not valid");
-            }
-            else if (!savingAccountToPayIsValid) // Check if Saving account to pay is active
-            {
-                errors.Add("InvalidSavingAccount", $"This account is not available to deposit");
-            }
+            #endregion
 
-            // Check if saving account from pay has the enought money to pay
-            if (!savingAccountFromPayHasEnoughMoney)
-            {
-                errors.Add("InvalidBalance", $"The account to be debited does not have sufficient balance");
-            }
+            #region Saving_Account_Id_From_Pay
+
+            //Conditionals
+            bool savingAccountFromPayIsNull = epsvm.AccountIdFromPay == 0;
+            bool savingAccountFromPayHasEnoughMoney = !savingAccountFromPayIsNull && savingAccountFromPay.Balance >= epsvm.Amount;
+
+            if (savingAccountFromPayIsNull) errors.Add("InvalidSavingAccountFromPayNull", "Select a valid option");
+            else if (!savingAccountFromPayHasEnoughMoney) errors.Add("InvalidBalance", $"The account to be debited does not have sufficient balance");
+
+            #endregion
 
             return errors;
         }
