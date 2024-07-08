@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuickBank.Helpers;
-using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.ViewModels.Payments;
 using QuickBank.Core.Application.Interfaces.Services.Products;
