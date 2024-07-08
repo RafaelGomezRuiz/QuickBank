@@ -12,10 +12,12 @@ namespace QuickBank.Core.Application.Mappings
     {
         public GeneralProfile() 
         {
+            #region Login
             CreateMap<AuthenticationRequest, LoginViewModel>()
                 .ForMember(destino => destino.HasError, otp => otp.Ignore())
                 .ForMember(destino => destino.ErrorDescription, otp => otp.Ignore())
                 .ReverseMap();
+            #endregion
 
 
             #region Products

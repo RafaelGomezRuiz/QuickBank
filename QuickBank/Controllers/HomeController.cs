@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Utilities;
-using QuickBank.Core.Application.Helpers;
+using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Services.Products;
@@ -31,17 +30,21 @@ namespace QuickBank.Controllers
             this.userHelper = userHelper;
         }
 
-
+        [Authorize(Roles = "ADMIN")]
         public IActionResult AdminHome()
         {
+            string NotificationFromRedirectioned = TempData["NotificationFromRedirectioned"] as string;
+            if (!string.IsNullOrEmpty(NotificationFromRedirectioned))
+            {
+                ViewBag.NotificationFromRedirectioned = NotificationFromRedirectioned;
+            }
             return View();
         }
 
+        [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> BasicHome()
         {
-
             var user = userHelper.GetUser();
-
             var savingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id);
             var creditCards = await creditCardService.GetAllByUserIdAsync(user.Id);
             var loans = await loanService.GetAllByUserIdAsync(user.Id);
@@ -52,7 +55,11 @@ namespace QuickBank.Controllers
                 CreditCards = creditCards,
                 Loans = loans
             };
-
+            string NotificationFromRedirectioned = TempData["NotificationFromRedirectioned"] as string;
+            if (!string.IsNullOrEmpty(NotificationFromRedirectioned))
+            {
+                ViewBag.NotificationFromRedirectioned = NotificationFromRedirectioned;
+            }
             return View(model);
         }
     }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Dtos.Email;
 using QuickBank.Core.Application.Enums;

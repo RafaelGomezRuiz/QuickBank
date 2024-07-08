@@ -41,7 +41,6 @@ namespace QuickBank.Controllers
             if (responseLogin != null && responseLogin.HasError != true)
             {
                 userHelper.SetUser(responseLogin);
-
                 string principalRole = responseLogin.Roles![^1];
 
                 switch (principalRole)
@@ -51,13 +50,19 @@ namespace QuickBank.Controllers
                     default: return RedirectRoutesHelper.routeUndefiniedHome;
                 }
             }
-            return View(loginVm);
+            else
+            {
+                loginVm.HasError = true;
+                loginVm.ErrorDescription = responseLogin.ErrorDescription;
+                return View(loginVm);
+            }
         }
+
         public async Task<IActionResult> SignOut()
         {
             await userService.SignOutAsync();  
             userHelper.RemoveUser();
-            return RedirectToRoute(new {controller="Auth",action="Index"});
+            return RedirectToRoute(new {controller="Auth",action="Login"});
         }
         public async Task<IActionResult> AccessDenied()
         {

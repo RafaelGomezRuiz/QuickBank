@@ -1,10 +1,11 @@
 ﻿@using QuickBank.Core.Application.Interfaces.Helpers;
 @using QuickBank.Core.Application.Enums;
+@inject IUserHelper userHelper
+
 @{
     var user = userHelper.GetUser();
-    string? pricipalUserRol = user?.Roles![^1];
+    string? principalUserRol = user?.Roles![^1];
 }
-@inject IUserHelper userHelper
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +22,7 @@
     <header>
         @if (user != null)
         {
-            @switch (pricipalUserRol)
+            @switch (principalUserRol)
             {
                 case nameof(ERoles.BASIC): await Html.RenderPartialAsync("HeaderNavBars/_NavBarBasicHome"); break;
                 case nameof(ERoles.ADMIN): await Html.RenderPartialAsync("HeaderNavBars/_NavBarAdminHome"); break;
