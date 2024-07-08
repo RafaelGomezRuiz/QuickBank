@@ -33,33 +33,30 @@ namespace QuickBank.Controllers
         [Authorize(Roles = "ADMIN")]
         public IActionResult AdminHome()
         {
-            string NotificationFromRedirectioned = TempData["NotificationFromRedirectioned"] as string;
-            if (!string.IsNullOrEmpty(NotificationFromRedirectioned))
+            if (HttpContext.Items.ContainsKey("NotificationFromRedirectioned"))
             {
-                ViewBag.NotificationFromRedirectioned = NotificationFromRedirectioned;
+                TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
             }
             return View();
         }
+
 
         [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> BasicHome()
         {
             var user = userHelper.GetUser();
-            var savingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id);
-            var creditCards = await creditCardService.GetAllByUserIdAsync(user.Id);
-            var loans = await loanService.GetAllByUserIdAsync(user.Id);
-
             var model = new HomeBasicViewModel
             {
-                SavingAccounts = savingAccounts,
-                CreditCards = creditCards,
-                Loans = loans
+                SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id),
+                CreditCards = await creditCardService.GetAllByUserIdAsync(user.Id),
+                Loans = await loanService.GetAllByUserIdAsync(user.Id)
             };
-            string NotificationFromRedirectioned = TempData["NotificationFromRedirectioned"] as string;
-            if (!string.IsNullOrEmpty(NotificationFromRedirectioned))
+
+            if (HttpContext.Items.ContainsKey("NotificationFromRedirectioned"))
             {
-                ViewBag.NotificationFromRedirectioned = NotificationFromRedirectioned;
+                TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
             }
+
             return View(model);
         }
     }
