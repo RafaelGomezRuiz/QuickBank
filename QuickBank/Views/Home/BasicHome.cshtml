@@ -4,7 +4,7 @@
 
 @{
     ViewData["Title"] = "Basic Home";
-
+    var notificationFromRedirectioned = ViewBag.Notification as string;
     // Current user logged
     var user = userHelper.GetUser();
 }
@@ -12,6 +12,12 @@
 <h2>Bienvenido, @user.FirstName @user.LastName</h2>
 
 <div class="products">
+    
+    @if (!string.IsNullOrEmpty(notificationFromRedirectioned))
+    {
+        <div class="alert alert-info">@notificationFromRedirectioned</div>
+    }
+
     <h3>Tus Cuentas de Ahorro</h3>
 
     @if (Model.SavingAccounts != null && Model.SavingAccounts.Count != 0)

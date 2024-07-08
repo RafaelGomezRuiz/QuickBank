@@ -4,7 +4,7 @@
 
 @{
     var user = userHelper.GetUser();
-    string? pricipalUserRol = user?.Roles![^1];
+    string? principalUserRol = user?.Roles![^1];
 }
 
 <!DOCTYPE html>
@@ -22,7 +22,7 @@
     <header>
         @if (user != null)
         {
-            @switch (pricipalUserRol)
+            @switch (principalUserRol)
             {
                 case nameof(ERoles.BASIC): await Html.RenderPartialAsync("HeaderNavBars/_NavBarBasicHome"); break;
                 case nameof(ERoles.ADMIN): await Html.RenderPartialAsync("HeaderNavBars/_NavBarAdminHome"); break;

@@ -41,7 +41,6 @@ namespace QuickBank.Controllers
             if (responseLogin != null && responseLogin.HasError != true)
             {
                 userHelper.SetUser(responseLogin);
-
                 string principalRole = responseLogin.Roles![^1];
 
                 switch (principalRole)
@@ -57,8 +56,8 @@ namespace QuickBank.Controllers
                 loginVm.ErrorDescription = responseLogin.ErrorDescription;
                 return View(loginVm);
             }
-            return View(loginVm);
         }
+
         public async Task<IActionResult> SignOut()
         {
             await userService.SignOutAsync();  
