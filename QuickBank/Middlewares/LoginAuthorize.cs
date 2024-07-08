@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Dtos.Account;
 using Org.BouncyCastle.X509;
+using QuickBank.Core.Application.Helpers;
 
 namespace QuickBank.Middlewares
 {
@@ -30,8 +31,8 @@ namespace QuickBank.Middlewares
                 controller.TempData["NotificationFromRedirectioned"] = "You are already logged in, you cant go to the login, and have been redirected to the home page.";
                 switch (principalUserRol)
                 {
-                    case nameof(ERoles.BASIC): context.Result = controller.RedirectToAction("BasicHome", "home"); ; break;
-                    case nameof(ERoles.ADMIN): context.Result = controller.RedirectToAction("AdminHome", "home"); break;
+                    case nameof(ERoles.BASIC): context.Result = RedirectRoutesHelper.routeBasicHome; break;
+                    case nameof(ERoles.ADMIN): context.Result = RedirectRoutesHelper.routeAdminHome; break;
                 }
             }
             else
