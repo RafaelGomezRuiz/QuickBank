@@ -15,7 +15,7 @@
                 <h4>@(editMode ? "Creando un nuevo usuario" : $"Editando al usuario: {Model.FirstName} {Model.LastName}")</h4>
             </div>
             <div class="card-body">
-                <form method="post" asp-controller="AdministrationUser" asp-action="@(editMode ? "Add" : "Edit")">
+                <form method="post" asp-controller="AdministrationUser" id="formSaveUser" asp-action="@(editMode ? "Add" : "Edit")">
                     <div class="mb-3">
                         <label asp-for="FirstName" class="form-label">FirstName: </label>
                         <input asp-for="FirstName" class="form-control">
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Email" class="form-label">IdCard: </label>
+                        <label asp-for="Email" class="form-label">Email: </label>
                         <input asp-for="Email" class="form-control"></input>
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
@@ -74,13 +74,19 @@
                     }
 
                     <div class="mb-3">
-                        <label asp-for="UserType" class="form-label">Categoria: </label>
-                        <select asp-for="UserType"  class="form-select">
-                            <option value="0">Seleccione una opcion</option>
-                            <option value="@ERoles.BASIC.ToString()">Basic</option>
-                            <option value="@ERoles.ADMIN.ToString()">Admin</option>
+                        <label asp-for="UserType" class="form-label">User Type:</label>
+                        <select asp-for="UserType" id="UserType" class="form-select" onchange="toggleInitialAmount()">
+                            <option value="">Seleccione una opción</option>
+                            <option value="@ERoles.BASIC">@ERoles.BASIC.ToString()</option>
+                            <option value="@ERoles.ADMIN">@ERoles.ADMIN.ToString()</option>
                         </select>
                         <span asp-validation-for="UserType" class="text-danger"></span>
+                    </div>
+
+                    <div id="initialAmountDiv" class="mb-3" style="display:none;">
+                        <label asp-for="InitialAmount" class="form-label">Initial Amount:</label>
+                        <input asp-for="InitialAmount" class="form-control" />
+                        <span asp-validation-for="InitialAmount" class="text-danger"></span>
                     </div>
 
                     <input type="hidden" asp-for="Id" />
@@ -92,4 +98,21 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        function toggleInitialAmount() {
+            var userType = document.getElementById("UserType").value;
+            var initialAmountDiv = document.getElementById("initialAmountDiv");
 
+            if (userType === "@ERoles.BASIC") {
+                initialAmountDiv.style.display = "block";
+            } else {
+                initialAmountDiv.style.display = "none";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleInitialAmount();
+        });
+    </script>
+}
