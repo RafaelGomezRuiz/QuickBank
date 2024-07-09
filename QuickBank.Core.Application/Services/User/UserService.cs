@@ -15,6 +15,12 @@ namespace QuickBank.Core.Application.Services.User
             this._accountService = _accountService;
             this._mapper = _mapper;
         }
+        public async Task<IEnumerable<UserViewModel>> GetAllAsync()
+        {
+            IEnumerable<AuthenticationResponse> usersResponse= await _accountService.GetAllAsync();
+            IEnumerable<UserViewModel> usersReturn=_mapper.Map<IEnumerable<UserViewModel>>(usersResponse);
+            return usersReturn;
+        }
         public async Task<UserSaveViewModel> FindyByIdAsync(string id)
         {
             AuthenticationResponse response = await _accountService.FindByIdAsync(id);
@@ -25,7 +31,7 @@ namespace QuickBank.Core.Application.Services.User
         public async Task<RegisterResponse> RegisterAsync(UserSaveViewModel vm, string origin)
         {
             RegisterRequest registerRequest = _mapper.Map<RegisterRequest>(vm);
-            RegisterResponse registerResponse = await _accountService.RegisterBasicUserAsync(registerRequest, origin);
+            RegisterResponse registerResponse = await _accountService.RegisterUserAsync(registerRequest, origin);
             return registerResponse;
         }
 
@@ -49,10 +55,10 @@ namespace QuickBank.Core.Application.Services.User
             await _accountService.SignOutAsync();
         }
 
-        public async Task<string> ConfirmEmailAsync(string userId, string token)
-        {
-            return await _accountService.ConfirmAccountAsync(userId, token);
-        }
+        //public async Task<string> ConfirmEmailAsync(string userId, string token)
+        //{
+        //    return await _accountService.ConfirmAccountAsync(userId, token);
+        //}
 
         public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordViewModel forgotPasswordVm, string origin)
         {

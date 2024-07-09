@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using QuickBank.Core.Application.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuickBank.Core.Application.ViewModels.User
 {
     public class UserSaveViewModel
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [Required(ErrorMessage = "The name field cannot be empty")]
         [DataType(DataType.Text)]
@@ -17,6 +18,10 @@ namespace QuickBank.Core.Application.ViewModels.User
         [Required(ErrorMessage = "The idcard field cannot be empty")]
         [DataType(DataType.Text)]
         public string IdCard { get; set; }
+
+        [Required(ErrorMessage = "The Email field cannot be empty")]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "The username field cannot be empty")]
         [DataType(DataType.Text)]
@@ -32,11 +37,12 @@ namespace QuickBank.Core.Application.ViewModels.User
         public string? ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "Select a valid option")]
-        [Range(1,int.MaxValue)]
-        public int UserType { get; set; }
+        [DataType(DataType.Text)]
+        public ERoles UserType { get; set; }
 
-        [Required(ErrorMessage = "The initial amount field cannot be empty")]
         [DataType(DataType.Currency)]
         public double? InitialAmount { get; set; }
+        public bool HasError { get; set; }
+        public string? ErrorDescription { get; set; }
     }
 }

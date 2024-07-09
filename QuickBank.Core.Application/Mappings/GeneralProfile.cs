@@ -3,6 +3,7 @@ using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.ViewModels.Auth;
 using QuickBank.Core.Application.ViewModels.Facilities.Benefice;
 using QuickBank.Core.Application.ViewModels.Products;
+using QuickBank.Core.Application.ViewModels.User;
 using QuickBank.Core.Domain.Entities.Facilities;
 using QuickBank.Core.Domain.Entities.Productos;
 
@@ -12,13 +13,25 @@ namespace QuickBank.Core.Application.Mappings
     {
         public GeneralProfile() 
         {
-            #region Login
+            #region Auth
             CreateMap<AuthenticationRequest, LoginViewModel>()
                 .ForMember(destino => destino.HasError, otp => otp.Ignore())
                 .ForMember(destino => destino.ErrorDescription, otp => otp.Ignore())
                 .ReverseMap();
             #endregion
 
+            #region User
+            CreateMap<UserViewModel, AuthenticationResponse>()
+                .ForMember(destino => destino.HasError, otp => otp.Ignore())
+                .ForMember(destino => destino.ErrorDescription, otp => otp.Ignore())
+                .ForMember(destino => destino.IsVerified, otp => otp.Ignore())
+                .ReverseMap();
+
+            CreateMap<UserSaveViewModel, RegisterRequest>()
+                .ReverseMap()
+                .ForMember(destino => destino.HasError, otp => otp.Ignore())
+                .ForMember(destino => destino.ErrorDescription, otp => otp.Ignore());
+            #endregion
 
             #region Products
 

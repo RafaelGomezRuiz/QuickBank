@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Dtos.Email;
@@ -16,12 +17,36 @@ namespace QuickBank.Infrastructure.Identity.Services
         protected readonly UserManager<ApplicationUser> userManager;
         protected readonly SignInManager<ApplicationUser> signInManager;
         protected readonly IEmailService emailService;
-
         public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailService = emailService;
+        }
+        public async Task<IEnumerable<AuthenticationResponse>> GetAllAsync()
+        {
+            IEnumerable<ApplicationUser> users= userManager.Users.ToList();
+            List<AuthenticationResponse> authResponse=new List<AuthenticationResponse>();
+
+            foreach (var authResponseUser in users)
+            {
+                var rolesList = await userManager.GetRolesAsync(authResponseUser).ConfigureAwait(false);
+                authResponse.Add( new AuthenticationResponse
+                {
+                    Id = authResponseUser.Id,
+                    FirstName = authResponseUser.FirstName,
+                    LastName = authResponseUser.LastName,
+                    UserName = authResponseUser.UserName,
+                    Email = authResponseUser.Email,
+                    PhoneNumber = authResponseUser.PhoneNumber,
+                    Status = authResponseUser.Status,
+                    IdCard = authResponseUser.IdCard,
+                    Roles = rolesList.ToList(),
+                    IsVerified = authResponseUser.EmailConfirmed,
+                });
+            }
+            
+            return authResponse;
         }
         public async Task<AuthenticationResponse> FindByIdAsync(string id)
         {
@@ -88,7 +113,7 @@ namespace QuickBank.Infrastructure.Identity.Services
             await signInManager.SignOutAsync();
         }
 
-        public async Task<RegisterResponse> RegisterBasicUserAsync(RegisterRequest request, string origin)
+        public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin)
         {
             RegisterResponse response = new()
             {
@@ -118,20 +143,22 @@ namespace QuickBank.Infrastructure.Identity.Services
                 UserName = request.UserName,
                 Email = request.Email,
                 IdCard = request.IdCard,
-                PhoneNumber = request.PhoneNumber, 
+                EmailConfirmed=true,
+                PhoneNumberConfirmed=true,
+                Status = Convert.ToInt32(EUserStatus.ACTIVE),
             };
 
             var userCreated = await userManager.CreateAsync(user, request.Password);
             if (userCreated.Succeeded)
             {
-                await userManager.AddToRoleAsync(user, ERoles.BASIC.ToString());
-                var verificationUri = await SendVerificationEmailUri(user, origin);
-                await emailService.SendAsync(new EmailRequest
+                if (request.UserType == ERoles.BASIC)
                 {
-                    To = user.Email,
-                    Body = $"Please confirm your acount visisting this link: {verificationUri}",
-                    Subject = "Confirm registration"
-                });
+                    await userManager.AddToRoleAsync(user, ERoles.BASIC.ToString());
+                }
+                else if (true)
+                {
+                    await userManager.AddToRoleAsync(user, ERoles.ADMIN.ToString());
+                }
             }
             else
             {
@@ -143,24 +170,24 @@ namespace QuickBank.Infrastructure.Identity.Services
         }
         //LeftJoinExpression the method to AdminUser
 
-        public async Task<string> ConfirmAccountAsync(string userId, string token)
-        {
-            ApplicationUser user = await userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return $"No accounts registered with this user";
-            }
-            token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-            var result = await userManager.ConfirmEmailAsync(user, token);
-            if (result.Succeeded)
-            {
-                return $"Account confirmed for {user.UserName}. Yuo can use the app";
-            }
-            else
-            {
-                return $"An error occured while confirming {user.UserName} try again";
-            }
-        }
+        //public async Task<string> ConfirmAccountAsync(string userId, string token)
+        //{
+        //    ApplicationUser user = await userManager.FindByIdAsync(userId);
+        //    if (user == null)
+        //    {
+        //        return $"No accounts registered with this user";
+        //    }
+        //    token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+        //    var result = await userManager.ConfirmEmailAsync(user, token);
+        //    if (result.Succeeded)
+        //    {
+        //        return $"Account confirmed for {user.UserName}. Yuo can use the app";
+        //    }
+        //    else
+        //    {
+        //        return $"An error occured while confirming {user.UserName} try again";
+        //    }
+        //}
 
         public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
         {
@@ -294,16 +321,16 @@ namespace QuickBank.Infrastructure.Identity.Services
             return verificationUri;
         }
 
-        private async Task<string> SendVerificationEmailUri(ApplicationUser user, string origin)
-        {
-            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "User/ConfirmEmail";
-            var Uri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", code);
-            return verificationUri;
-        }
+        //private async Task<string> SendVerificationEmailUri(ApplicationUser user, string origin)
+        //{
+        //    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        //    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        //    var route = "User/ConfirmEmail";
+        //    var Uri = new Uri(string.Concat($"{origin}/", route));
+        //    var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "userId", user.Id);
+        //    verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", code);
+        //    return verificationUri;
+        //}
 
     }
 }
