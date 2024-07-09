@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using QuickBank.Core.Application.Helpers;
+using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Commons;
 using QuickBank.Core.Application.Interfaces.Services.Facilities;
 using QuickBank.Core.Application.Interfaces.Services.Logs;
@@ -18,6 +20,7 @@ namespace QuickBank.Core.Application.DependencyInjection
         public static void AddApplicationDependency(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddTransient<IJsonHelper, JsonHelper>();
             services.AddTransient(typeof(IGenericService<,,>), typeof(GenericService<,,>));
             services.AddTransient<IBeneficeService, BeneficeService>();
             services.AddTransient<ILoanService, LoanService>();

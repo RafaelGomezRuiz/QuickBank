@@ -54,7 +54,7 @@ namespace QuickBank.Core.Application.Services.Products
             bool savingAccountFromPayHasEnoughMoney = !savingAccountFromPayIsNull && savingAccountFromPay.Balance >= epsvm.Amount;
 
             if (savingAccountFromPayIsNull) errors.Add("InvalidSavingAccountFromPayNull", "Select a valid option");
-            else if (!savingAccountFromPayHasEnoughMoney) errors.Add("InvalidBalance", $"The account to be debited does not have sufficient balance");
+            else if (amountIsValid && savingAccountToPayIsValid && !savingAccountFromPayHasEnoughMoney) errors.Add("InvalidBalance", $"The account to be debited does not have sufficient balance");
 
             #endregion
 

@@ -3,5 +3,6 @@
     public class ConfirmPayViewModel
     {
         public string UserFullName { get; set; }
+        public string PayToConfirm { get; set; }
     }
 }

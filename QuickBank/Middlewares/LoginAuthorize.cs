@@ -27,8 +27,7 @@ namespace QuickBank.Middlewares
         {
             if (userHelper.HasUser())
             {
-                var controller = (AuthController)context.Controller;
-                controller.TempData["NotificationFromRedirectioned"] = "You are already logged in, you cant go to the login, and have been redirected to the home page.";
+                context.HttpContext.Items["NotificationFromRedirectioned"] = "You are already logged in, you cant go to the login, and have been redirected to the home page.";
                 switch (principalUserRol)
                 {
                     case nameof(ERoles.BASIC): context.Result = RedirectRoutesHelper.routeBasicHome; break;

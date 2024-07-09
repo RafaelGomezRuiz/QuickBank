@@ -1,20 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using QuickBank.Core.Application.Dtos.Account;
-using QuickBank.Core.Application.Helpers;
-using QuickBank.Core.Application.Interfaces.Services.User;
-using QuickBank.Core.Application.ViewModels.User;
 
 namespace QuickBank.Controllers
 {
     [Authorize(Roles = "ADMIN")]
     public class AdministrationUserController : Controller
     {
-        protected readonly IUserService userService;
-        public AdministrationUserController(IUserService userService)
-        {
-            this.userService = userService;
-        }
         public async Task<IActionResult> Index()
         {
             return View(await userService.GetAllAsync());

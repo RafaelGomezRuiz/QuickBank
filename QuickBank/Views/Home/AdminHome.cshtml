@@ -7,10 +7,14 @@
     // Current user logged
     var user = userHelper.GetUser();
 }
+
+
 @if (!string.IsNullOrEmpty(notificationFromRedirectioned))
 {
     <div class="alert alert-info">@notificationFromRedirectioned</div>
 }
+
+
 <div class="container-fluid">
     <div class="card shadow col-5 offset-4 p-4">
         

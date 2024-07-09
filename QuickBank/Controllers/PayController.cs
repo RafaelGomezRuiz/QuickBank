@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuickBank.Helpers;
-using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.ViewModels.Payments;
 using QuickBank.Core.Application.Interfaces.Services.Products;
@@ -16,18 +15,21 @@ namespace QuickBank.Controllers
         private readonly IPayValidationService payValidationService;
         private readonly ISavingAccountService savingAccountService;
         private readonly IUserHelper userHelper;
+        private readonly IJsonHelper jsonHelper;
 
         public PayController(
             IPayService payService,
             IPayValidationService payValidationService,
             ISavingAccountService savingAccountService,
-            IUserHelper userHelper
+            IUserHelper userHelper,
+            IJsonHelper jsonHelper
         )
         {
             this.payService = payService;
             this.payValidationService = payValidationService;
             this.savingAccountService = savingAccountService;
             this.userHelper = userHelper;
+            this.jsonHelper = jsonHelper;
         }
 
         public IActionResult PayOptions()
@@ -53,9 +55,23 @@ namespace QuickBank.Controllers
             ModelState.AddModelErrorRange(await payValidationService.ExpressPayValidation(epsvm));
             if (!ModelState.IsValid) return View("MakeExpressPay", epsvm);
 
+            // Store temporally the model
+            TempData["ExpressPaySaveViewModel"] = jsonHelper.Serialize(epsvm);
+
+            // Confirm the payment
+            var confirmationModel = await payService.GetPayConfirmation(epsvm.NumberAccountToPay, "ConfirmExpressPay");
+            return View("ConfirmPay", confirmationModel);
+        }
+
+        public async Task<IActionResult> ConfirmExpressPay()
+        {
+            // Get the model
+            var epsvm = jsonHelper.Deserialize<ExpressPaySaveViewModel>(TempData["ExpressPaySaveViewModel"] as string);
+
+            // Make the payment
             await payService.MakeExpressPay(epsvm);
 
-            return RedirectRoutesHelper.routeBasicHome;
+            return View("PayConfirmed");
         }
     }
 }
