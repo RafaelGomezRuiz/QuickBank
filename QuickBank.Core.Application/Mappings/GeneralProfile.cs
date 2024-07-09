@@ -3,6 +3,7 @@ using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.ViewModels.Auth;
 using QuickBank.Core.Application.ViewModels.Facilities.Benefice;
 using QuickBank.Core.Application.ViewModels.Products;
+using QuickBank.Core.Application.ViewModels.Products.SavingAccount;
 using QuickBank.Core.Application.ViewModels.User;
 using QuickBank.Core.Domain.Entities.Facilities;
 using QuickBank.Core.Domain.Entities.Productos;
@@ -37,6 +38,7 @@ namespace QuickBank.Core.Application.Mappings
 
             CreateMap<SavingAccountEntity, SavingAccountViewModel>()
                 .ReverseMap();
+
             CreateMap<CreditCardEntity, CreditCardViewModel>()
                 .ReverseMap();
             CreateMap<LoanEntity, LoanViewModel>()

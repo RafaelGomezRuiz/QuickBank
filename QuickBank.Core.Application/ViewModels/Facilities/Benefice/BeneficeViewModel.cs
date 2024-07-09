@@ -1,4 +1,4 @@
-﻿using QuickBank.Core.Application.ViewModels.Products;
+﻿using QuickBank.Core.Application.ViewModels.Products.SavingAccount;
 
 namespace QuickBank.Core.Application.ViewModels.Facilities.Benefice
 {

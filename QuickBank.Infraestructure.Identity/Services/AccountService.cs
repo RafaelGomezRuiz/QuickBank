@@ -31,7 +31,7 @@ namespace QuickBank.Infrastructure.Identity.Services
             foreach (var authResponseUser in users)
             {
                 var rolesList = await userManager.GetRolesAsync(authResponseUser).ConfigureAwait(false);
-                authResponse.Add( new AuthenticationResponse
+                 authResponse.Add( new AuthenticationResponse
                 {
                     Id = authResponseUser.Id,
                     FirstName = authResponseUser.FirstName,
@@ -136,7 +136,7 @@ namespace QuickBank.Infrastructure.Identity.Services
                 return response;
             }
             
-            ApplicationUser user = new()
+            ApplicationUser userToRegister = new()
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
@@ -148,16 +148,16 @@ namespace QuickBank.Infrastructure.Identity.Services
                 Status = Convert.ToInt32(EUserStatus.ACTIVE),
             };
 
-            var userCreated = await userManager.CreateAsync(user, request.Password);
+            var userCreated = await userManager.CreateAsync(userToRegister, request.Password);
             if (userCreated.Succeeded)
             {
                 if (request.UserType == ERoles.BASIC)
                 {
-                    await userManager.AddToRoleAsync(user, ERoles.BASIC.ToString());
+                    await userManager.AddToRoleAsync(userToRegister, ERoles.BASIC.ToString());
                 }
                 else if (true)
                 {
-                    await userManager.AddToRoleAsync(user, ERoles.ADMIN.ToString());
+                    await userManager.AddToRoleAsync(userToRegister, ERoles.ADMIN.ToString());
                 }
             }
             else
@@ -166,6 +166,8 @@ namespace QuickBank.Infrastructure.Identity.Services
                 response.ErrorDescription = $"Has ocurred an error trying to save the user";
                 return response;
             }
+            ApplicationUser userRegistered= await userManager.FindByEmailAsync(request.Email);
+            response.Id = userRegistered.Id;
             return response;
         }
         //LeftJoinExpression the method to AdminUser
@@ -205,7 +207,7 @@ namespace QuickBank.Infrastructure.Identity.Services
             }
 
             var code = await userManager.GeneratePasswordResetTokenAsync(user);
-            var newPassword = PasswordGenerator.GeneratePassword();
+            var newPassword = CodeStringGenerator.GeneratePassword();
             var result = await userManager.ResetPasswordAsync(user, code, newPassword);
             if (!result.Succeeded)
             {

@@ -1,4 +1,5 @@
-﻿using QuickBank.Core.Application.ViewModels.User;
+﻿using QuickBank.Core.Application.ViewModels.Products.SavingAccount;
+using QuickBank.Core.Application.ViewModels.User;
 
 namespace QuickBank.Core.Application.ViewModels.Products
 {

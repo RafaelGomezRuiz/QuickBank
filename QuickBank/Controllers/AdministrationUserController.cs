@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QuickBank.Core.Application.Dtos;
 using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
+using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
 using QuickBank.Core.Application.Services.User;
 using QuickBank.Core.Application.ViewModels.User;
@@ -13,9 +15,11 @@ namespace QuickBank.Controllers
     public class AdministrationUserController : Controller
     {
         protected readonly IUserService userService;
-        public AdministrationUserController(IUserService userService)
+        protected readonly ISavingAccountService savingAccountService;
+        public AdministrationUserController(IUserService userService, ISavingAccountService savingAccountService)
         {
             this.userService = userService;
+            this.savingAccountService = savingAccountService;
         }
         public async Task<IActionResult> Index()
         {
@@ -28,21 +32,26 @@ namespace QuickBank.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(UserSaveViewModel userViewModel)
+        public async Task<IActionResult> Add(UserSaveViewModel userSaveViewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View("SaveUser",userViewModel);
+                return View("SaveUser",userSaveViewModel);
             }
 
             var origin = Request.Headers["origin"];
-            RegisterResponse response=await userService.RegisterAsync(userViewModel, origin);
+            RegisterResponse response=await userService.RegisterAsync(userSaveViewModel, origin);
             if (response.HasError)
             {
-                userViewModel.HasError = response.HasError;
-                userViewModel.ErrorDescription = response.ErrorDescription;
-                return View(userViewModel);
+                userSaveViewModel.HasError = response.HasError;
+                userSaveViewModel.ErrorDescription = response.ErrorDescription;
+                return View("SaveUser", userSaveViewModel);
             }
+            SetSavingAccount setSavingAccount = new();
+            setSavingAccount.UserId = response.Id;
+            setSavingAccount.InitialAmount = userSaveViewModel.InitialAmount;
+            await savingAccountService.SetSavingAccount(setSavingAccount);
+            
             return RedirectRoutesHelper.routeAdminHome;
         }
     }
