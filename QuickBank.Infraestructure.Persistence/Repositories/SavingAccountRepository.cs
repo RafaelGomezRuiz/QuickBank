@@ -1,4 +1,5 @@
-﻿using QuickBank.Core.Application.Interfaces.Repositories;
+﻿using QuickBank.Core.Application.Dtos;
+using QuickBank.Core.Application.Interfaces.Repositories;
 using QuickBank.Core.Domain.Entities.Productos;
 using QuickBank.Infrastructure.Persistence.Contexts;
 

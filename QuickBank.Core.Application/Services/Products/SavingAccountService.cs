@@ -20,9 +20,9 @@ namespace QuickBank.Core.Application.Services.Products
             this.mapper = mapper;
         }
 
-        public async Task<SavingAccountViewModel> GetASavingAccountToSetAsync()
+        public async Task<SavingAccountViewModel> GetAvailableSavingAccountAsync()
         {
-            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Status == 0 && savm.UserId== null);
+            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Status == 0 && savm.UserId == null);
         }
 
         public async Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId)
@@ -38,29 +38,30 @@ namespace QuickBank.Core.Application.Services.Products
         public async Task SetSavingAccount(SetSavingAccount setSavingAccount)
         {
             var userAccounts=await GetAllByUserIdAsync(setSavingAccount.UserId);
-            if (userAccounts.Count==0)
+            bool isFirstAccount = userAccounts.Count == 0;
+            string accountNumber = CodeStringGenerator.GenerateProductNumber(); ;
+            bool accountNumberExists = (await base.GetAllAsync()).Any(savm => savm.AccountNumber == accountNumber);
+
+            var savingAccountVm = await GetAvailableSavingAccountAsync();
+
+            if (savingAccountVm == null)
             {
-                SavingAccountViewModel savingAccountVm= await GetASavingAccountToSetAsync();
-                savingAccountVm.AccountNumber = CodeStringGenerator.GenerateProductNumber();
-                savingAccountVm.Status = 1;
-                savingAccountVm.Principal = true;
-                savingAccountVm.Balance = setSavingAccount.InitialAmount;
-                savingAccountVm.UserId = setSavingAccount.UserId;
-                //savingAccountVm.Balance=
-                var savingAccountEntity = mapper.Map<SavingAccountEntity>(savingAccountVm);
-                await savingAccountRepository.UpdateAsync(savingAccountEntity, savingAccountEntity.Id);
+                throw new InvalidOperationException("No available saving accounts.");
             }
-            else
+
+            do
             {
-                SavingAccountViewModel savingAccountVm = await GetASavingAccountToSetAsync();
-                savingAccountVm.AccountNumber = CodeStringGenerator.GenerateProductNumber();
-                savingAccountVm.Status = 1;
-                savingAccountVm.Principal = false;
-                savingAccountVm.Balance = setSavingAccount.InitialAmount;
-                savingAccountVm.UserId = setSavingAccount.UserId;
-                var savingAccountEntity = mapper.Map<SavingAccountEntity>(savingAccountVm);
-                await savingAccountRepository.UpdateAsync(savingAccountEntity, savingAccountEntity.Id);
-            }
+                accountNumber = CodeStringGenerator.GenerateProductNumber();
+            } while (accountNumberExists);
+
+            savingAccountVm.Status = 1;
+            savingAccountVm.Principal = isFirstAccount;
+            savingAccountVm.Balance = setSavingAccount.InitialAmount;
+            savingAccountVm.UserId = setSavingAccount.UserId;
+            savingAccountVm.AccountNumber = accountNumber;
+            var savingAccountEntity = mapper.Map<SavingAccountEntity>(savingAccountVm);
+            await savingAccountRepository.UpdateAsync(savingAccountEntity, savingAccountEntity.Id);
         }
+            
     }
 }

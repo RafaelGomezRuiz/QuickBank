@@ -47,11 +47,22 @@ namespace QuickBank.Controllers
                 userSaveViewModel.ErrorDescription = response.ErrorDescription;
                 return View("SaveUser", userSaveViewModel);
             }
-            SetSavingAccount setSavingAccount = new();
-            setSavingAccount.UserId = response.Id;
-            setSavingAccount.InitialAmount = userSaveViewModel.InitialAmount;
-            await savingAccountService.SetSavingAccount(setSavingAccount);
-            
+
+            SetSavingAccount setSavingAccount = new()
+            {
+                UserId = response.Id,
+                InitialAmount = userSaveViewModel.InitialAmount
+            };
+
+            try
+            {
+                await savingAccountService.SetSavingAccount(setSavingAccount);
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError(string.Empty, "No available saving accounts.");
+                return View("SaveUser", userSaveViewModel);
+            }
             return RedirectRoutesHelper.routeAdminHome;
         }
     }
