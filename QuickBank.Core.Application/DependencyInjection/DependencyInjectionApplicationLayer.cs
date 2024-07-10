@@ -30,6 +30,7 @@ namespace QuickBank.Core.Application.DependencyInjection
             services.AddTransient<ILogService, LogService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPayValidationService, PayValidationService>();
+            services.AddTransient<IFacilityValidationService, FacilityValidationService>();
         }
     }
 }
