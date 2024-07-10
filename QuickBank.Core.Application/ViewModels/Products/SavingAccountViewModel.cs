@@ -1,6 +1,6 @@
 ﻿using QuickBank.Core.Application.ViewModels.Facilities.Benefice;
 
-namespace QuickBank.Core.Application.ViewModels.Products.SavingAccount
+namespace QuickBank.Core.Application.ViewModels.Products
 {
     public class SavingAccountViewModel
     {

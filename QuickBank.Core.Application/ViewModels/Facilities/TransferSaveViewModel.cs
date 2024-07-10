@@ -1,4 +1,4 @@
-﻿using QuickBank.Core.Application.ViewModels.Products.SavingAccount;
+﻿using QuickBank.Core.Application.ViewModels.Products;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuickBank.Core.Application.ViewModels.Facilities

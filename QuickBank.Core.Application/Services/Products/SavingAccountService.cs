@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using QuickBank.Core.Application.Dtos;
+using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Repositories;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Services.Commons;
-using QuickBank.Core.Application.ViewModels.Products.SavingAccount;
+using QuickBank.Core.Application.ViewModels.Products;
 using QuickBank.Core.Domain.Entities.Productos;
 
 namespace QuickBank.Core.Application.Services.Products
@@ -22,7 +23,7 @@ namespace QuickBank.Core.Application.Services.Products
 
         public async Task<SavingAccountViewModel> GetAvailableSavingAccountAsync()
         {
-            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Status == 0 && savm.UserId == null);
+            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Status == (int)EProductStatus.INACTIVE && savm.UserId == null);
         }
 
         public async Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId)
@@ -39,7 +40,7 @@ namespace QuickBank.Core.Application.Services.Products
         {
             var userAccounts=await GetAllByUserIdAsync(setSavingAccount.UserId);
             bool isFirstAccount = userAccounts.Count == 0;
-            string accountNumber = CodeStringGenerator.GenerateProductNumber(); ;
+            string accountNumber = CodeStringGenerator.GenerateProductNumber();
             bool accountNumberExists = (await base.GetAllAsync()).Any(savm => savm.AccountNumber == accountNumber);
 
             var savingAccountVm = await GetAvailableSavingAccountAsync();
@@ -54,7 +55,7 @@ namespace QuickBank.Core.Application.Services.Products
                 accountNumber = CodeStringGenerator.GenerateProductNumber();
             } while (accountNumberExists);
 
-            savingAccountVm.Status = 1;
+            savingAccountVm.Status = (int)EProductStatus.ACTIVE;
             savingAccountVm.Principal = isFirstAccount;
             savingAccountVm.Balance = setSavingAccount.InitialAmount;
             savingAccountVm.UserId = setSavingAccount.UserId;
