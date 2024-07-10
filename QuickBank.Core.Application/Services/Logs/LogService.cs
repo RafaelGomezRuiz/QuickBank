@@ -31,5 +31,15 @@ namespace QuickBank.Core.Application.Services.Log
         {
             return await payLogRepository.GetAllAsync();
         }
+
+        public async Task AddTransferLogAsync(TransferLogEntity entity)
+        {
+            await transferLogRepository.AddAsync(entity);
+        }
+
+        public async Task<List<TransferLogEntity>> GetAllTransferLogsAsync()
+        {
+            return await transferLogRepository.GetAllAsync();
+        }
     }
 }

@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
-using QuickBank.Core.Application.Helpers;
-using QuickBank.Core.Application.Interfaces.Repositories;
 using QuickBank.Core.Application.Interfaces.Services.Facilities;
 using QuickBank.Core.Application.Interfaces.Services.Logs;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
 using QuickBank.Core.Application.ViewModels.Payments;
 using QuickBank.Core.Domain.Entities.Logs;
-using QuickBank.Core.Domain.Entities.Productos;
+using System.Diagnostics;
 
 namespace QuickBank.Core.Application.Services.Facilities
 {
@@ -43,17 +41,43 @@ namespace QuickBank.Core.Application.Services.Facilities
             this.mapper = mapper;
         }
 
-        public async Task<ConfirmPayViewModel> GetPayConfirmation(string numberAccountToPay, string actionToConfirm)
-        {
-            var productToPay = await savingAccountService.GetViewModelByNumberAccountAsync(numberAccountToPay);
-            var userFromProductToPay = await accountService.FindByIdAsync(productToPay.UserId);
 
+        #region Payments Confirmations
+
+        private ConfirmPayViewModel CreatePayConfirmation(string entityToBePaid, string payActionToConfirm)
+        {
             return new ConfirmPayViewModel()
             {
-                UserFullName = $"{userFromProductToPay.FirstName} {userFromProductToPay.LastName}",
-                PayToConfirm = actionToConfirm
+                EntityToBePaid = entityToBePaid,
+                PayActionToConfirm = payActionToConfirm
             };
         }
+
+        public async Task<ConfirmPayViewModel> GetExpressPayConfirmation(string numberAccountToPay)
+        {
+            var savingAccountToPay = await savingAccountService.GetViewModelByNumberAccountAsync(numberAccountToPay);
+            var userFromSavingAccountToPay = await accountService.FindByIdAsync(savingAccountToPay.UserId);
+
+            return CreatePayConfirmation
+            (
+                $"{userFromSavingAccountToPay.FirstName} {userFromSavingAccountToPay.LastName}",
+                "ConfirmExpressPay"
+            );
+        }
+
+        public async Task<ConfirmPayViewModel> GetCreditCardPayConfirmation(int creditCardId)
+        {
+            var creditCard = await creditCardService.GetByIdAsync(creditCardId);
+
+            return CreatePayConfirmation
+            (
+                creditCard.CardNumber,
+                "ConfirmCreditCardPay"
+            );
+        }
+
+        #endregion
+
 
         public async Task MakeExpressPay(ExpressPaySaveViewModel epsvm)
         {
@@ -68,6 +92,34 @@ namespace QuickBank.Core.Application.Services.Facilities
             // Credit chosen amount
             savingAccountToPay.Balance += epsvm.Amount;
             await savingAccountService.UpdateAsync(savingAccountToPay, savingAccountToPay.Id);
+
+            // Log the pay
+            var payLog = new PayLogEntity() { CreationDate = DateTime.Now };
+            await logService.AddPayLogAsync(payLog);
+        }
+
+
+        public async Task MakeCreditCardPay(CreditCardPaySaveViewModel ccsvm)
+        {
+            // SavingAccount and credit card
+            var creditCardToPay = await creditCardService.GetByIdAsync(ccsvm.CreditCardIdToPay);
+            var savingAccountFromPay = await savingAccountService.GetByIdAsync(ccsvm.SavingAccountIdFromPay);
+
+            // Debit chosen amount
+            savingAccountFromPay.Balance -= ccsvm.Amount;
+            creditCardToPay.Balance -= ccsvm.Amount;
+
+            // Card debit excess
+            bool excessDebit = creditCardToPay.Balance < 0;
+            if (excessDebit)
+            {
+                savingAccountFromPay.Balance += Math.Abs(creditCardToPay.Balance);
+                creditCardToPay.Balance = 0;
+            }
+
+            // Update the products
+            await savingAccountService.UpdateAsync(savingAccountFromPay, savingAccountFromPay.Id);
+            await creditCardService.UpdateAsync(creditCardToPay, creditCardToPay.Id);
 
             // Log the pay
             var payLog = new PayLogEntity() { CreationDate = DateTime.Now };
