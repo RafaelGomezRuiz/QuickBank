@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuickBank.Core.Application.Helpers
 {
-    public static class PasswordGenerator
+    public static class CodeStringGenerator
     {
         private static Random random = new Random();
         private const string Uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -29,6 +29,20 @@ namespace QuickBank.Core.Application.Helpers
             }
 
             return new string(password.ToCharArray().OrderBy(c => random.Next()).ToArray());
+        }
+
+        public static string GenerateProductNumber()
+        {
+            string productNumber =
+                Convert.ToChar(GetRandomCharacter(Numbers)).ToString();
+
+            string allCharacters = Numbers;
+            for (int i = productNumber.Length; i <= BusinessLogicConstantsHelper.MaxLengthNumberAccount; i++)
+            {
+                productNumber += GetRandomCharacter(allCharacters);
+            }
+
+            return new string(productNumber.ToCharArray().OrderBy(c => random.Next()).ToArray());
         }
 
         private static char GetRandomCharacter(string characters)

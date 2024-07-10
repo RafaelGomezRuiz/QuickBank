@@ -1,0 +1,118 @@
+﻿@using QuickBank.Core.Application.ViewModels.User;
+@using QuickBank.Core.Application.Enums;
+
+@model UserSaveViewModel
+
+@{
+    bool editMode = Model.Id != string.Empty ? true : false;
+    ViewData["Title"] = "Guardar producto";
+}
+
+<div class="row">
+    <div class="col-6 offset-3">
+        <div class="card">
+            <div class="card-header bg-dark text-light">
+                <h4>@(editMode ? "Creando un nuevo usuario" : $"Editando al usuario: {Model.FirstName} {Model.LastName}")</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" asp-controller="AdministrationUser" id="formSaveUser" asp-action="@(editMode ? "Add" : "Edit")">
+                    <div class="mb-3">
+                        <label asp-for="FirstName" class="form-label">FirstName: </label>
+                        <input asp-for="FirstName" class="form-control">
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="LastName" class="form-label">LastName: </label>
+                        <input asp-for="LastName" class="form-control"></input>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="IdCard" class="form-label">IdCard: </label>
+                        <input asp-for="IdCard" class="form-control"></input>
+                        <span asp-validation-for="IdCard" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email: </label>
+                        <input asp-for="Email" class="form-control"></input>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="UserName" class="form-label">UserName: </label>
+                        <input asp-for="UserName" asp-for="UserName" class="form-control">
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    @if(editMode){
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Contrasenia: </label>
+                            <input asp-for="Password" class="form-control">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label">Confirmar Contrasenia: </label>
+                            <input asp-for="ConfirmPassword" class="form-control">
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Contrasenia: </label>
+                            <input required asp-for="Password" class="form-control">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label">Confirmar Contrasenia: </label>
+                            <input required asp-for="ConfirmPassword" class="form-control">
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    }
+
+                    <div class="mb-3">
+                        <label asp-for="UserType" class="form-label">User Type:</label>
+                        <select asp-for="UserType" id="UserType" class="form-select" onchange="toggleInitialAmount()">
+                            <option value="">Seleccione una opción</option>
+                            <option value="@ERoles.BASIC">@ERoles.BASIC.ToString()</option>
+                            <option value="@ERoles.ADMIN">@ERoles.ADMIN.ToString()</option>
+                        </select>
+                        <span asp-validation-for="UserType" class="text-danger"></span>
+                    </div>
+
+                    <div id="initialAmountDiv" class="mb-3" style="display:none;">
+                        <label asp-for="InitialAmount" class="form-label">Initial Amount:</label>
+                        <input asp-for="InitialAmount" class="form-control" />
+                        <span asp-validation-for="InitialAmount" class="text-danger"></span>
+                    </div>
+
+                    <input type="hidden" asp-for="Id" />
+
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a asp-controller="AdministrationUser" asp-action="Index" class="btn btn-warning">Volver atras</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        function toggleInitialAmount() {
+            var userType = document.getElementById("UserType").value;
+            var initialAmountDiv = document.getElementById("initialAmountDiv");
+
+            if (userType === "@ERoles.BASIC") {
+                initialAmountDiv.style.display = "block";
+            } else {
+                initialAmountDiv.style.display = "none";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleInitialAmount();
+        });
+    </script>
+}

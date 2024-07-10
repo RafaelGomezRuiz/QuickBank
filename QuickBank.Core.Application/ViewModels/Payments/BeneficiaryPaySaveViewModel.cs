@@ -1,5 +1,5 @@
 ﻿using QuickBank.Core.Application.ViewModels.Facilities.Benefice;
-using QuickBank.Core.Application.ViewModels.Products;
+using QuickBank.Core.Application.ViewModels.Products.SavingAccount;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuickBank.Core.Application.ViewModels.Payments

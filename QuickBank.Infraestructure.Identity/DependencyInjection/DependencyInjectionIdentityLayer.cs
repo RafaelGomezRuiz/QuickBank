@@ -43,7 +43,7 @@ namespace QuickBank.Infrastructure.Identity.DependencyInjection
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "/user";
+                options.LoginPath = "/Auth/Login";
                 //falta el de acceso denegado
                 options.AccessDeniedPath= "/Auth/AccessDenied";
 

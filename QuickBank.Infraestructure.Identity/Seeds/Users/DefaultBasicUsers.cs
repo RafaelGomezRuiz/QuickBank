@@ -21,7 +21,7 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
                 FirstName = "user",
                 LastName = "user",
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true,
             };
 
             ApplicationUser defaultUser2 = new()
