@@ -21,6 +21,7 @@
                     @Html.ValidationMessage("InvalidNumberCharacters", "", new { @class = "text-danger" })
                     @Html.ValidationMessage("InvalidNumberAccount", "", new { @class = "text-danger" })
                     @Html.ValidationMessage("InvalidSavingAccount", "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("InvalidSameSavingAccount", "", new { @class = "text-danger" })
                 </div>
 
                 <div class="mb-3">
@@ -35,7 +36,7 @@
                     <select asp-for="AccountIdFromPay" asp-items="@(new SelectList(Model.Accounts,"Id","AccountNumber"))" class="form-control">
                         <option value="0">Select an option</option>
                     </select>
-                    @Html.ValidationMessage("InvalidSavingAccountFromPayNull", "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("InvalidSavingAccountFromPayOption", "", new { @class = "text-danger" })
                     @Html.ValidationMessage("InvalidBalance", "", new { @class = "text-danger" })
                 </div>
 

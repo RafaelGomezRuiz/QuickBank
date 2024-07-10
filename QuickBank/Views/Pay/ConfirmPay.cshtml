@@ -6,13 +6,15 @@
 
 
 <div class="container-fluid">
-    <div class="card shadow col-5 offset-4">
-        <h1 class="text-center text-light fw-bold">Payment will be deposited to</h1>
-        <h4 class="text-center text-light fw-light">@Model.UserFullName</h4>
+    <div class="shadow col-6 offset-4 p-3">
+        <h2 class="text-center fw-bold ">Payment will be deposited to</h2>
+        <h4 class="text-center fw-light">@Model.UserFullName</h4>
 
-        <div class="input-group">
-            <a asp-controller="Home" asp-action="BasicHome" class="btn btn-warning">cancel</a>
-            <a asp-controller="Pay" asp-action="@Model.PayToConfirm" class="btn btn-primary">confirm</a>
+        <div class="mt-3">
+            <div class="input-group">
+                <a asp-controller="Home" asp-action="BasicHome" class="btn btn-warning">cancel</a>
+                <a asp-controller="Pay" asp-action="@Model.PayToConfirm" class="btn btn-primary">confirm</a>
+            </div>
         </div>
     </div>
 </div>

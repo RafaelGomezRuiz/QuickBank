@@ -10,7 +10,7 @@ namespace QuickBank.Core.Application.ViewModels.Payments
         public string NumberAccountToPay { get; set; }
 
         [DataType(DataType.Currency)]
-        public double? Amount { get; set; }
+        public double Amount { get; set; }
 
         public int AccountIdFromPay { get; set; }
 

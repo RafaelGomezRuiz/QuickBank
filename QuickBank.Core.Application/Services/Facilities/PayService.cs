@@ -6,6 +6,8 @@ using QuickBank.Core.Application.Interfaces.Services.Logs;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
 using QuickBank.Core.Application.ViewModels.Payments;
+using QuickBank.Core.Domain.Entities.Logs;
+using QuickBank.Core.Domain.Entities.Productos;
 
 namespace QuickBank.Core.Application.Services.Facilities
 {
@@ -55,7 +57,21 @@ namespace QuickBank.Core.Application.Services.Facilities
 
         public async Task MakeExpressPay(ExpressPaySaveViewModel epsvm)
         {
-            
+            // SavingAccounts
+            var savingAccountToPay = await savingAccountService.GetViewModelByNumberAccountAsync(epsvm.NumberAccountToPay);
+            var savingAccountFromPay = await savingAccountService.GetByIdAsync(epsvm.AccountIdFromPay);
+
+            // Debit chosen amount
+            savingAccountFromPay.Balance -= epsvm.Amount;
+            await savingAccountService.UpdateAsync(savingAccountFromPay, savingAccountFromPay.Id);
+
+            // Credit chosen amount
+            savingAccountToPay.Balance += epsvm.Amount;
+            await savingAccountService.UpdateAsync(savingAccountToPay, savingAccountToPay.Id);
+
+            // Log the pay
+            var payLog = new PayLogEntity() { CreationDate = DateTime.Now };
+            await logService.AddPayLogAsync(payLog);
         }
     }
 }
