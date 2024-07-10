@@ -33,18 +33,18 @@
 
                 <div class="mb-3">
                     <label asp-for="AccountIdFromPay" class="form-label">Account to be debited</label>
-                    <select asp-for="AccountIdFromPay" asp-items="@(new SelectList(Model.Accounts,"Id","AccountNumber"))" class="form-control">
+                    <select asp-for="AccountIdFromPay" asp-items="@(new SelectList(Model.SavingAccounts,"Id","AccountNumber"))" class="form-control">
                         <option value="0">Select an option</option>
                     </select>
                     @Html.ValidationMessage("InvalidSavingAccountFromPayOption", "", new { @class = "text-danger" })
                     @Html.ValidationMessage("InvalidBalance", "", new { @class = "text-danger" })
                 </div>
 
-                @* Load the necesary data for the accounts *@
-                @for (int i = 0; i < Model.Accounts.Count; i++)
+                @* Load the necesary data for the saving accounts *@
+                @for (int i = 0; i < Model.SavingAccounts.Count; i++)
                 {
-                    <input type="hidden" asp-for="@Model.Accounts[i].Id" />
-                    <input type="hidden" asp-for="@Model.Accounts[i].AccountNumber" />
+                    <input type="hidden" asp-for="@Model.SavingAccounts[i].Id" />
+                    <input type="hidden" asp-for="@Model.SavingAccounts[i].AccountNumber" />
                 }
 
                 <div class="input-group">

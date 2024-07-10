@@ -1,5 +1,4 @@
-﻿using QuickBank.Core.Application.Helpers;
-using QuickBank.Core.Application.ViewModels.Products;
+﻿using QuickBank.Core.Application.ViewModels.Products;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuickBank.Core.Application.ViewModels.Payments
@@ -14,6 +13,6 @@ namespace QuickBank.Core.Application.ViewModels.Payments
 
         public int AccountIdFromPay { get; set; }
 
-        public List<SavingAccountViewModel>? Accounts { get; set; }
+        public List<SavingAccountViewModel>? SavingAccounts { get; set; }
     }
 }
