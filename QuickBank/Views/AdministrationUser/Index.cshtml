@@ -1,9 +1,13 @@
 ﻿@using QuickBank.Core.Application.ViewModels.Products;
 @using QuickBank.Core.Application.ViewModels.User;
+@using QuickBank.Core.Application.Enums;
+@using QuickBank.Core.Application.Interfaces.Helpers;
+@inject IUserHelper userHelper;
 
 @model List<UserViewModel>
 @{
     ViewData["Title"] = "Users Page";
+    var userLoged = userHelper.GetUser();
 }
 
 <div class="container-fluid">
@@ -63,16 +67,39 @@
                                     {
                                         <div class="col-4 mb-3">
                                             <div class="card shadow-sm">
-                                                <div class="card-body">
-                                                    <h3>@item.FirstName</h3>
-                                                    <p class="card-text">@item.LastName</p>
-                                                    <p class="card-text">@item.IdCard</p>
-                                                    @foreach(var role in item.Roles)
-                                                    {
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <span class="fw-bold">@role</span>
+                                                <div class="container mt-4">
+                                                    <div class="row justify-content-end">
+                                                        @if (item.Id != userLoged.Id)
+                                                        {
+                                                            <div class="col-auto">
+                                                                @if (item.Status == EUserStatus.ACTIVE)
+                                                                {
+                                                                    <a asp-controller="AdministrationUser" asp-action="Inactive" class="btn btn-danger me-2">Inactivar</a>
+                                                                }
+                                                                else if (item.Status == EUserStatus.INACTIVE)
+                                                                {
+                                                                    <a asp-controller="AdministrationUser" asp-action="Active" class="btn btn-danger me-2">Activar</a>
+                                                                }
+                                                                <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="Edit" class="btn btn-primary">Edit</a>
+                                                            </div>
+                                                        }
+                                                    </div>
+
+                                                    <div class="card mt-4">
+                                                        <div class="card-body">
+                                                            <h3 class="card-title">@item.FirstName @item.LastName</h3>
+
+                                                            <div class="mt-3">
+                                                                <h5 class="card-subtitle mb-2">Roles:</h5>
+                                                                @foreach (var role in item.Roles)
+                                                                {
+                                                                    <div class="d-inline-flex me-2 mb-2">
+                                                                        <span class="badge bg-secondary">@role</span>
+                                                                    </div>
+                                                                }
+                                                            </div>
                                                         </div>
-                                                    }
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

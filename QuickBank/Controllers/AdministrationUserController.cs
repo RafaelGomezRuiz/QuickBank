@@ -6,7 +6,6 @@ using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
-using QuickBank.Core.Application.Services.User;
 using QuickBank.Core.Application.ViewModels.User;
 
 namespace QuickBank.Controllers
@@ -27,7 +26,7 @@ namespace QuickBank.Controllers
         }
         public async Task<IActionResult> Add()
         {
-            return View("SaveUser",new UserSaveViewModel());
+            return View("SaveUser", new UserSaveViewModel());
         }
 
         [HttpPost]
@@ -36,33 +35,36 @@ namespace QuickBank.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("SaveUser",userSaveViewModel);
+                return View("SaveUser", userSaveViewModel);
             }
 
             var origin = Request.Headers["origin"];
-            RegisterResponse response=await userService.RegisterAsync(userSaveViewModel, origin);
+            RegisterResponse response = await userService.RegisterAsync(userSaveViewModel, origin);
             if (response.HasError)
             {
                 userSaveViewModel.HasError = response.HasError;
                 userSaveViewModel.ErrorDescription = response.ErrorDescription;
                 return View("SaveUser", userSaveViewModel);
             }
+            if (userSaveViewModel.UserType == ERoles.BASIC)
+            {
+                SetSavingAccount setSavingAccount = new()
+                {
+                    UserId = response.Id,
+                    InitialAmount = (double)userSaveViewModel.InitialAmount
+                };
 
-            //SetSavingAccount setSavingAccount = new()
-            //{
-            //    UserId = response.Id,
-            //    InitialAmount = userSaveViewModel.InitialAmount
-            //};
+                try
+                {
+                    await savingAccountService.SetSavingAccount(setSavingAccount);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ModelState.AddModelError(string.Empty, "No available saving accounts.");
+                    return View("SaveUser", userSaveViewModel);
+                }
+            }
 
-            //try
-            //{
-            //    await savingAccountService.SetSavingAccount(setSavingAccount);
-            //}
-            //catch (InvalidOperationException ex)
-            //{
-            //    ModelState.AddModelError(string.Empty, "No available saving accounts.");
-            //    return View("SaveUser", userSaveViewModel);
-            //}
             return RedirectRoutesHelper.routeAdminHome;
         }
     }

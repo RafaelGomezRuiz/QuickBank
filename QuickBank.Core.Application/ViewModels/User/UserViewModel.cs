@@ -1,4 +1,6 @@
-﻿namespace QuickBank.Core.Application.ViewModels.User
+﻿using QuickBank.Core.Application.Enums;
+
+namespace QuickBank.Core.Application.ViewModels.User
 {
     public class UserViewModel
     {
@@ -11,6 +13,6 @@
         public string? Password { get; set; }
         public string? PhoneNumber { get; set; }
         public List<string> Roles { get; set; }
-        public bool Status { get; set; }
+        public EUserStatus Status { get; set; }
     }
 }
