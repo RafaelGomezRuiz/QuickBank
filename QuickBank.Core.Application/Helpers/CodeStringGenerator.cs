@@ -37,7 +37,7 @@ namespace QuickBank.Core.Application.Helpers
                 Convert.ToChar(GetRandomCharacter(Numbers)).ToString();
 
             string allCharacters = Numbers;
-            for (int i = productNumber.Length; i <= 9; i++)
+            for (int i = productNumber.Length; i <= BusinessLogicConstantsHelper.MaxLengthNumberAccount; i++)
             {
                 productNumber += GetRandomCharacter(allCharacters);
             }
