@@ -42,6 +42,7 @@ namespace QuickBank.Core.Application.ViewModels.User
 
         [DataType(DataType.Currency)]
         public double? InitialAmount { get; set; }
+        public int? Status { get; set; }
         public bool HasError { get; set; }
         public string? ErrorDescription { get; set; }
     }

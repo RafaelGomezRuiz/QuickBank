@@ -13,7 +13,7 @@ namespace QuickBank.Core.Application.Mappings
     {
         public GeneralProfile()
         {
-            #region Auth
+            #region Authentication
             CreateMap<AuthenticationRequest, LoginViewModel>()
                 .ForMember(destino => destino.HasError, otp => otp.Ignore())
                 .ForMember(destino => destino.ErrorDescription, otp => otp.Ignore())
@@ -25,12 +25,24 @@ namespace QuickBank.Core.Application.Mappings
                 .ForMember(destino => destino.HasError, otp => otp.Ignore())
                 .ForMember(destino => destino.ErrorDescription, otp => otp.Ignore())
                 .ForMember(destino => destino.IsVerified, otp => otp.Ignore())
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(destino => destino.Password, otp => otp.Ignore());
+
 
             CreateMap<UserSaveViewModel, RegisterRequest>()
                 .ReverseMap()
                 .ForMember(destino => destino.HasError, otp => otp.Ignore())
                 .ForMember(destino => destino.ErrorDescription, otp => otp.Ignore());
+
+            CreateMap<UserSaveViewModel, AuthenticationResponse>()
+                .ForMember(destino => destino.PhoneNumber, otp => otp.Ignore())
+                .ReverseMap()
+                .ForMember(destino => destino.Password, otp => otp.Ignore())
+                .ForMember(destino => destino.ConfirmPassword, otp => otp.Ignore())
+                .ForMember(destino => destino.InitialAmount, otp => otp.Ignore());
+
+
+
             #endregion
 
             #region Products

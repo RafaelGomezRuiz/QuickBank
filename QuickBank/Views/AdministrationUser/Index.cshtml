@@ -72,14 +72,7 @@
                                                         @if (item.Id != userLoged.Id)
                                                         {
                                                             <div class="col-auto">
-                                                                @if (item.Status == EUserStatus.ACTIVE)
-                                                                {
-                                                                    <a asp-controller="AdministrationUser" asp-action="Inactive" class="btn btn-danger me-2">Inactivar</a>
-                                                                }
-                                                                else if (item.Status == EUserStatus.INACTIVE)
-                                                                {
-                                                                    <a asp-controller="AdministrationUser" asp-action="Active" class="btn btn-danger me-2">Activar</a>
-                                                                }
+                                                                <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="ChangeUserState" class="btn btn-danger me-2">@(item.Status == (int)EUserStatus.ACTIVE ? "Inactivar" : "Activar")</a>
                                                                 <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="Edit" class="btn btn-primary">Edit</a>
                                                             </div>
                                                         }

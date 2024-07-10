@@ -13,6 +13,6 @@ namespace QuickBank.Core.Application.ViewModels.User
         public string? Password { get; set; }
         public string? PhoneNumber { get; set; }
         public List<string> Roles { get; set; }
-        public EUserStatus Status { get; set; }
+        public int Status { get; set; }
     }
 }

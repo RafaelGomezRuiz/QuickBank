@@ -64,8 +64,25 @@ namespace QuickBank.Controllers
                     return View("SaveUser", userSaveViewModel);
                 }
             }
-
             return RedirectRoutesHelper.routeAdminHome;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangeUserState(string id)
+        {
+            UserSaveViewModel user=await userService.FindyByIdAsync(id);
+            return View(user);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> ChangeUserStatePost(string id)
+        {
+            UserSaveViewModel user = await userService.FindyByIdAsync(id);
+
+            user.Status = (user.Status != (int)EUserStatus.ACTIVE) ? (int)EUserStatus.ACTIVE : (int)EUserStatus.INACTIVE;
+            await userService.UpdateUserAsync(user);
+
+            return RedirectToAction("Index");
         }
     }
 }
