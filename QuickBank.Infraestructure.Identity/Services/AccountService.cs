@@ -155,7 +155,7 @@ namespace QuickBank.Infrastructure.Identity.Services
                 {
                     await userManager.AddToRoleAsync(userToRegister, ERoles.BASIC.ToString());
                 }
-                else if (true)
+                else if (request.UserType == ERoles.ADMIN)
                 {
                     await userManager.AddToRoleAsync(userToRegister, ERoles.ADMIN.ToString());
                 }

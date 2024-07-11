@@ -27,11 +27,9 @@ namespace QuickBank.Core.Application.ViewModels.User
         [DataType(DataType.Text)]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "The password field cannot be empty")]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
 
-        [Required(ErrorMessage = "The confirm password field cannot be empty")]
         [Compare(nameof(Password))]
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; }
@@ -42,6 +40,7 @@ namespace QuickBank.Core.Application.ViewModels.User
 
         [DataType(DataType.Currency)]
         public double? InitialAmount { get; set; }
+        public List<string>? Roles { get; set; }
         public int? Status { get; set; }
         public bool HasError { get; set; }
         public string? ErrorDescription { get; set; }

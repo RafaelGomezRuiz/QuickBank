@@ -4,18 +4,18 @@
 @model UserSaveViewModel
 
 @{
-    bool editMode = Model.Id != string.Empty ? true : false;
-    ViewData["Title"] = "Guardar producto";
+    bool editMode = Model.Id != null ? true : false;
+    ViewData["Title"] = "Guardar usuario";
 }
 
 <div class="row">
     <div class="col-6 offset-3">
         <div class="card">
             <div class="card-header bg-dark text-light">
-                <h4>@(editMode ? "Creando un nuevo usuario" : $"Editando al usuario: {Model.FirstName} {Model.LastName}")</h4>
+                <h4>@(editMode ? $"Editando al usuario: {Model.FirstName} {Model.LastName}" : "Creando un nuevo usuario")</h4>
             </div>
             <div class="card-body">
-                <form method="post" asp-controller="AdministrationUser" id="formSaveUser" asp-action="@(editMode ? "Add" : "Edit")">
+                <form method="post" asp-controller="AdministrationUser" id="formSaveUser" asp-action="@(editMode ? "Edit" : "Add")">
                     <div class="mb-3">
                         <label asp-for="FirstName" class="form-label">FirstName: </label>
                         <input asp-for="FirstName" class="form-control">
@@ -45,7 +45,8 @@
                         <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
 
-                    @if(editMode){
+                    @if(editMode==true)
+                    {
                         <div class="mb-3">
                             <label asp-for="Password" class="form-label">Contrasenia: </label>
                             <input asp-for="Password" class="form-control">
@@ -73,16 +74,28 @@
                         </div>
                     }
 
-                    <div class="mb-3">
-                        <label asp-for="UserType" class="form-label">User Type:</label>
-                        <select asp-for="UserType" id="UserType" class="form-select" onchange="toggleInitialAmount()">
-                            <option value="">Seleccione una opción</option>
-                            <option value="@ERoles.BASIC">@ERoles.BASIC.ToString()</option>
-                            <option value="@ERoles.ADMIN">@ERoles.ADMIN.ToString()</option>
-                        </select>
-                        <span asp-validation-for="UserType" class="text-danger"></span>
-                    </div>
+                    @if(editMode)
+                    {
+                        <div class="mb-3">
+                            <label asp-for="UserType" class="form-label">User Type:</label>
+                            <input value="@(Model.UserType==ERoles.BASIC ? "Basic" : "Admin")" class="form-control" readonly />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <label asp-for="UserType" class="form-label">User Type:</label>
+                            <select asp-for="UserType"  id="UserType" class="form-select" onchange="toggleInitialAmount()">
+                                <option value="">Seleccione una opción</option>
+                                <option value="@ERoles.BASIC">@ERoles.BASIC.ToString()</option>
+                                <option value="@ERoles.ADMIN">@ERoles.ADMIN.ToString()</option>
+                            </select>
+                            <span asp-validation-for="UserType" class="text-danger"></span>
+                        </div>
+                    }
 
+
+                    
                     <div id="initialAmountDiv" class="mb-3" style="display:none;">
                         <label asp-for="InitialAmount" class="form-label">Initial Amount:</label>
                         <input asp-for="InitialAmount" class="form-control" />
@@ -104,7 +117,7 @@
             var userType = document.getElementById("UserType").value;
             var initialAmountDiv = document.getElementById("initialAmountDiv");
 
-            if (userType === "@ERoles.BASIC") {
+            if (userType === "@ERoles.BASIC" || "@editMode") {
                 initialAmountDiv.style.display = "block";
             } else {
                 initialAmountDiv.style.display = "none";

@@ -6,6 +6,7 @@ using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
+using QuickBank.Core.Application.ViewModels.Products;
 using QuickBank.Core.Application.ViewModels.User;
 
 namespace QuickBank.Controllers
@@ -82,7 +83,29 @@ namespace QuickBank.Controllers
             user.Status = (user.Status != (int)EUserStatus.ACTIVE) ? (int)EUserStatus.ACTIVE : (int)EUserStatus.INACTIVE;
             await userService.UpdateUserAsync(user);
 
-            return RedirectToAction("Index");
+            return RedirectRoutesHelper.routeAdmininistrationUserIndex;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            UserSaveViewModel user = await userService.FindyByIdAsync(id);
+            return View("SaveUser",user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(UserSaveViewModel userSaveViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("SaveUser", userSaveViewModel);
+            }
+            await userService.UpdateUserAsync(userSaveViewModel);
+            SavingAccountViewModel savingAccountViewModel=await savingAccountService.GetPrincipalSavingAccountAsync(userSaveViewModel.Id);
+            savingAccountViewModel.Balance += (double)userSaveViewModel.InitialAmount;
+            savingAccountService.UpdateAsync(savingAccountViewModel,savingAccountViewModel.Id);
+            return RedirectRoutesHelper.routeAdmininistrationUserIndex;
         }
     }
 }
