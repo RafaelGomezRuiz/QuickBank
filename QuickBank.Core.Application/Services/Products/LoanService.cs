@@ -35,7 +35,6 @@ namespace QuickBank.Core.Application.Services.Products
         }
         public async Task SetLoan(LoanSaveViewModel setLoan)
         {
-            var userLoans = await GetAllByUserIdAsync(setLoan.OwnerId);
             string newLoanNumber = CodeStringGenerator.GenerateProductNumber();
             bool loanNumberExists = (await base.GetAllAsync()).Any(loan => loan.LoanNumber == newLoanNumber);
 

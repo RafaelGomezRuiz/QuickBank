@@ -10,7 +10,7 @@
 
         <div class="mt-3">
             <div class="input-group">
-                <a asp-controller="AdministrationUser" asp-route-id="@Model.UserId" asp-action="UserProducts" class="btn btn-warning">cancel</a>
+                <a asp-controller="AdministrationUser" asp-route-ownerId="@Model.UserId" asp-action="UserProducts" class="btn btn-warning">cancel</a>
                 @if(Model.Principal!=true){
                     <a asp-controller="AdministrationUser" asp-route-id="@Model.Id" asp-action="DeleteSavingAccountPost" class="btn btn-primary">confirm</a>
                 }

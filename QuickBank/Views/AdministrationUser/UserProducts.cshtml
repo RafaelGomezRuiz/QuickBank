@@ -87,7 +87,7 @@
                                     @foreach (var item in Model.Loans)
                                     {
                                         <div class="col-4 mb-3">
-                                            <a asp-controller="AdministrationUser" asp-route-id="@Model.OwnerId" asp-action="DeleteLoan" class="btn btn-danger">Eliminar</a>
+                                            <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="DeleteLoan" class="btn btn-danger">Eliminar</a>
                                             <div class="card shadow-sm">
                                                 <div class="container mt-4">
                                                     <div class="card mt-4">

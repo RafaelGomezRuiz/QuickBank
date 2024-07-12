@@ -187,8 +187,28 @@ namespace QuickBank.Controllers
         //ojo con este nombre
         public async Task<IActionResult> DeleteSavingAccountPost(int id)
         {
+            //Lazy alternativa es cambiaele a SavingAcountService y al vm de userId a Owner id haciendo una migracion
+            SavingAccountViewModel savingAccountOwner= await savingAccountService.GetByIdAsync(id);
+            string ownerId = savingAccountOwner.UserId;
             await savingAccountService.DeleteAsync(id);
-            return RedirectRoutesHelper.routeAdmininistrationUserProducts;
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteLoan(int id)
+        {
+            var loanViewModel = await loanService.GetByIdAsync(id);
+            return View(loanViewModel);
+        }
+
+        [HttpGet]
+        //ojo con este nombre
+        public async Task<IActionResult> DeleteLoanPost(int id)
+        {
+            var loanOwnerId = await loanService.GetByIdAsync(id);
+            string ownerId =loanOwnerId.UserId;
+            await loanService.DeleteAsync(id);
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId});
         }
 
 
