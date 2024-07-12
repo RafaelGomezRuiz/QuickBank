@@ -16,10 +16,18 @@ namespace QuickBank.Controllers
     {
         protected readonly IUserService userService;
         protected readonly ISavingAccountService savingAccountService;
-        public AdministrationUserController(IUserService userService, ISavingAccountService savingAccountService)
+        protected readonly ILoanService loanService;
+        protected readonly ICreditCardService credictCardService;
+
+
+        public AdministrationUserController(
+            IUserService userService,
+            ISavingAccountService savingAccountService,
+            ILoanService loanService)
         {
             this.userService = userService;
             this.savingAccountService = savingAccountService;
+            this.loanService = loanService;
         }
         public async Task<IActionResult> Index()
         {
@@ -71,10 +79,10 @@ namespace QuickBank.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangeUserState(string id)
         {
-            UserSaveViewModel user=await userService.FindyByIdAsync(id);
+            UserSaveViewModel user = await userService.FindyByIdAsync(id);
             return View(user);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> ChangeUserStatePost(string id)
         {
@@ -90,7 +98,7 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             UserSaveViewModel user = await userService.FindyByIdAsync(id);
-            return View("SaveUser",user);
+            return View("SaveUser", user);
         }
 
         [HttpPost]
@@ -109,6 +117,36 @@ namespace QuickBank.Controllers
                 savingAccountService.UpdateAsync(savingAccountViewModel, savingAccountViewModel.Id);
             }
             return RedirectRoutesHelper.routeAdmininistrationUserIndex;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UserProducts(string id)
+        {
+            var userSavingAccounts = await savingAccountService.GetAllByUserIdAsync(id);
+            var userLoans = await loanService.GetAllByUserIdAsync(id);
+            //var userCredictCards = await credictCardService.GetAllByUserIdAsync(id);
+
+
+            UserProductsViewModel userProducts = new()
+            {
+                OwnerId=id,
+                SavingAccounts = userSavingAccounts,
+                Loans = userLoans,
+            };
+            return View(userProducts);
+        }
+        [HttpGet]
+        public async Task<IActionResult> SetSavingAccount(string id)
+        {
+            SetSavingAccount savingAccount = new()
+            {
+                UserId = id,
+            };
+            //Mensaje que valide si se creo o no
+            await savingAccountService.SetSavingAccount(savingAccount);
+
+            return RedirectRoutesHelper.routeAdmininistrationUserProducts;
+
         }
     }
 }
