@@ -62,7 +62,7 @@
                                 @foreach (var item in Model.SavingAccounts)
                                 {
                                     <div class="col-4 mb-3">
-                                        <a asp-controller="AdministrationUser" asp-route-id="@Model.OwnerId" asp-action="DeleteSavingAccount" class="btn btn-danger">Eliminar</a>
+                                        <a asp-controller="AdministrationUser" asp-route-numberAccount="@item.AccountNumber" asp-action="DeleteSavingAccount" class="btn btn-danger">Eliminar</a>
                                         <div class="card shadow-sm">
                                             <div class="container mt-4">
                                                 <div class="card mt-4">

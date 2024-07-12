@@ -109,7 +109,11 @@ namespace QuickBank.Controllers
             {
                 return View("SaveUser", userSaveViewModel);
             }
-            await userService.UpdateUserAsync(userSaveViewModel);
+            var updateResult =await userService.UpdateUserAsync(userSaveViewModel);
+            if (updateResult.HasError)
+            {
+                //Version que hacer
+            }
             if (userSaveViewModel.UserType == ERoles.BASIC)
             {
                 SavingAccountViewModel savingAccountViewModel = await savingAccountService.GetPrincipalSavingAccountAsync(userSaveViewModel.Id);
@@ -146,7 +150,19 @@ namespace QuickBank.Controllers
             await savingAccountService.SetSavingAccount(savingAccount);
 
             return RedirectRoutesHelper.routeAdmininistrationUserProducts;
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> DeleteSavingAccount(string numberAccount)
+        {
+            var savingAccount = await savingAccountService.GetViewModelByNumberAccountAsync(numberAccount);
+            return View(savingAccount);
+        }
+        [HttpGet]
+        public async Task<IActionResult> DeleteSavingAccountP(int id)
+        {
+            await savingAccountService.DeleteAsync(id);
+            return RedirectRoutesHelper.routeAdmininistrationUserProducts;
         }
     }
 }

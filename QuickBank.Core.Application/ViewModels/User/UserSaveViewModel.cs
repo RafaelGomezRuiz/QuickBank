@@ -42,7 +42,5 @@ namespace QuickBank.Core.Application.ViewModels.User
         public double? InitialAmount { get; set; }
         public List<string>? Roles { get; set; }
         public int? Status { get; set; }
-        public bool HasError { get; set; }
-        public string? ErrorDescription { get; set; }
     }
 }

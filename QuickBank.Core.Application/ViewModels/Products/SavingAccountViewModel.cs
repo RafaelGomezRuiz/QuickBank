@@ -14,5 +14,7 @@ namespace QuickBank.Core.Application.ViewModels.Products
 
         // Navegation properties
         public ICollection<BeneficeViewModel>? Benefices { get; set; }
+        public bool HasError { get; set; }
+        public string? ErrorDescription { get; set; }
     }
 }

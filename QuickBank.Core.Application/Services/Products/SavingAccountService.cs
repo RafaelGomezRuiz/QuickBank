@@ -27,7 +27,11 @@ namespace QuickBank.Core.Application.Services.Products
         }
         public async Task<SavingAccountViewModel> GetPrincipalSavingAccountAsync(string userId)
         {
-            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Principal == true && savm.UserId==userId);
+            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Principal == true && savm.UserId == userId);
+        }
+        public async Task<SavingAccountViewModel> GetSavingAccountByNumberAsync(string savingAccountNumber)
+        {
+            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.AccountNumber == savingAccountNumber);
         }
 
         public async Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId)
@@ -42,7 +46,7 @@ namespace QuickBank.Core.Application.Services.Products
 
         public async Task SetSavingAccount(SetSavingAccount setSavingAccount)
         {
-            var userAccounts=await GetAllByUserIdAsync(setSavingAccount.UserId);
+            var userAccounts = await GetAllByUserIdAsync(setSavingAccount.UserId);
             bool isFirstAccount = userAccounts.Count == 0;
             string accountNumber = CodeStringGenerator.GenerateProductNumber();
             bool accountNumberExists = (await base.GetAllAsync()).Any(savm => savm.AccountNumber == accountNumber);
@@ -67,6 +71,6 @@ namespace QuickBank.Core.Application.Services.Products
             var savingAccountEntity = mapper.Map<SavingAccountEntity>(savingAccountVm);
             await savingAccountRepository.UpdateAsync(savingAccountEntity, savingAccountEntity.Id);
         }
-            
+        
     }
 }

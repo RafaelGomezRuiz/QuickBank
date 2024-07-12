@@ -1,0 +1,20 @@
+﻿@using QuickBank.Core.Application.ViewModels.Products;
+@using QuickBank.Core.Application.Enums;
+@model SavingAccountViewModel;
+
+
+<div class="container-fluid">
+    <div class="shadow col-6 offset-4 p-3">
+        <h2 class="text-center fw-bold ">@(Model.Principal ? "No puedes eliminar la cuenta principal ":"Estas seguro de eliminar la cuenta de ahorro?")</h2>
+        <h4 class="text-center fw-light"> Cuenta de ahorro: @Model.AccountNumber</h4>
+
+        <div class="mt-3">
+            <div class="input-group">
+                <a asp-controller="AdministrationUser" asp-route-id="@Model.UserId" asp-action="UserProducts" class="btn btn-warning">cancel</a>
+                @if(Model.Principal!=true){
+                    <a asp-controller="AdministrationUser" asp-route-id="@Model.Id" asp-action="DeleteSavingAccountP" class="btn btn-primary">confirm</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
