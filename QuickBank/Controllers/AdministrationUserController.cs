@@ -130,7 +130,6 @@ namespace QuickBank.Controllers
             var userLoans = await loanService.GetAllByUserIdAsync(id);
             //var userCredictCards = await credictCardService.GetAllByUserIdAsync(id);
 
-
             UserProductsViewModel userProducts = new()
             {
                 OwnerId=id,
@@ -153,13 +152,20 @@ namespace QuickBank.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> DeleteSavingAccount(int id)
+        {
+            var savingAccount = await savingAccountService.GetByIdAsync(id);
+            return View(savingAccount);
+        }
         public async Task<IActionResult> DeleteSavingAccount(string numberAccount)
         {
             var savingAccount = await savingAccountService.GetViewModelByNumberAccountAsync(numberAccount);
             return View(savingAccount);
         }
+
         [HttpGet]
-        public async Task<IActionResult> DeleteSavingAccountP(int id)
+        //ojo con este nombre
+        public async Task<IActionResult> DeleteSavingAccountPost(int id)
         {
             await savingAccountService.DeleteAsync(id);
             return RedirectRoutesHelper.routeAdmininistrationUserProducts;

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Interfaces.Repositories;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Services.Commons;
@@ -17,7 +18,6 @@ namespace QuickBank.Core.Application.Services.Products
             this.loanRepository = loanRepository;
             this.mapper = mapper;
         }
-
         public async Task<List<LoanViewModel>?> GetAllByUserIdAsync(string userId)
         {
             return (await base.GetAllAsync()).Where(savm => savm.UserId == userId).ToList();

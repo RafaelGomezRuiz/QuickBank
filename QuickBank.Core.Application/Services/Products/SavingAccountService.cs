@@ -29,10 +29,6 @@ namespace QuickBank.Core.Application.Services.Products
         {
             return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Principal == true && savm.UserId == userId);
         }
-        public async Task<SavingAccountViewModel> GetSavingAccountByNumberAsync(string savingAccountNumber)
-        {
-            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.AccountNumber == savingAccountNumber);
-        }
 
         public async Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId)
         {
