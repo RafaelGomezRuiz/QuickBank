@@ -17,17 +17,19 @@ namespace QuickBank.Controllers
         protected readonly IUserService userService;
         protected readonly ISavingAccountService savingAccountService;
         protected readonly ILoanService loanService;
-        protected readonly ICreditCardService credictCardService;
+        protected readonly ICreditCardService creditCardService;
 
 
         public AdministrationUserController(
             IUserService userService,
             ISavingAccountService savingAccountService,
-            ILoanService loanService)
+            ILoanService loanService,
+            ICreditCardService creditCardService)
         {
             this.userService = userService;
             this.savingAccountService = savingAccountService;
             this.loanService = loanService;
+            this.creditCardService = creditCardService;
         }
         public async Task<IActionResult> Index()
         {
@@ -128,13 +130,14 @@ namespace QuickBank.Controllers
         {
             var userSavingAccounts = await savingAccountService.GetAllByUserIdAsync(ownerId);
             var userLoans = await loanService.GetAllByUserIdAsync(ownerId);
-            //var userCredictCards = await credictCardService.GetAllByUserIdAsync(id);
+            var userCredictCards = await creditCardService.GetAllByUserIdAsync(ownerId);
 
             UserProductsViewModel userProducts = new()
             {
                 OwnerId = ownerId,
                 SavingAccounts = userSavingAccounts,
                 Loans = userLoans,
+                CreditCards = userCredictCards
             };
             return View(userProducts);
         }
@@ -165,6 +168,7 @@ namespace QuickBank.Controllers
             };
             return View(loanSaveViewModel);
         }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetLoan(LoanSaveViewModel loanSaveViewModel)
@@ -174,6 +178,24 @@ namespace QuickBank.Controllers
             userPrincipalSavingAccount.Balance += loanSaveViewModel.Amount;
             await savingAccountService.UpdateAsync(userPrincipalSavingAccount, userPrincipalSavingAccount.Id);
             return RedirectToRoute(new {Controller="AdministrationUser",Action="UserProducts",loanSaveViewModel.OwnerId});
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SetCreditCard(string ownerId)
+        {
+            CreditCardSaveViewModel creditCardSaveViewModel = new()
+            {
+                OwnerId = ownerId,
+            };
+            return View(creditCardSaveViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetCreditCard(CreditCardSaveViewModel ceditCardSaveViewModel)
+        {
+            await creditCardService.SetCreditCard(ceditCardSaveViewModel);
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ceditCardSaveViewModel.OwnerId });
         }
 
         [HttpGet]
@@ -202,13 +224,28 @@ namespace QuickBank.Controllers
         }
 
         [HttpGet]
-        //ojo con este nombre
         public async Task<IActionResult> DeleteLoanPost(int id)
         {
-            var loanOwnerId = await loanService.GetByIdAsync(id);
+            LoanViewModel loanOwnerId = await loanService.GetByIdAsync(id);
             string ownerId =loanOwnerId.UserId;
             await loanService.DeleteAsync(id);
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId});
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteCreditCard(int id)
+        {
+            var creditCardViewModel = await creditCardService.GetByIdAsync(id);
+            return View(creditCardViewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteCreditCardPost(int id)
+        {
+            LoanViewModel creditCardOwnerId = await loanService.GetByIdAsync(id);
+            string ownerId = creditCardOwnerId.UserId;
+            await creditCardService.DeleteAsync(id);
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
         }
 
 

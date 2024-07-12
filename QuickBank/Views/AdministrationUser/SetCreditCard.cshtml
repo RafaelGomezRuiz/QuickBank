@@ -1,6 +1,6 @@
 ﻿@using QuickBank.Core.Application.ViewModels.Products;
 
-@model LoanSaveViewModel;
+@model CreditCardSaveViewModel;
 
 @{
 
@@ -10,14 +10,14 @@
     <div class="col-6 offset-3">
         <div class="card">
             <div class="card-header bg-dark text-light">
-                <h4>Agregar prestamo</h4>
+                <h4>Agregar tarjeta de credito</h4>
             </div>
             <div class="card-body">
-                <form asp-controller="AdministrationUser" asp-action="SetLoan">
+                <form asp-controller="AdministrationUser" asp-action="SetCreditCard">
                     <div class="mb-3">
-                        <label asp-for="Amount" class="form-label">Amount: </label>
-                        <input asp-for="Amount" class="form-control">
-                        <span asp-validation-for="Amount" class="text-danger"></span>
+                        <label asp-for="AmountAvailable" class="form-label">Amount Available: </label>
+                        <input asp-for="AmountAvailable" class="form-control">
+                        <span asp-validation-for="AmountAvailable" class="text-danger"></span>
                     </div>
                     <input type="hidden" asp-for="OwnerId"/>
                     <input type="hidden" asp-for="Id" />

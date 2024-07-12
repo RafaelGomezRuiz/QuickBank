@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using QuickBank.Core.Application.Enums;
+using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Repositories;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Services.Commons;
@@ -18,6 +20,10 @@ namespace QuickBank.Core.Application.Services.Products
             this.mapper = mapper;
         }
 
+        public async Task<CreditCardViewModel> GetAvailableLoanAsync()
+        {
+            return (await base.GetAllAsync()).FirstOrDefault(loan => loan.Status == (int)EProductStatus.INACTIVE && loan.UserId == null);
+        }
         public async Task<List<CreditCardViewModel>?> GetAllByUserIdAsync(string userId)
         {
             return (await base.GetAllAsync()).Where(ccvm => ccvm.UserId == userId).ToList();
@@ -27,6 +33,30 @@ namespace QuickBank.Core.Application.Services.Products
         {
             var creditCards = await GetAllByUserIdAsync(userId);
             return creditCards?.Where(ccvm => ccvm.Balance > 0).ToList();
+        }
+        public async Task SetCreditCard(CreditCardSaveViewModel setCreditCard)
+        {
+            string newCreditCardNumber = CodeStringGenerator.GenerateProductNumber();
+            bool creditCardNumberExists = (await base.GetAllAsync()).Any(loan => loan.CardNumber == newCreditCardNumber);
+
+            var creditCardToSet = await GetAvailableLoanAsync();
+
+            if (creditCardToSet == null)
+            {
+                throw new InvalidOperationException("No available creditCardToSet.");
+            }
+
+            while (creditCardNumberExists)
+            {
+                newCreditCardNumber = CodeStringGenerator.GenerateProductNumber();
+            }
+
+            creditCardToSet.Status = (int)EProductStatus.ACTIVE;
+            creditCardToSet.LimitCredit = setCreditCard.AmountAvailable;
+            creditCardToSet.UserId = setCreditCard.OwnerId;
+            creditCardToSet.CardNumber = newCreditCardNumber;
+            var creditCardEntity = mapper.Map<CreditCardEntity>(creditCardToSet);
+            await creditCardRepository.UpdateAsync(creditCardEntity, creditCardEntity.Id);
         }
     }
 }
