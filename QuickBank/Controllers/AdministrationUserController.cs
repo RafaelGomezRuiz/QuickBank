@@ -109,7 +109,7 @@ namespace QuickBank.Controllers
             {
                 return View("SaveUser", userSaveViewModel);
             }
-            var updateResult =await userService.UpdateUserAsync(userSaveViewModel);
+            var updateResult = await userService.UpdateUserAsync(userSaveViewModel);
             if (updateResult.HasError)
             {
                 //Version que hacer
@@ -132,7 +132,7 @@ namespace QuickBank.Controllers
 
             UserProductsViewModel userProducts = new()
             {
-                OwnerId=id,
+                OwnerId = id,
                 SavingAccounts = userSavingAccounts,
                 Loans = userLoans,
             };
@@ -146,8 +146,33 @@ namespace QuickBank.Controllers
                 UserId = id,
             };
             //Mensaje que valide si se creo o no
-            await savingAccountService.SetSavingAccount(savingAccount);
+            try
+            {
+                await savingAccountService.SetSavingAccount(savingAccount);
+            }catch(Exception ex)
+            { 
+                return RedirectRoutesHelper.routeAdmininistrationUserProducts;
+            }
 
+            return RedirectRoutesHelper.routeAdmininistrationUserProducts;
+        }
+        [HttpGet]
+        public async Task<IActionResult> SetLoan(string id)
+        {
+            LoanSaveViewModel loanSaveViewModel = new()
+            {
+                OwnerId = id,
+            };
+            return View(loanSaveViewModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetLoan(LoanSaveViewModel loanSaveViewModel)
+        {
+            await loanService.SetLoan(loanSaveViewModel);
+            var userPrincipalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(loanSaveViewModel.OwnerId);
+            userPrincipalSavingAccount.Balance += loanSaveViewModel.Amount;
+            await savingAccountService.UpdateAsync(userPrincipalSavingAccount, userPrincipalSavingAccount.Id);
             return RedirectRoutesHelper.routeAdmininistrationUserProducts;
         }
 
@@ -155,11 +180,6 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> DeleteSavingAccount(int id)
         {
             var savingAccount = await savingAccountService.GetByIdAsync(id);
-            return View(savingAccount);
-        }
-        public async Task<IActionResult> DeleteSavingAccount(string numberAccount)
-        {
-            var savingAccount = await savingAccountService.GetViewModelByNumberAccountAsync(numberAccount);
             return View(savingAccount);
         }
 
@@ -170,5 +190,7 @@ namespace QuickBank.Controllers
             await savingAccountService.DeleteAsync(id);
             return RedirectRoutesHelper.routeAdmininistrationUserProducts;
         }
+
+
     }
 }

@@ -125,11 +125,11 @@
                                                             <div class="mt-3">
                                                                 <h5 class="card-subtitle mb-2">Account Information:</h5>
                                                                 <p><strong>Account Number:</strong> @item.LoanNumber</p>
-                                                                <p><strong>Balance:</strong> @item.Amount</p>
-                                                                <p><strong>Balance:</strong> @item.Deadline</p>
-                                                                <p><strong>Balance:</strong> @item.AprovalDate</p>
+                                                                <p><strong>Deuda:</strong> @item.Amount</p>
+                                                                <p><strong>DeadLine:</strong> @item.Deadline</p>
+                                                                <p><strong>AprovalDate:</strong> @item.AprovalDate</p>
 
-                                                                <p><strong>Status:</strong> @(item.Status == (int)EUserStatus.ACTIVE ? "Active" : "Inactive")</p>
+                                                                <p><strong>Aprobado:</strong> @(item.Status == (int)EUserStatus.ACTIVE ? "Si" : "No")</p>
                                                             </div>
                                                         </div>
                                                     </div>
