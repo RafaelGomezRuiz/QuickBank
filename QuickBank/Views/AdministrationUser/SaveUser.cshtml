@@ -48,6 +48,7 @@
                     @if(editMode==true)
                     {
                         <div class="mb-3">
+                            123Pa$$word!
                             <label asp-for="Password" class="form-label">Contrasenia: </label>
                             <input asp-for="Password" class="form-control">
                             <span asp-validation-for="Password" class="text-danger"></span>
@@ -78,7 +79,7 @@
                     {
                         <div class="mb-3">
                             <label asp-for="UserType" class="form-label">User Type:</label>
-                            <input value="@(Model.UserType==ERoles.BASIC ? "Basic" : "Admin")" class="form-control" readonly />
+                            <input asp-for="UserType" value=@(Model.Roles[0]) class="form-control" readonly />
                         </div>
                     }
                     else
@@ -95,14 +96,24 @@
                     }
 
 
-                    
-                    <div id="initialAmountDiv" class="mb-3" style="display:none;">
+                    @if(editMode){
+                        
+                        <div id="initialAmountDiv" class="mb-3" style="display:none">
+                            <label asp-for="InitialAmount" class="form-label">Initial Amount:</label>
+                            <input asp-for="InitialAmount" class="form-control" type="number" min="0" value="0" />
+                            <span asp-validation-for="InitialAmount" class="text-danger"></span>
+                        </div>
+                    }
+                    <div id="initialAmountDiv" class="mb-3" style="display:none">
                         <label asp-for="InitialAmount" class="form-label">Initial Amount:</label>
-                        <input asp-for="InitialAmount" class="form-control" />
+                        <input asp-for="InitialAmount" class="form-control" type="number" min="0" value="0" />
                         <span asp-validation-for="InitialAmount" class="text-danger"></span>
                     </div>
 
+
                     <input type="hidden" asp-for="Id" />
+                    <input asp-for="Roles" type="hidden" />
+
 
                     <button type="submit" class="btn btn-primary">Guardar</button>
                     <a asp-controller="AdministrationUser" asp-action="Index" class="btn btn-warning">Volver atras</a>
@@ -117,9 +128,10 @@
             var userType = document.getElementById("UserType").value;
             var initialAmountDiv = document.getElementById("initialAmountDiv");
 
-            if (userType === "@ERoles.BASIC" || "@editMode") {
+            if (userType === "@ERoles.BASIC") {
                 initialAmountDiv.style.display = "block";
-            } else {
+            }
+            else {
                 initialAmountDiv.style.display = "none";
             }
         }

@@ -39,7 +39,9 @@ namespace QuickBank.Core.Application.Mappings
                 .ReverseMap()
                 .ForMember(destino => destino.Password, otp => otp.Ignore())
                 .ForMember(destino => destino.ConfirmPassword, otp => otp.Ignore())
-                .ForMember(destino => destino.InitialAmount, otp => otp.Ignore());
+                .ForMember(destino => destino.InitialAmount, otp => otp.Ignore())
+                .ForMember(destino => destino.UserType, otp => otp.Ignore());
+
 
 
 

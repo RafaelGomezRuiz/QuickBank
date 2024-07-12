@@ -20,6 +20,7 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
                 Email = "admin@email.com",
                 FirstName = "admin",
                 LastName = "admin",
+                IdCard ="402-402-4002",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
             };

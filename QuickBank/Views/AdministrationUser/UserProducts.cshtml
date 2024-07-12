@@ -34,12 +34,12 @@
                             </div>
                             @* @foreach (CategoryViewModel category in ViewBag.Categories)
                             {
-                                <div class="=mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" value="@category.Id" type="radio" name="CategoryId" id="category-@category.Id" />
-                                        <label class="form-check-label" for="category-@category.Id">@category.Name</label>
-                                    </div>
-                                </div>
+                            <div class="=mb-3">
+                            <div class="form-check">
+                            <input class="form-check-input" value="@category.Id" type="radio" name="CategoryId" id="category-@category.Id" />
+                            <label class="form-check-label" for="category-@category.Id">@category.Name</label>
+                            </div>
+                            </div>
                             } *@
                             <button type="submit" class="btn btn-primary">Filtrar</button>
                         </form>
@@ -74,9 +74,9 @@
                                                             <div class="col-auto">
                                                                 <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="ChangeUserState" class="btn btn-danger me-2">@(item.Status == (int)EUserStatus.ACTIVE ? "Inactivar" : "Activar")</a>
                                                                 <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="Edit" class="btn btn-primary">Edit</a>
-                                                                @if (item.Roles[0]==ERoles.BASIC.ToString())
+                                                                @if (item.Roles[0] == ERoles.BASIC.ToString())
                                                                 {
-                                                                    <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="UserProducts" class="btn btn-primary">Ver productos</a>
+                                                                    <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="Products" class="btn btn-primary">Ver productos</a>
                                                                 }
 
                                                             </div>

@@ -102,9 +102,12 @@ namespace QuickBank.Controllers
                 return View("SaveUser", userSaveViewModel);
             }
             await userService.UpdateUserAsync(userSaveViewModel);
-            SavingAccountViewModel savingAccountViewModel=await savingAccountService.GetPrincipalSavingAccountAsync(userSaveViewModel.Id);
-            savingAccountViewModel.Balance += (double)userSaveViewModel.InitialAmount;
-            savingAccountService.UpdateAsync(savingAccountViewModel,savingAccountViewModel.Id);
+            if (userSaveViewModel.UserType == ERoles.BASIC)
+            {
+                SavingAccountViewModel savingAccountViewModel = await savingAccountService.GetPrincipalSavingAccountAsync(userSaveViewModel.Id);
+                savingAccountViewModel.Balance += (double)userSaveViewModel.InitialAmount;
+                savingAccountService.UpdateAsync(savingAccountViewModel, savingAccountViewModel.Id);
+            }
             return RedirectRoutesHelper.routeAdmininistrationUserIndex;
         }
     }
