@@ -124,26 +124,26 @@ namespace QuickBank.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> UserProducts(string id)
+        public async Task<IActionResult> UserProducts(string ownerId)
         {
-            var userSavingAccounts = await savingAccountService.GetAllByUserIdAsync(id);
-            var userLoans = await loanService.GetAllByUserIdAsync(id);
+            var userSavingAccounts = await savingAccountService.GetAllByUserIdAsync(ownerId);
+            var userLoans = await loanService.GetAllByUserIdAsync(ownerId);
             //var userCredictCards = await credictCardService.GetAllByUserIdAsync(id);
 
             UserProductsViewModel userProducts = new()
             {
-                OwnerId = id,
+                OwnerId = ownerId,
                 SavingAccounts = userSavingAccounts,
                 Loans = userLoans,
             };
             return View(userProducts);
         }
         [HttpGet]
-        public async Task<IActionResult> SetSavingAccount(string id)
+        public async Task<IActionResult> SetSavingAccount(string ownerId)
         {
             SetSavingAccount savingAccount = new()
             {
-                UserId = id,
+                UserId = ownerId,
             };
             //Mensaje que valide si se creo o no
             try
@@ -151,17 +151,17 @@ namespace QuickBank.Controllers
                 await savingAccountService.SetSavingAccount(savingAccount);
             }catch(Exception ex)
             {
-                return RedirectRoutesHelper.routeAdmininistrationUserProducts;
+                return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
             }
 
-            return RedirectRoutesHelper.routeAdmininistrationUserProducts;
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
         }
         [HttpGet]
-        public async Task<IActionResult> SetLoan(string id)
+        public async Task<IActionResult> SetLoan(string ownerId)
         {
             LoanSaveViewModel loanSaveViewModel = new()
             {
-                OwnerId = id,
+                OwnerId = ownerId,
             };
             return View(loanSaveViewModel);
         }
@@ -173,7 +173,7 @@ namespace QuickBank.Controllers
             var userPrincipalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(loanSaveViewModel.OwnerId);
             userPrincipalSavingAccount.Balance += loanSaveViewModel.Amount;
             await savingAccountService.UpdateAsync(userPrincipalSavingAccount, userPrincipalSavingAccount.Id);
-            return RedirectRoutesHelper.routeAdmininistrationUserProducts;
+            return RedirectToRoute(new {Controller="AdministrationUser",Action="UserProducts",loanSaveViewModel.OwnerId});
         }
 
         [HttpGet]

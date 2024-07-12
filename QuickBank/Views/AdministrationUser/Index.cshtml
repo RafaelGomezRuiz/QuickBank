@@ -76,7 +76,7 @@
                                                                 <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="Edit" class="btn btn-primary">Edit</a>
                                                                 @if (item.Roles[0]==ERoles.BASIC.ToString())
                                                                 {
-                                                                    <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="UserProducts" class="btn btn-primary">Ver productos</a>
+                                                                    <a asp-controller="AdministrationUser" asp-route-ownerId="@item.Id" asp-action="UserProducts" class="btn btn-primary">Ver productos</a>
                                                                 }
 
                                                             </div>
