@@ -16,6 +16,8 @@ namespace QuickBank.Controllers
         private readonly IPayValidationService payValidationService;
         private readonly ISavingAccountService savingAccountService;
         private readonly ICreditCardService creditCardService;
+        private readonly ILoanService loanService;
+        private readonly IBeneficeService beneficeService;
         private readonly IUserHelper userHelper;
         private readonly IJsonHelper jsonHelper;
 
@@ -24,6 +26,8 @@ namespace QuickBank.Controllers
             IPayValidationService payValidationService,
             ISavingAccountService savingAccountService,
             ICreditCardService creditCardService,
+            ILoanService loanService,
+            IBeneficeService beneficeService,
             IUserHelper userHelper,
             IJsonHelper jsonHelper
         )
@@ -32,6 +36,8 @@ namespace QuickBank.Controllers
             this.payValidationService = payValidationService;
             this.savingAccountService = savingAccountService;
             this.creditCardService = creditCardService;
+            this.loanService = loanService;
+            this.beneficeService = beneficeService;
             this.userHelper = userHelper;
             this.jsonHelper = jsonHelper;
         }
@@ -127,5 +133,91 @@ namespace QuickBank.Controllers
         #endregion
 
 
+        #region LoanPay
+
+        public async Task<IActionResult> LoanPay()
+        {
+            // Fill the model wih data
+            var user = userHelper.GetUser();
+            var lpsvm = new LoanPaySaveViewModel()
+            {
+                Loans = await loanService.GetAllByUserIdWithBalanceAsync(user.Id),
+                SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id)
+            };
+
+            return View("MakePay/MakeLoanPay", lpsvm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoanPay(LoanPaySaveViewModel lpsvm)
+        {
+            // Validations before the payment
+            ModelState.AddModelErrorRange(await payValidationService.LoanPayValidation(lpsvm));
+            if (!ModelState.IsValid) return View("MakePay/MakeLoanPay", lpsvm);
+
+            // Store temporally the model
+            TempData["LoanPaySaveViewModel"] = jsonHelper.Serialize(lpsvm);
+
+            // Confirm the payment
+            var confirmationModel = await payService.GetLoanPayConfirmation(lpsvm.LoanIdToPay);
+            return View("ConfirmPay", confirmationModel);
+        }
+
+        public async Task<IActionResult> ConfirmLoanPay()
+        {
+            // Get the model
+            var lpsvm = jsonHelper.Deserialize<LoanPaySaveViewModel>(TempData["LoanPaySaveViewModel"] as string);
+
+            // Make the payment
+            await payService.MakeLoanPay(lpsvm);
+
+            return View("PayConfirmed");
+        }
+
+        #endregion
+
+
+        #region Beneficiary
+
+        //public async Task<IActionResult> BeneficiaryPay()
+        //{
+        //    // Fill the model wih data
+        //    var user = userHelper.GetUser();
+        //    var lpsvm = new BeneficiaryPaySaveViewModel()
+        //    {
+        //        Benefits = await beneficeService.GetAllByUserIdAsync(user.Id),
+        //        SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id)
+        //    };
+
+        //    return View("MakePay/MakeBeneficiaryPay", lpsvm);
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> LoanPay(LoanPaySaveViewModel lpsvm)
+        //{
+        //    // Validations before the payment
+        //    ModelState.AddModelErrorRange(await payValidationService.LoanPayValidation(lpsvm));
+        //    if (!ModelState.IsValid) return View("MakePay/MakeLoanPay", lpsvm);
+
+        //    // Store temporally the model
+        //    TempData["LoanPaySaveViewModel"] = jsonHelper.Serialize(lpsvm);
+
+        //    // Confirm the payment
+        //    var confirmationModel = await payService.GetLoanPayConfirmation(lpsvm.LoanIdToPay);
+        //    return View("ConfirmPay", confirmationModel);
+        //}
+
+        //public async Task<IActionResult> ConfirmLoanPay()
+        //{
+        //    // Get the model
+        //    var lpsvm = jsonHelper.Deserialize<LoanPaySaveViewModel>(TempData["LoanPaySaveViewModel"] as string);
+
+        //    // Make the payment
+        //    await payService.MakeLoanPay(lpsvm);
+
+        //    return View("PayConfirmed");
+        //}
+
+        #endregion
     }
 }

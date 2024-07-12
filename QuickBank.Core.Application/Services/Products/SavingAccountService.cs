@@ -25,6 +25,7 @@ namespace QuickBank.Core.Application.Services.Products
         {
             return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Status == (int)EProductStatus.INACTIVE && savm.UserId == null);
         }
+
         public async Task<SavingAccountViewModel> GetPrincipalSavingAccountAsync(string userId)
         {
             return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Principal == true && savm.UserId==userId);

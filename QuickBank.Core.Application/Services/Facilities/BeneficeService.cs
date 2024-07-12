@@ -17,5 +17,17 @@ namespace QuickBank.Core.Application.Services.Facilities
             this.beneficeRepository = beneficeRepository;
             this.mapper = mapper;
         }
+
+        public async Task<List<BeneficeViewModel>?> GetAllWithIncludeAsync(List<string> includes)
+        {
+            var benefices = await beneficeRepository.GetAllWithIncludeAsync(includes);
+            return mapper.Map<List<BeneficeViewModel>>(benefices);
+        }
+
+        public async Task<List<BeneficeViewModel>?> GetAllByUserIdAsync(string userId)
+        {
+            var beneficesWithIncludes = await GetAllWithIncludeAsync(new() { "BenefitedSavingAccount" });
+            return beneficesWithIncludes?.Where(bvm => bvm.OwnerId == userId).ToList();
+        }
     }
 }

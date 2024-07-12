@@ -6,5 +6,7 @@ namespace QuickBank.Core.Application.Interfaces.Services.Facilities
 {
     public interface IBeneficeService : IGenericService<BeneficeSaveViewModel, BeneficeViewModel, BeneficeEntity>
     {
+        Task<List<BeneficeViewModel>?> GetAllWithIncludeAsync(List<string> includes);
+        Task<List<BeneficeViewModel>?> GetAllByUserIdAsync(string userId);
     }
 }

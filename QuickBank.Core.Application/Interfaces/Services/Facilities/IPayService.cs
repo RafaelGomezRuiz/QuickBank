@@ -6,7 +6,9 @@ namespace QuickBank.Core.Application.Interfaces.Services.Facilities
     {
         Task<ConfirmPayViewModel> GetExpressPayConfirmation(string numberAccountToPay);
         Task<ConfirmPayViewModel> GetCreditCardPayConfirmation(int creditCardId);
+        Task<ConfirmPayViewModel> GetLoanPayConfirmation(int loanId);
         Task MakeExpressPay(ExpressPaySaveViewModel epsvm);
-        Task MakeCreditCardPay(CreditCardPaySaveViewModel ccsvm);
+        Task MakeCreditCardPay(CreditCardPaySaveViewModel ccpsvm);
+        Task MakeLoanPay(LoanPaySaveViewModel lpsvm);
     }
 }

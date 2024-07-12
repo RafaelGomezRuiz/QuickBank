@@ -76,6 +76,17 @@ namespace QuickBank.Core.Application.Services.Facilities
             );
         }
 
+        public async Task<ConfirmPayViewModel> GetLoanPayConfirmation(int loanId)
+        {
+            var loan = await loanService.GetByIdAsync(loanId);
+
+            return CreatePayConfirmation
+            (
+                $"{loan.LoanNumber} - {loan.Description}",
+                "ConfirmLoanPay"
+            );
+        }
+
         #endregion
 
 
@@ -99,22 +110,22 @@ namespace QuickBank.Core.Application.Services.Facilities
         }
 
 
-        public async Task MakeCreditCardPay(CreditCardPaySaveViewModel ccsvm)
+        public async Task MakeCreditCardPay(CreditCardPaySaveViewModel ccpsvm)
         {
             // SavingAccount and credit card
-            var creditCardToPay = await creditCardService.GetByIdAsync(ccsvm.CreditCardIdToPay);
-            var savingAccountFromPay = await savingAccountService.GetByIdAsync(ccsvm.SavingAccountIdFromPay);
+            var creditCardToPay = await creditCardService.GetByIdAsync(ccpsvm.CreditCardIdToPay);
+            var savingAccountFromPay = await savingAccountService.GetByIdAsync(ccpsvm.SavingAccountIdFromPay);
 
             // Debit chosen amount
-            savingAccountFromPay.Balance -= ccsvm.Amount;
-            creditCardToPay.Balance -= ccsvm.Amount;
+            savingAccountFromPay.Balance -= ccpsvm.Amount;
+            creditCardToPay.Balance -= ccpsvm.Amount;
 
             // Card debit excess
             bool excessDebit = creditCardToPay.Balance < 0;
             if (excessDebit)
             {
                 savingAccountFromPay.Balance += Math.Abs(creditCardToPay.Balance);
-                creditCardToPay.Balance = 0;
+                creditCardToPay.Balance = 0.0;
             }
 
             // Update the products
@@ -125,5 +136,33 @@ namespace QuickBank.Core.Application.Services.Facilities
             var payLog = new PayLogEntity() { CreationDate = DateTime.Now };
             await logService.AddPayLogAsync(payLog);
         }
+
+        public async Task MakeLoanPay(LoanPaySaveViewModel lpsvm)
+        {
+            // SavingAccount and credit card
+            var loanToPay = await loanService.GetByIdAsync(lpsvm.LoanIdToPay);
+            var savingAccountFromPay = await savingAccountService.GetByIdAsync(lpsvm.SavingAccountIdFromPay);
+
+            // Debit chosen amount
+            savingAccountFromPay.Balance -= lpsvm.Amount;
+            loanToPay.Amount -= lpsvm.Amount;
+
+            // Loan debit excess
+            bool excessDebit = loanToPay.Amount < 0;
+            if (excessDebit)
+            {
+                savingAccountFromPay.Balance += Math.Abs(loanToPay.Amount);
+                loanToPay.Amount = 0.0;
+            }
+
+            // Update the products
+            await savingAccountService.UpdateAsync(savingAccountFromPay, savingAccountFromPay.Id);
+            await loanService.UpdateAsync(loanToPay, loanToPay.Id);
+
+            // Log the pay
+            var payLog = new PayLogEntity() { CreationDate = DateTime.Now };
+            await logService.AddPayLogAsync(payLog);
+        }
+
     }
 }

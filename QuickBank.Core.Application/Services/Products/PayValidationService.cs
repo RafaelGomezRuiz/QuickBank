@@ -104,5 +104,46 @@ namespace QuickBank.Core.Application.Services.Products
 
             return errors;
         }
+
+
+        public async Task<Dictionary<string, string>> LoanPayValidation(LoanPaySaveViewModel lpsvm)
+        {
+            // Resouces
+            var errors = new Dictionary<string, string>();
+            var savingAccountFromPay = await savingAccountService.GetByIdAsync(lpsvm.SavingAccountIdFromPay);
+
+            #region Amount
+
+            // Conditions
+            bool amountIsNull = lpsvm.Amount == 0.0;
+            bool amountIsValid = lpsvm.Amount >= BusinessLogicConstantsHelper.MinimumPaymentAmount;
+
+            if (amountIsNull) errors.Add("InvalidAmountNull", "The amount field cannot be $0.0 or empty");
+            else if (!amountIsValid) errors.Add("InvalidAmount", $"You must enter a valid amount, ${BusinessLogicConstantsHelper.MinimumPaymentAmount} minimun");
+
+            #endregion
+
+            #region Credit_Card_Id_To_Pay
+
+            // Conditions
+            bool loanIdToPayIsValidOption = lpsvm.LoanIdToPay != 0;
+
+            if (!loanIdToPayIsValidOption) errors.Add("InvalidLoanIdOption", "Select a valid option");
+
+            #endregion
+
+            #region Saving_Account_Id_From_Pay
+
+            // Conditions
+            bool savingAccountIdFromPayIsValidOption = lpsvm.SavingAccountIdFromPay != 0;
+            bool savingAccountFromPayHasEnoughMoney = savingAccountFromPay != null && savingAccountFromPay.Balance >= lpsvm.Amount;
+
+            if (!savingAccountIdFromPayIsValidOption) errors.Add("InvalidSavingAccountIdOption", "Select a valid option");
+            else if (amountIsValid && !savingAccountFromPayHasEnoughMoney) errors.Add("InvalidBalance", "The account to be debited does not have sufficient balance");
+
+            #endregion
+
+            return errors;
+        }
     }
 }
