@@ -16,7 +16,7 @@
                     <select asp-for="BeneficeIdToPay" asp-items="@(new SelectList(Model.Benefits,"Id","BenefitedSavingAccount.AccountNumber"))" class="form-control">
                         <option value="0">Select an option</option>
                     </select>
-                    @* @Html.ValidationMessage("InvalidCreditCardIdOption", "", new { @class = "text-danger" }) *@
+                    @Html.ValidationMessage("InvalidBeneficeIdOption", "", new { @class = "text-danger" })
                 </div>
 
                 <div class="mb-3">
@@ -55,7 +55,9 @@
                 @for (int i = 0; i < Model.Benefits.Count; i++)
                 {
                     <input type="hidden" asp-for="@Model.Benefits[i].Id" />
+                    <input type="hidden" asp-for="@Model.Benefits[i].OwnerId" />
                     <input type="hidden" asp-for="@Model.Benefits[i].BenefitedSavingAccount.AccountNumber" />
+                    <input type="hidden" asp-for="@Model.Benefits[i].BenefitedFullName" value="."/>
                 }
 
                 <div class="input-group">

@@ -59,7 +59,6 @@ namespace QuickBank.Core.Application.Mappings
 
             #endregion
 
-
             #region Facilities
 
             CreateMap<BeneficeEntity, BeneficeViewModel>()
