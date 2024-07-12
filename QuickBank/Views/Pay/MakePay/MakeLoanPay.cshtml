@@ -1,22 +1,22 @@
 ﻿@using QuickBank.Core.Application.ViewModels.Payments
 @{
-    ViewData["Title"] = "Make Credit Card Payment";
+    ViewData["Title"] = "Make Loan Payment";
 }
-@model CreditCardPaySaveViewModel
+@model LoanPaySaveViewModel
 
 <div class="container-fluid">
     <div class="card shadow col-5 offset-4">
-        <div class="card-header bg-success">
-            <h1 class="text-center text-light">CREDIT CARD PAYMENT</h1>
+        <div class="card-header bg-warning">
+            <h1 class="text-center text-light">LOAN PAYMENT</h1>
         </div>
         <div class="card-body">
-            <form method="post" asp-controller="Pay" asp-action="CreditCardPay">
+            <form method="post" asp-controller="Pay" asp-action="LoanPay">
                 <div class="mb-3">
-                    <label asp-for="CreditCardIdToPay" class="form-label">Card to be credited</label>
-                    <select asp-for="CreditCardIdToPay" asp-items="@(new SelectList(Model.CreditCards,"Id","CardNumber"))" class="form-control">
+                    <label asp-for="LoanIdToPay" class="form-label">Loan to be credited</label>
+                    <select asp-for="LoanIdToPay" asp-items="@(new SelectList(Model.Loans,"Id","LoanNumber"))" class="form-control">
                         <option value="0">Select an option</option>
                     </select>
-                    @Html.ValidationMessage("InvalidCreditCardIdOption", "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("InvalidLoanIdOption", "", new { @class = "text-danger" })
                 </div>
 
                 <div class="mb-3">
@@ -46,16 +46,18 @@
                     <input type="hidden" asp-for="@Model.SavingAccounts[i].AccountNumber" />
                 }
 
-                @* Load the necesary data for the credit cards *@
-                @if (Model.CreditCards.Count == 0)
+                @* Load the necesary data for the loans *@
+                @if (Model.Loans.Count == 0)
                 {
-                    <input type="hidden" asp-for="@Model.CreditCards" />
+                    <input type="hidden" asp-for="@Model.Loans" />
                 }
-                @for (int i = 0; i < Model.CreditCards.Count; i++)
+                @for (int i = 0; i < Model.Loans.Count; i++)
                 {
-                    <input type="hidden" asp-for="@Model.CreditCards[i].Id" />
-                    <input type="hidden" asp-for="@Model.CreditCards[i].CardNumber" />
+                    <input type="hidden" asp-for="@Model.Loans[i].Id" />
+                    <input type="hidden" asp-for="@Model.Loans[i].LoanNumber" />
+                    <input type="hidden" asp-for="@Model.Loans[i].Description" />
                 }
+
 
                 <div class="input-group">
                     <a asp-controller="Home" asp-action="BasicHome" class="btn btn-warning">cancel</a>

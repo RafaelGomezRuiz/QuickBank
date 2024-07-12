@@ -1,22 +1,29 @@
 ﻿@using QuickBank.Core.Application.ViewModels.Payments
 @{
-    ViewData["Title"] = "Make Credit Card Payment";
+    ViewData["Title"] = "Make Beneficiary Payment";
 }
-@model CreditCardPaySaveViewModel
+@model BeneficiaryPaySaveViewModel
 
 <div class="container-fluid">
     <div class="card shadow col-5 offset-4">
-        <div class="card-header bg-success">
-            <h1 class="text-center text-light">CREDIT CARD PAYMENT</h1>
+        <div class="card-header bg-primary">
+            <h1 class="text-center text-light">BENEFICIARY PAYMENT</h1>
         </div>
         <div class="card-body">
-            <form method="post" asp-controller="Pay" asp-action="CreditCardPay">
+            <form method="post" asp-controller="Pay" asp-action="BeneficiaryPay">
                 <div class="mb-3">
-                    <label asp-for="CreditCardIdToPay" class="form-label">Card to be credited</label>
-                    <select asp-for="CreditCardIdToPay" asp-items="@(new SelectList(Model.CreditCards,"Id","CardNumber"))" class="form-control">
+                    <label asp-for="BeneficeIdToPay" class="form-label">Benefice to be credited</label>
+                    <select asp-for="BeneficeIdToPay" asp-items="@(new SelectList(Model.Benefits,"Id","BenefitedSavingAccount.AccountNumber"))" class="form-control">
                         <option value="0">Select an option</option>
                     </select>
-                    @Html.ValidationMessage("InvalidCreditCardIdOption", "", new { @class = "text-danger" })
+                    @* @Html.ValidationMessage("InvalidCreditCardIdOption", "", new { @class = "text-danger" }) *@
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Amount" class="form-label">Amount </label>
+                    <input asp-for="Amount" class="form-control" type="number" step="any">
+                    @Html.ValidationMessage("InvalidAmountNull", "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("InvalidAmount", "", new { @class = "text-danger" })
                 </div>
 
                 <div class="mb-3">
@@ -28,12 +35,6 @@
                     @Html.ValidationMessage("InvalidBalance", "", new { @class = "text-danger" })
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Amount" class="form-label">Amount </label>
-                    <input asp-for="Amount" class="form-control" type="number" step="any">
-                    @Html.ValidationMessage("InvalidAmountNull", "", new { @class = "text-danger" })
-                    @Html.ValidationMessage("InvalidAmount", "", new { @class = "text-danger" })
-                </div>
 
                 @* Load the necesary data for the saving accounts *@
                 @if (Model.SavingAccounts.Count == 0)
@@ -47,14 +48,14 @@
                 }
 
                 @* Load the necesary data for the credit cards *@
-                @if (Model.CreditCards.Count == 0)
+                @if (Model.Benefits.Count == 0)
                 {
-                    <input type="hidden" asp-for="@Model.CreditCards" />
+                    <input type="hidden" asp-for="@Model.Benefits" />
                 }
-                @for (int i = 0; i < Model.CreditCards.Count; i++)
+                @for (int i = 0; i < Model.Benefits.Count; i++)
                 {
-                    <input type="hidden" asp-for="@Model.CreditCards[i].Id" />
-                    <input type="hidden" asp-for="@Model.CreditCards[i].CardNumber" />
+                    <input type="hidden" asp-for="@Model.Benefits[i].Id" />
+                    <input type="hidden" asp-for="@Model.Benefits[i].BenefitedSavingAccount.AccountNumber" />
                 }
 
                 <div class="input-group">
