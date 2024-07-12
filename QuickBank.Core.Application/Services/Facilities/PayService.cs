@@ -60,7 +60,7 @@ namespace QuickBank.Core.Application.Services.Facilities
 
             return CreatePayConfirmation
             (
-                $"{userFromSavingAccountToPay.FirstName} {userFromSavingAccountToPay.LastName}",
+                $"{userFromSavingAccountToPay.FirstName} {userFromSavingAccountToPay.LastName} - {savingAccountToPay.AccountNumber}",
                 "ConfirmExpressPay"
             );
         }

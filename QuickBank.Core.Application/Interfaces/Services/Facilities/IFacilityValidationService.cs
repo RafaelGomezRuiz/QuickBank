@@ -10,5 +10,6 @@ namespace QuickBank.Core.Application.Interfaces.Services.Facilities
     public interface IFacilityValidationService
     {
         Task<Dictionary<string, string>> ValidateTransfer(TransferSaveViewModel model);
+        Task<Dictionary<string, string>> CashAdvanceValidation(CashAdvancesSaveViewModel casvm);
     }
 }
