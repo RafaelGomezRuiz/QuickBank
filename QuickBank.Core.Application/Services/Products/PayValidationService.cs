@@ -123,7 +123,7 @@ namespace QuickBank.Core.Application.Services.Products
 
             #endregion
 
-            #region Credit_Card_Id_To_Pay
+            #region Loan_Id_To_Pay
 
             // Conditions
             bool loanIdToPayIsValidOption = lpsvm.LoanIdToPay != 0;
@@ -137,6 +137,47 @@ namespace QuickBank.Core.Application.Services.Products
             // Conditions
             bool savingAccountIdFromPayIsValidOption = lpsvm.SavingAccountIdFromPay != 0;
             bool savingAccountFromPayHasEnoughMoney = savingAccountFromPay != null && savingAccountFromPay.Balance >= lpsvm.Amount;
+
+            if (!savingAccountIdFromPayIsValidOption) errors.Add("InvalidSavingAccountIdOption", "Select a valid option");
+            else if (amountIsValid && !savingAccountFromPayHasEnoughMoney) errors.Add("InvalidBalance", "The account to be debited does not have sufficient balance");
+
+            #endregion
+
+            return errors;
+        }
+
+
+        public async Task<Dictionary<string, string>> BeneficiaryPayValidation(BeneficiaryPaySaveViewModel bpsvm)
+        {
+            // Resouces
+            var errors = new Dictionary<string, string>();
+            var savingAccountFromPay = await savingAccountService.GetByIdAsync(bpsvm.SavingAccountIdFromPay);
+
+            #region Amount
+
+            // Conditions
+            bool amountIsNull = bpsvm.Amount == 0.0;
+            bool amountIsValid = bpsvm.Amount >= BusinessLogicConstantsHelper.MinimumPaymentAmount;
+
+            if (amountIsNull) errors.Add("InvalidAmountNull", "The amount field cannot be $0.0 or empty");
+            else if (!amountIsValid) errors.Add("InvalidAmount", $"You must enter a valid amount, ${BusinessLogicConstantsHelper.MinimumPaymentAmount} minimun");
+
+            #endregion
+
+            #region Benefice_Id_To_Pay
+
+            // Conditions
+            bool BeneficeIdToPayIsValidOption = bpsvm.BeneficeIdToPay != 0;
+
+            if (!BeneficeIdToPayIsValidOption) errors.Add("InvalidBeneficeIdOption", "Select a valid option");
+
+            #endregion
+
+            #region Saving_Account_Id_From_Pay
+
+            // Conditions
+            bool savingAccountIdFromPayIsValidOption = bpsvm.SavingAccountIdFromPay != 0;
+            bool savingAccountFromPayHasEnoughMoney = savingAccountFromPay != null && savingAccountFromPay.Balance >= bpsvm.Amount;
 
             if (!savingAccountIdFromPayIsValidOption) errors.Add("InvalidSavingAccountIdOption", "Select a valid option");
             else if (amountIsValid && !savingAccountFromPayHasEnoughMoney) errors.Add("InvalidBalance", "The account to be debited does not have sufficient balance");

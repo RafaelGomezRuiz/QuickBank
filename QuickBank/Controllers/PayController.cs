@@ -4,7 +4,6 @@ using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Facilities;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.ViewModels.Payments;
-using QuickBank.Core.Application.ViewModels.Products;
 using QuickBank.Helpers;
 
 namespace QuickBank.Controllers
@@ -179,45 +178,46 @@ namespace QuickBank.Controllers
 
         #region Beneficiary
 
-        //public async Task<IActionResult> BeneficiaryPay()
-        //{
-        //    // Fill the model wih data
-        //    var user = userHelper.GetUser();
-        //    var lpsvm = new BeneficiaryPaySaveViewModel()
-        //    {
-        //        Benefits = await beneficeService.GetAllByUserIdAsync(user.Id),
-        //        SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id)
-        //    };
+        public async Task<IActionResult> BeneficiaryPay()
+        {
+            // Fill the model wih data
+            var user = userHelper.GetUser();
+            var lpsvm = new BeneficiaryPaySaveViewModel()
+            {
+                Benefits = await beneficeService.GetAllByUserIdAsync(user.Id),
+                SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id)
+            };
 
-        //    return View("MakePay/MakeBeneficiaryPay", lpsvm);
-        //}
+            return View("MakePay/MakeBeneficiaryPay", lpsvm);
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> LoanPay(LoanPaySaveViewModel lpsvm)
-        //{
-        //    // Validations before the payment
-        //    ModelState.AddModelErrorRange(await payValidationService.LoanPayValidation(lpsvm));
-        //    if (!ModelState.IsValid) return View("MakePay/MakeLoanPay", lpsvm);
+        [HttpPost]
+        public async Task<IActionResult> BeneficiaryPay(BeneficiaryPaySaveViewModel bpsvm)
+        {
+            // Validations before the payment
+            ModelState.AddModelErrorRange(await payValidationService.BeneficiaryPayValidation(bpsvm));
+            if (!ModelState.IsValid) return View("MakePay/MakeBeneficiaryPay", bpsvm);
 
-        //    // Store temporally the model
-        //    TempData["LoanPaySaveViewModel"] = jsonHelper.Serialize(lpsvm);
+            // Store temporally the model
+            TempData["BeneficiaryPaySaveViewModel"] = jsonHelper.Serialize(bpsvm);
 
-        //    // Confirm the payment
-        //    var confirmationModel = await payService.GetLoanPayConfirmation(lpsvm.LoanIdToPay);
-        //    return View("ConfirmPay", confirmationModel);
-        //}
+            // Confirm the payment
+            var confirmationModel = await payService.GetBeneficiaryPayConfirmation(bpsvm.BeneficeIdToPay);
+            return View("ConfirmPay", confirmationModel);
+        }
 
-        //public async Task<IActionResult> ConfirmLoanPay()
-        //{
-        //    // Get the model
-        //    var lpsvm = jsonHelper.Deserialize<LoanPaySaveViewModel>(TempData["LoanPaySaveViewModel"] as string);
+        public async Task<IActionResult> ConfirmBeneficiaryPay()
+        {
+            // Get the model
+            var bpsvm = jsonHelper.Deserialize<BeneficiaryPaySaveViewModel>(TempData["BeneficiaryPaySaveViewModel"] as string);
 
-        //    // Make the payment
-        //    await payService.MakeLoanPay(lpsvm);
+            // Make the payment
+            await payService.MakeBeneficiaryPay(bpsvm);
 
-        //    return View("PayConfirmed");
-        //}
+            return View("PayConfirmed");
+        }
 
         #endregion
+
     }
 }

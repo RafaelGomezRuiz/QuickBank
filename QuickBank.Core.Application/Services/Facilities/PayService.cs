@@ -87,6 +87,18 @@ namespace QuickBank.Core.Application.Services.Facilities
             );
         }
 
+        public async Task<ConfirmPayViewModel> GetBeneficiaryPayConfirmation(int beneficeId)
+        {
+            var benefice = (await beneficeService.GetAllAsync()).FirstOrDefault(bsvm => bsvm.Id == beneficeId);
+            var savingAccountFromBenefice = await savingAccountService.GetByIdAsync(benefice.BenefitedSavingAccountId);
+
+            return CreatePayConfirmation
+            (
+                savingAccountFromBenefice.AccountNumber,
+                "ConfirmBeneficiaryPay"
+            );
+        }
+
         #endregion
 
 
@@ -139,7 +151,7 @@ namespace QuickBank.Core.Application.Services.Facilities
 
         public async Task MakeLoanPay(LoanPaySaveViewModel lpsvm)
         {
-            // SavingAccount and credit card
+            // SavingAccount and loan
             var loanToPay = await loanService.GetByIdAsync(lpsvm.LoanIdToPay);
             var savingAccountFromPay = await savingAccountService.GetByIdAsync(lpsvm.SavingAccountIdFromPay);
 
@@ -164,5 +176,25 @@ namespace QuickBank.Core.Application.Services.Facilities
             await logService.AddPayLogAsync(payLog);
         }
 
+
+        public async Task MakeBeneficiaryPay(BeneficiaryPaySaveViewModel bpsvm)
+        {
+            // SavingAccountToPay and savvingAccountFromPay
+            var benefice = (await beneficeService.GetAllAsync()).FirstOrDefault(bsvm => bsvm.Id == bpsvm.BeneficeIdToPay);
+            var savingAccountToPayFromBenefice = await savingAccountService.GetByIdAsync(benefice.BenefitedSavingAccountId);
+            var savingAccountFromPay = await savingAccountService.GetByIdAsync(bpsvm.SavingAccountIdFromPay);
+
+            // Debit chosen amount
+            savingAccountFromPay.Balance -= bpsvm.Amount;
+            await savingAccountService.UpdateAsync(savingAccountFromPay, savingAccountFromPay.Id);
+
+            // Credit debit excess
+            savingAccountToPayFromBenefice.Balance += bpsvm.Amount;
+            await savingAccountService.UpdateAsync(savingAccountToPayFromBenefice, savingAccountToPayFromBenefice.Id);
+
+            // Log the pay
+            var payLog = new PayLogEntity() { CreationDate = DateTime.Now };
+            await logService.AddPayLogAsync(payLog);
+        }
     }
 }
