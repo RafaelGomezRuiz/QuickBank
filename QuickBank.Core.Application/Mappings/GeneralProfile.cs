@@ -65,6 +65,16 @@ namespace QuickBank.Core.Application.Mappings
                 .ForMember(b => b.BenefitedFullName, opt => opt.Ignore())
                 .ReverseMap();
 
+            CreateMap<BeneficeEntity, BeneficeSaveViewModel>()
+                .ForMember(dest => dest.NumberAccount, opt => opt.Ignore());
+
+
+            CreateMap<BeneficeSaveViewModel, BeneficeEntity>()
+                .ForMember(dest => dest.OwnerId, opt => opt.Ignore())
+                .ForMember(dest => dest.BenefitedSavingAccountId, opt => opt.Ignore());
+
+            CreateMap<SavingAccountEntity, SavingAccountViewModel>()
+                .ReverseMap();
             #endregion
 
         }

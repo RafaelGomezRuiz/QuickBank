@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Middlewares\NewFolder\" />
-    <Folder Include="Views\Benefice\" />
   </ItemGroup>
 
 </Project>

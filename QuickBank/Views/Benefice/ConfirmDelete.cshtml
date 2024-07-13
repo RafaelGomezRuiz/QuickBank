@@ -1,0 +1,19 @@
+﻿@model QuickBank.Core.Application.ViewModels.Facilities.Benefice.BeneficeViewModel
+
+@{
+    ViewData["Title"] = "Confirmar Eliminación";
+}
+
+<h2>Confirmar Eliminación</h2>
+
+<h3>¿Está seguro de que desea eliminar este beneficiario?</h3>
+<div>
+    <h4>Beneficiario: @Model.BenefitedFullName</h4>
+    <h4>Número de Cuenta: @Model.BenefitedSavingAccount?.AccountNumber</h4>
+</div>
+
+<form asp-controller="Benefice" asp-action="DeleteConfirmed">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="BeneficeHome" class="btn btn-secondary">Cancelar</a>
+</form>
