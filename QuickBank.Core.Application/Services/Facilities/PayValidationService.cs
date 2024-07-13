@@ -3,7 +3,7 @@ using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.ViewModels.Payments;
 
-namespace QuickBank.Core.Application.Services.Products
+namespace QuickBank.Core.Application.Services.Facilities
 {
     public class PayValidationService : IPayValidationService
     {
@@ -40,7 +40,7 @@ namespace QuickBank.Core.Application.Services.Products
             bool savingAccountToPayExists = savingAccountToPay != null;
             bool savingAccountFromPayExists = savingAccountFromPay != null;
             bool savingAccountToPayIsValid = savingAccountToPayExists && savingAccountToPay.Status == (int)EProductStatus.ACTIVE;
-            bool savingAccountToPayIsSameFromPay = savingAccountToPayExists && savingAccountFromPayExists &&  savingAccountToPay.AccountNumber == savingAccountFromPay.AccountNumber;
+            bool savingAccountToPayIsSameFromPay = savingAccountToPayExists && savingAccountFromPayExists && savingAccountToPay.AccountNumber == savingAccountFromPay.AccountNumber;
 
             if (numberAccountIsNull) errors.Add("InvalidNumberAccountNull", "The number account field cannot be empty");
             else if (!numberAccountCharactersIsValid) errors.Add("InvalidNumberCharacters", $"The number of characters is {BusinessLogicConstantsHelper.MaxLengthNumberAccount} minimun");

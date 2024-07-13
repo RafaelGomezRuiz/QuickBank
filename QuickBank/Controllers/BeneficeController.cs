@@ -27,40 +27,33 @@ namespace QuickBank.Controllers
         [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> BeneficeHome()
         {
-            var userBeneficiaries = await beneficeService.GetBeneficiariesWithFullNameAsync();
-            return View(userBeneficiaries);
+            return View(await beneficeService.GetAllByUserIdWithFullNameAsync(userHelper.GetUser()!.Id));
         }
 
         [Authorize(Roles = "BASIC")]
-        public IActionResult AddBeneficiary()
+        public IActionResult AddBenefice()
         {
             return View(new BeneficeSaveViewModel());
         }
 
         [HttpPost]
         [Authorize(Roles = "BASIC")]
-        public async Task<IActionResult> AddBeneficiary(BeneficeSaveViewModel model)
+        public async Task<IActionResult> AddBenefice(BeneficeSaveViewModel bsvm)
         {
-            ModelState.AddModelErrorRange(await facilityValidationService.ValidateBeneficiary(model));
+            // Validate before the add
+            ModelState.AddModelErrorRange(await facilityValidationService.BeneficeValidation(bsvm));
+            if (!ModelState.IsValid) return View(bsvm);
 
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            // Add the benefice
+            await beneficeService.AddAsync(bsvm);
 
-            await beneficeService.AddAsync(model);
             return RedirectToAction("BeneficeHome");
         }
 
         [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
-            var beneficiaryViewModel = await beneficeService.GetBeneficiaryByIdAsync(id);
-            if (beneficiaryViewModel == null)
-            {
-                return NotFound();
-            }
-            return View(beneficiaryViewModel);
+            return View(await beneficeService.GetByIdWithFullNameAsync(id));
         }
 
         [HttpPost]

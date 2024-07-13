@@ -184,7 +184,7 @@ namespace QuickBank.Controllers
             var user = userHelper.GetUser();
             var lpsvm = new BeneficiaryPaySaveViewModel()
             {
-                Benefits = await beneficeService.GetAllByUserIdAsync(user.Id),
+                Benefits = await beneficeService.GetAllByUserIdWithFullNameAsync(user.Id),
                 SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id)
             };
 

@@ -7,6 +7,6 @@ namespace QuickBank.Core.Application.Interfaces.Services.Facilities
     {
         Task<Dictionary<string, string>> TransferValidation(TransferSaveViewModel tsvm);
         Task<Dictionary<string, string>> CashAdvanceValidation(CashAdvancesSaveViewModel casvm);
-        Task<Dictionary<string, string>> ValidateBeneficiary(BeneficeSaveViewModel model);
+        Task<Dictionary<string, string>> BeneficeValidation(BeneficeSaveViewModel bsvm);
     }
 }

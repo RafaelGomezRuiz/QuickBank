@@ -1,4 +1,5 @@
-﻿using QuickBank.Core.Application.Helpers;
+﻿using QuickBank.Core.Application.Enums;
+using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Facilities;
 using QuickBank.Core.Application.Interfaces.Services.Products;
@@ -107,26 +108,29 @@ namespace QuickBank.Core.Application.Services.Facilities
             return errors;
         }
 
-        public async Task<Dictionary<string, string>> ValidateBeneficiary(BeneficeSaveViewModel model)
+        public async Task<Dictionary<string, string>> BeneficeValidation(BeneficeSaveViewModel bsvm)
         {
-            var errors = new Dictionary<string, string>();
-
             var user = userHelper.GetUser();
-            var savingAccount = await savingAccountService.GetViewModelByNumberAccountAsync(model.NumberAccount);
-            var userBeneficiaries = await beneficeService.GetBeneficiariesWithFullNameAsync();
+            var errors = new Dictionary<string, string>();
+            var savingAccount = await savingAccountService.GetViewModelByNumberAccountAsync(bsvm.NumberAccount);
+            var userBenefies = await beneficeService.GetAllByUserIdWithIncludeAsync(user.Id, new() { "BenefitedSavingAccount" });
 
             #region Beneficiary
 
-            // Validación de que la cuenta es válida
-            bool accountFieldIsValid = !string.IsNullOrWhiteSpace(model.NumberAccount);
-            bool accountIsValid = savingAccount != null;
-            bool ownAccount = accountIsValid && savingAccount.UserId == user.Id;
-            bool duplicateBeneficiary = userBeneficiaries.Any(b => b.BenefitedSavingAccount.AccountNumber == model.NumberAccount);
+            // Conditionals
+            bool numberAccountIsNull = string.IsNullOrEmpty(bsvm.NumberAccount);
+            bool numberAccountCharactersIsValid = !numberAccountIsNull && bsvm.NumberAccount.Length == BusinessLogicConstantsHelper.MaxLengthNumberAccount;
+            bool savingAccountExist = savingAccount != null;
+            bool savingAccountToPayIsActive = savingAccountExist && savingAccount.Status == (int)EProductStatus.ACTIVE;
+            bool savingAccountIsNotTheCurrentUser = savingAccountExist && savingAccount.UserId != user.Id;
+            bool beneficeExist = userBenefies.Any(bvm => bvm.BenefitedSavingAccount.AccountNumber == bsvm.NumberAccount);
 
-            if (!accountFieldIsValid) errors.Add("InvalidNumberAccount", "The account number field cannot be empty.");
-            else if (!accountIsValid) errors.Add("InvalidAccount", "The account number is not valid.");
-            else if (ownAccount) errors.Add("OwnAccount", "You cannot add your own account as a beneficiary.");
-            else if (duplicateBeneficiary) errors.Add("DuplicateBeneficiary", "This beneficiary is already added.");
+            if (numberAccountIsNull) errors.Add("InvalidNumberAccountNull", "The number account field cannot be empty");
+            else if (!numberAccountCharactersIsValid) errors.Add("InvalidNumberCharacters", $"The number of characters is {BusinessLogicConstantsHelper.MaxLengthNumberAccount} minimun");
+            else if (!savingAccountExist) errors.Add("InvalidSavingAccountExist", "The account number is not valid");
+            else if (!savingAccountToPayIsActive) errors.Add("InvalidSavingAccountActive", "This account is not available to deposit");
+            else if (!savingAccountIsNotTheCurrentUser) errors.Add("InvalidSameAccount", "You cannot add your own account as a beneficiary.");
+            else if (beneficeExist) errors.Add("InvalidDuplicatedBenefice", "This beneficiary is already added.");
 
             #endregion
 

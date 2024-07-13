@@ -89,12 +89,11 @@ namespace QuickBank.Core.Application.Services.Facilities
 
         public async Task<ConfirmPayViewModel> GetBeneficiaryPayConfirmation(int beneficeId)
         {
-            var benefice = (await beneficeService.GetAllAsync()).FirstOrDefault(bsvm => bsvm.Id == beneficeId);
-            var savingAccountFromBenefice = await savingAccountService.GetByIdAsync(benefice.BenefitedSavingAccountId);
+            var benefice = await beneficeService.GetByIdWithFullNameAsync(beneficeId);
 
             return CreatePayConfirmation
             (
-                savingAccountFromBenefice.AccountNumber,
+                benefice.BenefitedFullName,
                 "ConfirmBeneficiaryPay"
             );
         }
@@ -180,7 +179,7 @@ namespace QuickBank.Core.Application.Services.Facilities
         public async Task MakeBeneficiaryPay(BeneficiaryPaySaveViewModel bpsvm)
         {
             // SavingAccountToPay and savvingAccountFromPay
-            var benefice = (await beneficeService.GetAllAsync()).FirstOrDefault(bsvm => bsvm.Id == bpsvm.BeneficeIdToPay);
+            var benefice = await beneficeService.GetByIdWithFullNameAsync(bpsvm.BeneficeIdToPay);
             var savingAccountToPayFromBenefice = await savingAccountService.GetByIdAsync(benefice.BenefitedSavingAccountId);
             var savingAccountFromPay = await savingAccountService.GetByIdAsync(bpsvm.SavingAccountIdFromPay);
 
