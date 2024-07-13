@@ -15,6 +15,18 @@ namespace QuickBank.Core.Application.Services.User
             this._accountService = _accountService;
             this._mapper = _mapper;
         }
+        //public async Task<IEnumerable<UserViewModel>> GetAllActiveUsersAsync()
+        //{
+        //    IEnumerable<AuthenticationResponse> usersResponse = await _accountService.GetAllAsync();
+        //    IEnumerable<UserViewModel> usersReturn = _mapper.Map<IEnumerable<UserViewModel>>(usersResponse);
+        //    return usersReturn;
+        //}
+        //public async Task<IEnumerable<UserViewModel>> GetAllAsync()
+        //{
+        //    IEnumerable<AuthenticationResponse> usersResponse = await _accountService.GetAllAsync();
+        //    IEnumerable<UserViewModel> usersReturn = _mapper.Map<IEnumerable<UserViewModel>>(usersResponse);
+        //    return usersReturn;
+        //}
         public async Task<IEnumerable<UserViewModel>> GetAllAsync()
         {
             IEnumerable<AuthenticationResponse> usersResponse= await _accountService.GetAllAsync();

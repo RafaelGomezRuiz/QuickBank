@@ -21,6 +21,7 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
                 FirstName = "admin",
                 LastName = "admin",
                 IdCard ="402-402-4002",
+                Status = (int)EUserStatus.ACTIVE,
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
             };

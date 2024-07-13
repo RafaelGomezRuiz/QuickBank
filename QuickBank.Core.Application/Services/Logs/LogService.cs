@@ -31,6 +31,10 @@ namespace QuickBank.Core.Application.Services.Log
         {
             return await payLogRepository.GetAllAsync();
         }
+        public async Task<IEnumerable<PayLogEntity>> GetDailyPayLogsAsync()
+        {
+            return (await payLogRepository.GetAllAsync()).Where(payLog=>payLog.CreationDate==DateTime.Now) ;
+        }
 
         public async Task AddTransferLogAsync(TransferLogEntity entity)
         {
@@ -40,6 +44,11 @@ namespace QuickBank.Core.Application.Services.Log
         public async Task<List<TransferLogEntity>> GetAllTransferLogsAsync()
         {
             return await transferLogRepository.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<TransferLogEntity>> GetDailyTransferLogsAsync()
+        {
+            return (await transferLogRepository.GetAllAsync()).Where(transferLog => transferLog.CreationDate == DateTime.Now);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
@@ -60,9 +59,9 @@ namespace QuickBank.Controllers
 
         public async Task<IActionResult> SignOut()
         {
-            await userService.SignOutAsync();  
+            await userService.SignOutAsync();
             userHelper.RemoveUser();
-            return RedirectToRoute(new {controller="Auth",action="Login"});
+            return RedirectToRoute(new { controller = "Auth", action = "Login" });
         }
         public async Task<IActionResult> AccessDenied()
         {

@@ -212,6 +212,13 @@ namespace QuickBank.Controllers
             //Lazy alternativa es cambiaele a SavingAcountService y al vm de userId a Owner id haciendo una migracion
             SavingAccountViewModel savingAccountOwner= await savingAccountService.GetByIdAsync(id);
             string ownerId = savingAccountOwner.UserId;
+            if (savingAccountOwner.Balance>0)
+            {
+                SavingAccountViewModel principalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(ownerId);
+                principalSavingAccount.Balance += savingAccountOwner.Balance;
+                await savingAccountService.UpdateAsync(principalSavingAccount, principalSavingAccount.Id);
+            }
+
             await savingAccountService.DeleteAsync(id);
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
         }

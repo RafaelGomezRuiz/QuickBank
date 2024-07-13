@@ -21,6 +21,7 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
                 FirstName = "user",
                 LastName = "user",
                 IdCard = "402-402-4002",
+                Status = (int)EUserStatus.ACTIVE,
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
             };
@@ -32,6 +33,7 @@ namespace QuickBank.Infrastructure.Persistence.Seeds.Users
                 Email = "user2@email.com",
                 FirstName = "user2",
                 LastName = "user2",
+                Status = (int)EUserStatus.ACTIVE,
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
             };

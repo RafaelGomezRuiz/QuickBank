@@ -90,6 +90,12 @@ namespace QuickBank.Infrastructure.Identity.Services
                 response.ErrorDescription = $"Acount not confirmed for {request.Email}";
                 return response;
             }
+            //if (user.Status != (int)EUserStatus.ACTIVE)
+            //{
+            //    response.HasError = true;
+            //    response.ErrorDescription = $"Acount inactive for {request.Email}, please communicate with the admin";
+            //    return response;
+            //}
 
             response.Id = user.Id;
             response.UserName = user.UserName;

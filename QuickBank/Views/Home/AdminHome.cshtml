@@ -1,6 +1,9 @@
-﻿@using QuickBank.Core.Application.Interfaces.Helpers
+﻿@using QuickBank.Core.Application.Interfaces.Helpers;
+@using QuickBank.Core.Application.ViewModels.Products;
+
 @inject IUserHelper userHelper
 
+@model HomeAdminViewModel;
 @{
     ViewData["Title"] = "Admin Home";
     string notificationFromRedirectioned = ViewBag.NotificationFromRedirectioned as string;
@@ -16,5 +19,42 @@
 
 
 <div class="container-fluid">
-    
+    <h1>Dashboard</h1>
+
+    <div class="container">
+        <!-- Row 1: Transactions -->
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Transacciones</h3>
+                <p><strong>Total de transacciones:</strong> @Model.TransferLogs</p>
+                <p><strong>Transacciones del día:</strong> @Model.DailyTransferLogs</p>
+            </div>
+        </div>
+
+        <!-- Row 2: Pagos -->
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Pagos</h3>
+                <p><strong>Total de pagos:</strong> @Model.PayLogs </p>
+                <p><strong>Pagos del día:</strong> @Model.DailyPayLogs</p>
+            </div>
+        </div>
+
+        <!-- Row 3: Clientes -->
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Clientes</h3>
+                <p><strong>Clientes activos:</strong> @* @Model.ActiveClients *@</p>
+                <p><strong>Clientes inactivos:</strong> @* @Model.InactiveClients *@</p>
+            </div>
+        </div>
+
+        <!-- Row 4: Productos -->
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Productos</h3>
+                <p><strong>Cantidad de productos asignados:</strong> @* @Model.ProductsAssigned *@</p>
+            </div>
+        </div>
+    </div>
 </div>
