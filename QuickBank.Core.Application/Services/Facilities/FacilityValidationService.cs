@@ -1,7 +1,9 @@
 ﻿using QuickBank.Core.Application.Helpers;
+using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Facilities;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.ViewModels.Facilities;
+using QuickBank.Core.Application.ViewModels.Facilities.Benefice;
 
 namespace QuickBank.Core.Application.Services.Facilities
 {
@@ -9,14 +11,20 @@ namespace QuickBank.Core.Application.Services.Facilities
     {
         private readonly ISavingAccountService savingAccountService;
         private readonly ICreditCardService creditCardService;
+        private readonly IBeneficeService beneficeService;
+        private readonly IUserHelper userHelper;
 
         public FacilityValidationService(
             ISavingAccountService savingAccountService,
+            IBeneficeService beneficeService,
+            IUserHelper userHelper,
             ICreditCardService creditCardService
         )
         {
             this.savingAccountService = savingAccountService;
             this.creditCardService = creditCardService;
+            this.beneficeService = beneficeService;
+            this.userHelper = userHelper;
         }
 
         public async Task<Dictionary<string, string>> ValidateTransfer(TransferSaveViewModel model)
@@ -91,6 +99,29 @@ namespace QuickBank.Core.Application.Services.Facilities
             if (!savingAccountIdToPayPayIsValidOption) errors.Add("InvalidSavingAccountIdOption", "Select a valid option");
 
             #endregion
+
+            return errors;
+        }
+
+        public async Task<Dictionary<string, string>> ValidateBeneficiary(BeneficeSaveViewModel model)
+        {
+            var errors = new Dictionary<string, string>();
+
+            var user = userHelper.GetUser();
+            var savingAccount = await savingAccountService.GetViewModelByNumberAccountAsync(model.NumberAccount);
+            var userBeneficiaries = await beneficeService.GetBeneficiariesWithFullNameAsync();
+
+            // Validación de que la cuenta es válida
+            bool accountFieldIsValid = !string.IsNullOrWhiteSpace(model.NumberAccount);
+            bool accountIsValid = savingAccount != null;
+            bool ownAccount = accountIsValid && savingAccount.UserId == user.Id;
+            bool duplicateBeneficiary = userBeneficiaries.Any(b => b.BenefitedSavingAccount.AccountNumber == model.NumberAccount);
+
+            if (!accountFieldIsValid) errors.Add("InvalidNumberAccount", "The account number field cannot be empty.");
+            else if (!accountIsValid) errors.Add("InvalidAccount", "The account number is not valid.");
+            else if (ownAccount) errors.Add("OwnAccount", "You cannot add your own account as a beneficiary.");
+            else if (duplicateBeneficiary) errors.Add("DuplicateBeneficiary", "This beneficiary is already added.");
+
 
             return errors;
         }
