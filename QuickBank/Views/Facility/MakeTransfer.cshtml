@@ -3,13 +3,13 @@
 @inject IUserHelper userHelper
 
 @{
-    ViewData["Title"] = "Transfer";
+    ViewData["Title"] = "Make Transfer";
     var user = userHelper.GetUser();
 }
 
 <h2>TRANSFER BETWEEN ACCOUNTS</h2>
 
-<form method="post" asp-controller="Facility" asp-action="TransferHome">
+<form method="post" asp-controller="Facility" asp-action="Transfer">
     <div class="form-group">
         <label asp-for="SavingAccountOriginId" class="form-label">Origin Account</label>
         <select asp-for="SavingAccountOriginId" class="form-control" asp-items="@(new SelectList(Model.SavingAccounts, "Id", "AccountNumber"))">
@@ -18,6 +18,7 @@
         @Html.ValidationMessage("InvalidOriginAccountSelection", "", new { @class = "text-danger" })
         @Html.ValidationMessage("InvalidOriginAccount", "", new { @class = "text-danger" })
         @Html.ValidationMessage("InvalidSameAccount", "", new { @class = "text-danger" })
+        @Html.ValidationMessage("InsufficientFunds", "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">
@@ -32,10 +33,20 @@
     <div class="form-group">
         <label asp-for="Amount" class="form-label">Amount</label>
         <input asp-for="Amount" class="form-control" type="number" step="any" />
+        @Html.ValidationMessage("InvalidAmountNull", "", new { @class = "text-danger" })
         @Html.ValidationMessage("InvalidAmount", "", new { @class = "text-danger" })
-        @Html.ValidationMessage("AmountBelowMinimum", "", new { @class = "text-danger" })
-        @Html.ValidationMessage("InsufficientFunds", "", new { @class = "text-danger" })
     </div>
+
+    @* Load the necesary data for the saving accounts *@
+    @if (Model.SavingAccounts.Count == 0)
+    {
+        <input type="hidden" asp-for="@Model.SavingAccounts" />
+    }
+    @for (int i = 0; i < Model.SavingAccounts.Count; i++)
+    {
+        <input type="hidden" asp-for="@Model.SavingAccounts[i].Id" />
+        <input type="hidden" asp-for="@Model.SavingAccounts[i].AccountNumber" />
+    }
 
     <div class="input-group">
         <button type="submit" class="btn btn-primary">Transfer</button>

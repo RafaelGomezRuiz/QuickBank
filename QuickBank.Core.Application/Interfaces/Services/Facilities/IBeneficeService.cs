@@ -8,8 +8,6 @@ namespace QuickBank.Core.Application.Interfaces.Services.Facilities
     {
         Task<List<BeneficeViewModel>?> GetAllWithIncludeAsync(List<string> includes);
         Task<List<BeneficeViewModel>?> GetAllByUserIdAsync(string userId);
-
-        //
         Task<List<BeneficeViewModel>> GetBeneficiariesWithFullNameAsync();
         Task<BeneficeViewModel?> GetBeneficiaryByIdAsync(int id);
         Task<BeneficeSaveViewModel?> AddAsync(BeneficeSaveViewModel model);

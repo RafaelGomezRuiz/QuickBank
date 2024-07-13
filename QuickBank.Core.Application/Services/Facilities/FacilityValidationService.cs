@@ -27,36 +27,40 @@ namespace QuickBank.Core.Application.Services.Facilities
             this.userHelper = userHelper;
         }
 
-        public async Task<Dictionary<string, string>> ValidateTransfer(TransferSaveViewModel model)
+        public async Task<Dictionary<string, string>> TransferValidation(TransferSaveViewModel tsvm)
         {
             var errors = new Dictionary<string, string>();
+            var originAccount = await savingAccountService.GetByIdAsync(tsvm.SavingAccountOriginId);
 
-            var originAccount = await savingAccountService.GetByIdAsync(model.SavingAccountOriginId);
-            var destinyAccount = await savingAccountService.GetByIdAsync(model.SavingAccountDestinyId);
+            #region Amount_Validation
 
-            #region Account_Validation
+            bool amountIsNull = tsvm.Amount == 0.0;
+            bool amountIsValid = tsvm.Amount >= BusinessLogicConstantsHelper.MinimumPaymentAmount;
 
-            bool sameAccount = model.SavingAccountOriginId == model.SavingAccountDestinyId;
-            bool originAccountExists = originAccount != null;
-            bool destinyAccountExists = destinyAccount != null;
+            if (amountIsNull) errors.Add("InvalidAmountNull", "The amount field cannot be $0.0 or empty");
+            else if (!amountIsValid) errors.Add("InvalidAmount", $"You must enter a valid amount, ${BusinessLogicConstantsHelper.MinimumPaymentAmount} minimun");
 
-            if (model.SavingAccountOriginId == 0) errors.Add("InvalidOriginAccountSelection", "Please select a valid origin account.");
-            else if (!originAccountExists) errors.Add("InvalidOriginAccount", "The origin account is not valid.");
-            else if (model.SavingAccountDestinyId == 0) errors.Add("InvalidDestinyAccountSelection", "Please select a valid destination account.");
-            else if (!destinyAccountExists) errors.Add("InvalidDestinyAccount", "The destination account is not valid.");
+            #endregion
+
+            #region Account_Destiny
+
+            // Coditionals
+            bool destinyAccountIsValidOption = tsvm.SavingAccountDestinyId != 0;
+            bool sameAccount = tsvm.SavingAccountOriginId == tsvm.SavingAccountDestinyId;
+
+            if (!destinyAccountIsValidOption) errors.Add("InvalidDestinyAccountSelection", "Please select a valid destination account.");
             else if (sameAccount) errors.Add("InvalidSameAccount", "The origin and destination accounts must be different.");
 
             #endregion
 
-            #region Amount_Validation
+            #region Account_Origin
 
-            bool amountIsPositive = model.Amount > 0;
-            bool amountIsAboveMinimum = model.Amount >= 100;
-            bool originAccountHasEnoughBalance = originAccountExists && originAccount.Balance >= model.Amount;
+            // Conditionals
+            bool originAccountIsValidOption = tsvm.SavingAccountOriginId != 0;
+            bool originAccountHasEnoughMoney = originAccountIsValidOption && originAccount.Balance >= tsvm.Amount;
 
-            if (!amountIsPositive) errors.Add("InvalidAmount", "The amount must be greater than zero.");
-            else if (!amountIsAboveMinimum) errors.Add("AmountBelowMinimum", "The amount must be greater than 100.");
-            else if (amountIsAboveMinimum && !originAccountHasEnoughBalance) errors.Add("InsufficientFunds", "The origin account does not have sufficient balance.");
+            if (!originAccountIsValidOption) errors.Add("InvalidOriginAccountSelection", "Please select a valid origin account.");
+            else if (amountIsValid && destinyAccountIsValidOption && !originAccountHasEnoughMoney) errors.Add("InsufficientFunds", "The account to be debited does not have sufficient balance");
 
             #endregion
 
@@ -111,6 +115,8 @@ namespace QuickBank.Core.Application.Services.Facilities
             var savingAccount = await savingAccountService.GetViewModelByNumberAccountAsync(model.NumberAccount);
             var userBeneficiaries = await beneficeService.GetBeneficiariesWithFullNameAsync();
 
+            #region Beneficiary
+
             // Validación de que la cuenta es válida
             bool accountFieldIsValid = !string.IsNullOrWhiteSpace(model.NumberAccount);
             bool accountIsValid = savingAccount != null;
@@ -122,6 +128,7 @@ namespace QuickBank.Core.Application.Services.Facilities
             else if (ownAccount) errors.Add("OwnAccount", "You cannot add your own account as a beneficiary.");
             else if (duplicateBeneficiary) errors.Add("DuplicateBeneficiary", "This beneficiary is already added.");
 
+            #endregion
 
             return errors;
         }

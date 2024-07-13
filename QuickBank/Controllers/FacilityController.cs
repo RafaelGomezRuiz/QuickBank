@@ -39,47 +39,28 @@ namespace QuickBank.Controllers
 
 
         [Authorize(Roles = "BASIC")]
-        public async Task<IActionResult> TransferHome()
+        public async Task<IActionResult> Transfer()
         {
-            var user = userHelper.GetUser();
-            var model = new TransferSaveViewModel
+            var tsvm = new TransferSaveViewModel
             {
-                SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id),
+                SavingAccounts = await savingAccountService.GetAllByUserIdAsync(userHelper.GetUser().Id),
             };
 
-            return View(model);
+            return View("MakeTransfer", tsvm);
         }
 
         [HttpPost]
         [Authorize(Roles = "BASIC")]
-        public async Task<IActionResult> TransferHome(TransferSaveViewModel model)
+        public async Task<IActionResult> Transfer(TransferSaveViewModel tsvm)
         {
-            ModelState.AddModelErrorRange(await facilityValidationService.ValidateTransfer(model));
+            // Validations before transfer
+            ModelState.AddModelErrorRange(await facilityValidationService.TransferValidation(tsvm));
+            if (!ModelState.IsValid) return View("MakeTransfer", tsvm);
 
-            if (!ModelState.IsValid)
-            {
-                var user = userHelper.GetUser();
-                model.SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id) ?? new List<SavingAccountViewModel>();
-                return View(model);
-            }
+            //Make transfer
+            await facilityService.MakeTransfer(tsvm);
 
-            var originAccount = await savingAccountService.GetByIdAsync(model.SavingAccountOriginId);
-            var destinyAccount = await savingAccountService.GetByIdAsync(model.SavingAccountDestinyId);
-
-            originAccount.Balance -= model.Amount;
-            destinyAccount.Balance += model.Amount;
-
-
-            await savingAccountService.UpdateAsync(originAccount, originAccount.Id);
-            await savingAccountService.UpdateAsync(destinyAccount, destinyAccount.Id);
-
-            var transferLog = new TransferLogEntity
-            {
-                CreationDate = DateTime.Now
-            };
-            await logService.AddTransferLogAsync(transferLog);
-
-            return RedirectToAction("BasicHome", "Home");
+            return View("TransactionConfirmed");
         }
 
 
