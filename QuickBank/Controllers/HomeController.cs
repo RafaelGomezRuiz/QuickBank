@@ -1,13 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using QuickBank.Core.Application.Dtos.Account;
-using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Logs;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
-using QuickBank.Core.Application.Services.Products;
 using QuickBank.Core.Application.ViewModels.Products;
 
 namespace QuickBank.Controllers
@@ -58,7 +54,7 @@ namespace QuickBank.Controllers
                 DailyTransferLogs = (await logService.GetDailyTransferLogsAsync()).Count(),
                 UsersActive = (await userService.GetActiveUsersAsync()).Count(),
                 UsersInactive = (await userService.GetInactiveUsersAsync()).Count(),
-                ProductsAssigned=savingAccounts+loans+creditCards
+                ProductsAssigned = savingAccounts + loans + creditCards
             };
             return View(homeAdminViewModel);
         }
@@ -68,19 +64,19 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> BasicHome()
         {
             var user = userHelper.GetUser();
-            var model = new HomeBasicViewModel
+            var hbvm = new HomeBasicViewModel
             {
                 SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id),
                 CreditCards = await creditCardService.GetAllByUserIdAsync(user.Id),
                 Loans = await loanService.GetAllByUserIdAsync(user.Id)
             };
 
-            if (HttpContext.Items.ContainsKey("NotificationFromRedirectioned"))
-            {
-                TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
-            }
+            //if (HttpContext.Items.ContainsKey("NotificationFromRedirectioned"))
+            //{
+            //    TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
+            //}
 
-            return View(model);
+            return View(hbvm);
         }
     }
 }
