@@ -35,6 +35,10 @@ namespace QuickBank.Core.Application.Services.Products
         {
             return (await base.GetAllAsync()).Where(savm => savm.UserId == userId).ToList();
         }
+        public async Task<List<SavingAccountViewModel>?> GetActiveAsync()
+        {
+            return (await base.GetAllAsync()).Where(savm => savm.Status==(int)EProductStatus.ACTIVE).ToList();
+        }
 
         public async Task<SavingAccountViewModel?> GetViewModelByNumberAccountAsync(string numberAccount)
         {

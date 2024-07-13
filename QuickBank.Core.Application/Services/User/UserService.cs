@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using QuickBank.Core.Application.Dtos.Account;
+using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Interfaces.Services.User;
 using QuickBank.Core.Application.ViewModels.Auth;
 using QuickBank.Core.Application.ViewModels.User;
@@ -15,22 +16,18 @@ namespace QuickBank.Core.Application.Services.User
             this._accountService = _accountService;
             this._mapper = _mapper;
         }
-        //public async Task<IEnumerable<UserViewModel>> GetAllActiveUsersAsync()
-        //{
-        //    IEnumerable<AuthenticationResponse> usersResponse = await _accountService.GetAllAsync();
-        //    IEnumerable<UserViewModel> usersReturn = _mapper.Map<IEnumerable<UserViewModel>>(usersResponse);
-        //    return usersReturn;
-        //}
-        //public async Task<IEnumerable<UserViewModel>> GetAllAsync()
-        //{
-        //    IEnumerable<AuthenticationResponse> usersResponse = await _accountService.GetAllAsync();
-        //    IEnumerable<UserViewModel> usersReturn = _mapper.Map<IEnumerable<UserViewModel>>(usersResponse);
-        //    return usersReturn;
-        //}
+        public async Task<IEnumerable<UserViewModel>> GetActiveUsersAsync()
+        {
+            return (await GetAllAsync()).Where(user=>user.Status==(int)EUserStatus.ACTIVE);
+        }
+        public async Task<IEnumerable<UserViewModel>> GetInactiveUsersAsync()
+        {
+            return (await GetAllAsync()).Where(user => user.Status == (int)EUserStatus.INACTIVE);
+        }
         public async Task<IEnumerable<UserViewModel>> GetAllAsync()
         {
-            IEnumerable<AuthenticationResponse> usersResponse= await _accountService.GetAllAsync();
-            IEnumerable<UserViewModel> usersReturn=_mapper.Map<IEnumerable<UserViewModel>>(usersResponse);
+            var usersResponse= await _accountService.GetAllAsync();
+            var usersReturn=_mapper.Map<IEnumerable<UserViewModel>>(usersResponse);
             return usersReturn;
         }
         public async Task<UserSaveViewModel> FindyByIdAsync(string id)

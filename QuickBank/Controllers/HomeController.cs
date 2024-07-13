@@ -46,18 +46,19 @@ namespace QuickBank.Controllers
             {
                 TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
             }
-            var payLogs = await logService.GetAllPayLogsAsync();
-            var dailyPayLogs= await logService.GetDailyPayLogsAsync();
-            var transferLogs = await logService.GetAllTransferLogsAsync();
-            var dailyTransferLogs = await logService.GetDailyTransferLogsAsync();
-            var totalUsers = await userService.GetAllAsync();
+            var savingAccounts = (await savingAccountService.GetActiveAsync()).Count;
+            var loans = (await loanService.GetActiveAsync()).Count;
+            var creditCards = (await creditCardService.GetActiveAsync()).Count;
+
             HomeAdminViewModel homeAdminViewModel = new()
             {
-                PayLogs = payLogs.Count,
-                TransferLogs = transferLogs.Count,
-                DailyPayLogs=dailyPayLogs.Count(),
-                DailyTransferLogs=dailyTransferLogs.Count(),
-
+                PayLogs = (await logService.GetAllPayLogsAsync()).Count,
+                DailyPayLogs = (await logService.GetDailyPayLogsAsync()).Count(),
+                TransferLogs = (await logService.GetAllTransferLogsAsync()).Count(),
+                DailyTransferLogs = (await logService.GetDailyTransferLogsAsync()).Count(),
+                UsersActive = (await userService.GetActiveUsersAsync()).Count(),
+                UsersInactive = (await userService.GetInactiveUsersAsync()).Count(),
+                ProductsAssigned=savingAccounts+loans+creditCards
             };
             return View(homeAdminViewModel);
         }

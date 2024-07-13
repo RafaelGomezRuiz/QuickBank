@@ -11,5 +11,6 @@ namespace QuickBank.Core.Application.Interfaces.Services.Products
         Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId);
         Task<SavingAccountViewModel?> GetViewModelByNumberAccountAsync(string numberAccount);
         Task SetSavingAccount(SetSavingAccount setSavingAccount);
+        Task<List<SavingAccountViewModel>?> GetActiveAsync();
     }   
 }

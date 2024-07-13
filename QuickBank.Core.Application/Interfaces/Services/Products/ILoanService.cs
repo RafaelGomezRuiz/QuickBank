@@ -10,6 +10,7 @@ namespace QuickBank.Core.Application.Interfaces.Services.Products
         Task<List<LoanViewModel>?> GetAllByUserIdAsync(string userId);
         Task<List<LoanViewModel>?> GetAllByUserIdWithBalanceAsync(string userId);
         Task SetLoan(LoanSaveViewModel setLoan);
+        Task<List<LoanViewModel>?> GetActiveAsync();
 
     }
 }

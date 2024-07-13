@@ -28,6 +28,10 @@ namespace QuickBank.Core.Application.Services.Products
             return (await base.GetAllAsync()).Where(loan => loan.UserId == userId).ToList();
         }
 
+        public async Task<List<LoanViewModel>?> GetActiveAsync()
+        {
+            return (await base.GetAllAsync()).Where(savm => savm.Status == (int)EProductStatus.ACTIVE).ToList();
+        }
         public async Task<List<LoanViewModel>?> GetAllByUserIdWithBalanceAsync(string userId)
         {
             var loans = await GetAllByUserIdAsync(userId);

@@ -1,11 +1,6 @@
 ﻿using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.ViewModels.Auth;
 using QuickBank.Core.Application.ViewModels.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QuickBank.Core.Application.Interfaces.Services.User
 {
@@ -20,5 +15,8 @@ namespace QuickBank.Core.Application.Interfaces.Services.User
         Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordViewModel forgotPasswordVm, string origin);
         Task<AuthenticationResponse> LoginAsync(LoginViewModel vm);
         Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel resetPassword);
+        Task<IEnumerable<UserViewModel>> GetActiveUsersAsync();
+        Task<IEnumerable<UserViewModel>> GetInactiveUsersAsync();
+
     }
 }
