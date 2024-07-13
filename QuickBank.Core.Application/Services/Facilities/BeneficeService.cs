@@ -27,7 +27,8 @@ namespace QuickBank.Core.Application.Services.Facilities
             ISavingAccountService savingAccountService,
             IUserService userService,
             IUserHelper userHelper,
-            IMapper mapper) : base(beneficeRepository, mapper)
+            IMapper mapper
+        ) : base(beneficeRepository, mapper)
         {
             this.beneficeRepository = beneficeRepository;
             this.savingAccountService = savingAccountService;
@@ -51,18 +52,29 @@ namespace QuickBank.Core.Application.Services.Facilities
         //
         public async Task<List<BeneficeViewModel>> GetBeneficiariesWithFullNameAsync()
         {
-            var user = userHelper.GetUser();
-            var beneficiaries = await beneficeRepository.GetAllAsync();
-            var userBeneficiaries = beneficiaries.Where(b => b.OwnerId == user.Id).ToList();
-            var beneficeViewModels = new List<BeneficeViewModel>();
+            //var user = userHelper.GetUser();
+            //var beneficiaries = await beneficeRepository.GetAllAsync();
+            //var userBeneficiaries = beneficiaries.Where(b => b.OwnerId == user.Id).ToList();
+            //var beneficeViewModels = new List<BeneficeViewModel>();
 
-            foreach (var beneficiary in userBeneficiaries)
+            //foreach (var beneficiary in userBeneficiaries)
+            //{
+            //    var beneficeViewModel = await MapToViewModelAsync(beneficiary);
+            //    beneficeViewModels.Add(beneficeViewModel);
+            //}
+
+            //return beneficeViewModels;
+
+            var benefices = await GetAllByUserIdAsync(userHelper.GetUser().Id);
+            var users = await userService.GetAllAsync();
+
+            foreach (var benefice in benefices)
             {
-                var beneficeViewModel = await MapToViewModelAsync(beneficiary);
-                beneficeViewModels.Add(beneficeViewModel);
+                var user = users.FirstOrDefault(user => user.Id == benefice.BenefitedSavingAccount.UserId);
+                benefice.BenefitedFullName = $"{user.UserName} {user.LastName}";
             }
 
-            return beneficeViewModels;
+            return benefices;
         }
 
         public async Task<BeneficeViewModel?> GetBeneficiaryByIdAsync(int id)
