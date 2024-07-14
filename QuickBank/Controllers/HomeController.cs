@@ -64,19 +64,19 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> BasicHome()
         {
             var user = userHelper.GetUser();
-            var model = new HomeBasicViewModel
+            var hbvm = new HomeBasicViewModel
             {
                 SavingAccounts = await savingAccountService.GetAllByUserIdAsync(user.Id),
                 CreditCards = await creditCardService.GetAllByUserIdAsync(user.Id),
                 Loans = await loanService.GetAllByUserIdAsync(user.Id)
             };
 
-            if (HttpContext.Items.ContainsKey("NotificationFromRedirectioned"))
-            {
-                TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
-            }
+            //if (HttpContext.Items.ContainsKey("NotificationFromRedirectioned"))
+            //{
+            //    TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
+            //}
 
-            return View(model);
+            return View(hbvm);
         }
     }
 }

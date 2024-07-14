@@ -1,0 +1,24 @@
+﻿@model QuickBank.Core.Application.ViewModels.Facilities.Benefice.BeneficeSaveViewModel
+
+@{
+    ViewData["Title"] = "Agregar Beneficiario";
+}
+
+<h2>Agregar Beneficiario</h2>
+
+<form asp-action="AddBenefice" method="post">
+    <div class="form-group">
+        <label for="NumberAccount">Número de Cuenta</label>
+        <input type="text" class="form-control" id="NumberAccount" name="NumberAccount" />
+        @Html.ValidationMessage("InvalidNumberAccountNull", "", new { @class = "text-danger" })
+        @Html.ValidationMessage("InvalidNumberCharacters", "", new { @class = "text-danger" })
+        @Html.ValidationMessage("InvalidSavingAccountExist", "", new { @class = "text-danger" })
+        @Html.ValidationMessage("InvalidSavingAccountActive", "", new { @class = "text-danger" })
+        @Html.ValidationMessage("InvalidSameAccount", "", new { @class = "text-danger" })
+        @Html.ValidationMessage("InvalidDuplicatedBenefice", "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="BeneficeHome" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

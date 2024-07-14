@@ -4,6 +4,7 @@ using QuickBank.Core.Application.Interfaces.Services.Facilities;
 using QuickBank.Core.Application.Interfaces.Services.Logs;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.ViewModels.Facilities;
+using QuickBank.Core.Domain.Entities.Logs;
 
 namespace QuickBank.Core.Application.Services.Facilities
 {
@@ -30,6 +31,27 @@ namespace QuickBank.Core.Application.Services.Facilities
             this.savingAccountService = savingAccountService;
             this.logService = logService;
             this.mapper = mapper;
+        }
+
+        public async Task MakeTransfer(TransferSaveViewModel tsvm)
+        {
+            // Load the products
+            var originAccount = await savingAccountService.GetByIdAsync(tsvm.SavingAccountOriginId);
+            var destinyAccount = await savingAccountService.GetByIdAsync(tsvm.SavingAccountDestinyId);
+
+            // Debit chosen amount
+            originAccount.Balance -= tsvm.Amount;
+
+            // Cedit chosen amount
+            destinyAccount.Balance += tsvm.Amount;
+
+            // Update the products
+            await savingAccountService.UpdateAsync(originAccount, originAccount.Id);
+            await savingAccountService.UpdateAsync(destinyAccount, destinyAccount.Id);
+
+            // Log the transfer
+            var transferLog = new TransferLogEntity { CreationDate = DateTime.Now };
+            await logService.AddTransferLogAsync(transferLog);
         }
 
 
