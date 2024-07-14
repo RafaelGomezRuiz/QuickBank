@@ -24,20 +24,17 @@ namespace QuickBank.Controllers
             this.userHelper = userHelper;
         }
 
-        [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> BeneficeHome()
         {
             return View(await beneficeService.GetAllByUserIdWithFullNameAsync(userHelper.GetUser()!.Id));
         }
 
-        [Authorize(Roles = "BASIC")]
         public IActionResult AddBenefice()
         {
             return View(new BeneficeSaveViewModel());
         }
 
         [HttpPost]
-        [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> AddBenefice(BeneficeSaveViewModel bsvm)
         {
             // Validate before the add
@@ -50,14 +47,12 @@ namespace QuickBank.Controllers
             return RedirectToAction("BeneficeHome");
         }
 
-        [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
             return View(await beneficeService.GetByIdWithFullNameAsync(id));
         }
 
         [HttpPost]
-        [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await beneficeService.DeleteAsync(id);
