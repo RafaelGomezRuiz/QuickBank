@@ -30,7 +30,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header bg-primary">
-                                <h3 class="text-white">Listado de productos</h3>
+                                <h3 class="text-white">Listado de usuarios</h3>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -43,7 +43,7 @@
                                                         @if (item.Id != userLoged.Id)
                                                         {
                                                             <div class="col-auto">
-                                                                <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="ChangeUserState" class="btn btn-danger me-2">@(item.Status == (int)EUserStatus.ACTIVE ? "Inactivar" : "Activar")</a>
+                                                                <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="ChangeUserState" class="btn @(item.Status ==(int)EUserStatus.ACTIVE ? "btn-danger":"btn-success") me-2">@(item.Status == (int)EUserStatus.ACTIVE ? "Inactivar" : "Activar")</a>
                                                                 <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="Edit" class="btn btn-primary">Edit</a>
                                                                 @if (item.Roles[0]==ERoles.BASIC.ToString())
                                                                 {
@@ -67,7 +67,7 @@
                                                                 @foreach (var role in item.Roles)
                                                                 {
                                                                     <div class="d-inline-flex me-2 mb-2">
-                                                                        <span class="badge bg-secondary">@role</span>
+                                                                        <span class="badge @(item.Roles[0] ==ERoles.BASIC.ToString() ? "btn-warning":"btn-success")">@role</span>
                                                                     </div>
                                                                 }
                                                             </div>

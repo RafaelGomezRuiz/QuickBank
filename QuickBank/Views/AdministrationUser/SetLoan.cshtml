@@ -19,6 +19,11 @@
                         <input asp-for="Amount" class="form-control">
                         <span asp-validation-for="Amount" class="text-danger"></span>
                     </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Description: </label>
+                        <input asp-for="Description" class="form-control">
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
                     <input type="hidden" asp-for="OwnerId"/>
                     <input type="hidden" asp-for="Id" />
 

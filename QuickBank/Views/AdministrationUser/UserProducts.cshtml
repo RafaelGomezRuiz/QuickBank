@@ -51,7 +51,7 @@
                                     </div>
                                 }
                                 <h3>Credict cards</h3>
-                                @if (Model.CreditCards != null)
+                                @if (Model.CreditCards.Count > 0)
                                 {
                                     @foreach (var item in Model.CreditCards)
                                     {
@@ -82,7 +82,7 @@
                                     <p>No tienes tarjetas de credito</p>
                                 }
                                 <h3>Loans</h3>
-                                @if (Model.Loans != null)
+                                @if (Model.Loans.Count >0)
                                 {
                                     @foreach (var item in Model.Loans)
                                     {
@@ -97,8 +97,8 @@
                                                                 <p><strong>Account Number:</strong> @item.LoanNumber</p>
                                                                 <p><strong>Deuda:</strong> @item.Amount</p>
                                                                 <p><strong>DeadLine:</strong> @item.Deadline</p>
+                                                                <p><strong>Descripcion:</strong> @item.Description</p>
                                                                 <p><strong>AprovalDate:</strong> @item.AprovalDate</p>
-
                                                                 <p><strong>Aprobado:</strong> @(item.Status == (int)EUserStatus.ACTIVE ? "Si" : "No")</p>
                                                             </div>
                                                         </div>

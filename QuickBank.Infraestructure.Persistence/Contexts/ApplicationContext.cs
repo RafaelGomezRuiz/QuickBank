@@ -86,21 +86,21 @@ namespace QuickBank.Infrastructure.Persistence.Contexts
 
             //Product
             modelBuilder.Entity<CreditCardEntity>().HasData(
-                new CreditCardEntity { Id = 1, CardNumber = "123456789", Balance = 1500.00, LimitCredit = 5000.00, Status = 1, CreationDate = DateTime.Parse("2023-01-15"), ExpirationDate = DateTime.Parse("2026-01-15"), UserId = "f294u-ewrdm-woj93-hj3dn-8937w" },
-                new CreditCardEntity { Id = 2, CardNumber = "234567890", Balance = 2500.00, LimitCredit = 7000.00, Status = 1, CreationDate = DateTime.Parse("2023-02-10"), ExpirationDate = DateTime.Parse("2026-02-10"), UserId = "f294u-ewrdm-woj93-hj3dn-8937w" },
-                new CreditCardEntity { Id = 3, CardNumber = "345678901", Balance = 3000.00, LimitCredit = 8000.00, Status = 0, CreationDate = DateTime.Parse("2023-03-05"), ExpirationDate = DateTime.Parse("2026-03-05") },
-                new CreditCardEntity { Id = 4, CardNumber = "456789012", Balance = 1200.00, LimitCredit = 6000.00, Status = 0, CreationDate = DateTime.Parse("2023-04-20"), ExpirationDate = DateTime.Parse("2026-04-20") },
-                new CreditCardEntity { Id = 5, CardNumber = "567890123", Balance = 500.00, LimitCredit = 4000.00, Status = 0, CreationDate = DateTime.Parse("2023-05-30"), ExpirationDate = DateTime.Parse("2026-05-30") },
-                new CreditCardEntity { Id = 6, CardNumber = "678901234", Balance = 1000.00, LimitCredit = 4500.00, Status = 0, CreationDate = DateTime.Parse("2023-06-01"), ExpirationDate = DateTime.Parse("2026-06-01") },
-                new CreditCardEntity { Id = 7, CardNumber = "789012345", Balance = 2000.00, LimitCredit = 5500.00, Status = 0, CreationDate = DateTime.Parse("2023-07-10"), ExpirationDate = DateTime.Parse("2026-07-10") },
-                new CreditCardEntity { Id = 8, CardNumber = "890123456", Balance = 3500.00, LimitCredit = 9000.00, Status = 0, CreationDate = DateTime.Parse("2023-08-20"), ExpirationDate = DateTime.Parse("2026-08-20") },
-                new CreditCardEntity { Id = 9, CardNumber = "901234567", Balance = 500.00, LimitCredit = 3000.00, Status = 0, CreationDate = DateTime.Parse("2023-09-15"), ExpirationDate = DateTime.Parse("2026-09-15") },
-                new CreditCardEntity { Id = 10, CardNumber = "012345678", Balance = 750.00, LimitCredit = 3500.00, Status = 0, CreationDate = DateTime.Parse("2023-10-25"), ExpirationDate = DateTime.Parse("2026-10-25") }
+                new CreditCardEntity { Id = 1, CardNumber = "123456789", Balance = 0, LimitCredit = 5000.00, Status = 1, CreationDate = DateTime.Parse("2023-01-15"), ExpirationDate = DateTime.Parse("2026-01-15"), UserId = "f294u-ewrdm-woj93-hj3dn-8937w" },
+                new CreditCardEntity { Id = 2, CardNumber = "234567890", Balance = 0, LimitCredit = 7000.00, Status = 1, CreationDate = DateTime.Parse("2023-02-10"), ExpirationDate = DateTime.Parse("2026-02-10"), UserId = "f294u-ewrdm-woj93-hj3dn-8937w" },
+                new CreditCardEntity { Id = 3, CardNumber = "345678901", Balance = 0, LimitCredit = 8000.00, Status = 0, CreationDate = DateTime.Parse("2023-03-05"), ExpirationDate = DateTime.Parse("2026-03-05") },
+                new CreditCardEntity { Id = 4, CardNumber = "456789012", Balance = 0, LimitCredit = 6000.00, Status = 0, CreationDate = DateTime.Parse("2023-04-20"), ExpirationDate = DateTime.Parse("2026-04-20") },
+                new CreditCardEntity { Id = 5, CardNumber = "567890123", Balance = 0, LimitCredit = 4000.00, Status = 0, CreationDate = DateTime.Parse("2023-05-30"), ExpirationDate = DateTime.Parse("2026-05-30") },
+                new CreditCardEntity { Id = 6, CardNumber = "678901234", Balance = 0, LimitCredit = 4500.00, Status = 0, CreationDate = DateTime.Parse("2023-06-01"), ExpirationDate = DateTime.Parse("2026-06-01") },
+                new CreditCardEntity { Id = 7, CardNumber = "789012345", Balance = 0, LimitCredit = 5500.00, Status = 0, CreationDate = DateTime.Parse("2023-07-10"), ExpirationDate = DateTime.Parse("2026-07-10") },
+                new CreditCardEntity { Id = 8, CardNumber = "890123456", Balance = 0, LimitCredit = 9000.00, Status = 0, CreationDate = DateTime.Parse("2023-08-20"), ExpirationDate = DateTime.Parse("2026-08-20") },
+                new CreditCardEntity { Id = 9, CardNumber = "901234567", Balance = 0, LimitCredit = 3000.00, Status = 0, CreationDate = DateTime.Parse("2023-09-15"), ExpirationDate = DateTime.Parse("2026-09-15") },
+                new CreditCardEntity { Id = 10, CardNumber = "012345678", Balance = 0, LimitCredit = 3500.00, Status = 0, CreationDate = DateTime.Parse("2023-10-25"), ExpirationDate = DateTime.Parse("2026-10-25") }
             );
 
             //Loan  
             modelBuilder.Entity<LoanEntity>().HasData(
-                new LoanEntity { Id = 1, LoanNumber = "LN000001", Amount = 50000.00, Deadline = DateTime.Parse("2025-01-15"), InterestRate = 5.0, Description = "Car loan", Status = 1, ApplicationDate = DateTime.Parse("2023-01-01"), AprovalDate = DateTime.Parse("2023-01-10"), UserId = "n8d7x-qsj3p-lf9b2-hu6zr-4579y" },
+                new LoanEntity { Id = 1, LoanNumber = "LN000001", Amount = 50000.00, Deadline = DateTime.Parse("2025-01-15"), InterestRate = 5.0, Description = "Car loan", Status = 0, ApplicationDate = DateTime.Parse("2023-01-01"), AprovalDate = DateTime.Parse("2023-01-10"), UserId = "n8d7x-qsj3p-lf9b2-hu6zr-4579y" },
                 new LoanEntity { Id = 2, LoanNumber = "LN000002", Amount = 75000.00, Deadline = DateTime.Parse("2026-02-20"), InterestRate = 4.5, Description = "Home loan", Status = 0, ApplicationDate = DateTime.Parse("2023-02-01"), AprovalDate = DateTime.Parse("2023-02-15") },
                 new LoanEntity { Id = 3, LoanNumber = "LN000003", Amount = 20000.00, Deadline = DateTime.Parse("2024-03-10"), InterestRate = 6.0, Description = "Personal loan", Status = 0, ApplicationDate = DateTime.Parse("2023-03-01"), AprovalDate = DateTime.Parse("2023-03-05") },
                 new LoanEntity { Id = 4, LoanNumber = "LN000004", Amount = 30000.00, Deadline = DateTime.Parse("2025-04-25"), InterestRate = 5.5, Description = "Education loan", Status = 0, ApplicationDate = DateTime.Parse("2023-04-01"), AprovalDate = DateTime.Parse("2023-04-10") },

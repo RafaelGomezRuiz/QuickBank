@@ -119,7 +119,7 @@ namespace QuickBank.Controllers
             {
                 SavingAccountViewModel savingAccountViewModel = await savingAccountService.GetPrincipalSavingAccountAsync(userSaveViewModel.Id);
                 savingAccountViewModel.Balance += (double)userSaveViewModel.InitialAmount;
-                await savingAccountService.UpdateAsync(savingAccountViewModel, savingAccountViewModel.Id);
+                savingAccountService.UpdateAsync(savingAccountViewModel, savingAccountViewModel.Id);
             }
             return RedirectRoutesHelper.routeAdmininistrationUserIndex;
         }
@@ -238,10 +238,11 @@ namespace QuickBank.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteCreditCardPost(int id)
         {
-            LoanViewModel creditCardOwnerId = await loanService.GetByIdAsync(id);
+            CreditCardViewModel creditCardOwnerId = await creditCardService.GetByIdAsync(id);
             string ownerId = creditCardOwnerId.UserId;
             await creditCardService.DeleteAsync(id);
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
         }
+
     }
 }

@@ -54,9 +54,10 @@ namespace QuickBank.Core.Application.Services.Products
                 newLoanNumber = CodeStringGenerator.GenerateProductNumber();
             }
 
-            loanToSet.Status = (int)EProductStatus.ACTIVE;
+            loanToSet.Status = (int)EProductStatus.INACTIVE;
             loanToSet.Amount = setLoan.Amount;
             loanToSet.UserId = setLoan.OwnerId;
+            loanToSet.Description = setLoan.Description;
             loanToSet.LoanNumber = newLoanNumber;
             var loanEntity = mapper.Map<LoanEntity>(loanToSet);
             await loanRepository.UpdateAsync(loanEntity, loanEntity.Id);

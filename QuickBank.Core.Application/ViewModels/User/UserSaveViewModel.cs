@@ -38,7 +38,6 @@ namespace QuickBank.Core.Application.ViewModels.User
         [DataType(DataType.Text)]
         public ERoles UserType { get; set; }
 
-        [Range(0,int.MaxValue)]
         public double? InitialAmount { get; set; }
         public List<string>? Roles { get; set; }
         public int? Status { get; set; }

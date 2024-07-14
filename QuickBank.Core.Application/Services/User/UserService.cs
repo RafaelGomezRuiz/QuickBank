@@ -18,11 +18,11 @@ namespace QuickBank.Core.Application.Services.User
         }
         public async Task<IEnumerable<UserViewModel>> GetActiveUsersAsync()
         {
-            return (await GetAllAsync()).Where(user=>user.Status==(int)EUserStatus.ACTIVE);
+            return (await GetAllAsync()).Where(user=>user.Status==(int)EUserStatus.ACTIVE && user.Roles[0] ==ERoles.BASIC.ToString());
         }
         public async Task<IEnumerable<UserViewModel>> GetInactiveUsersAsync()
         {
-            return (await GetAllAsync()).Where(user => user.Status == (int)EUserStatus.INACTIVE);
+            return (await GetAllAsync()).Where(user => user.Status == (int)EUserStatus.INACTIVE && user.Roles[0] == ERoles.BASIC.ToString());
         }
         public async Task<IEnumerable<UserViewModel>> GetAllAsync()
         {
