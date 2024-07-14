@@ -2,16 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using QuickBank.Core.Application.Interfaces.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Facilities;
-using QuickBank.Core.Application.Interfaces.Services.Logs;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.ViewModels.Facilities;
-using QuickBank.Core.Application.ViewModels.Products;
-using QuickBank.Core.Domain.Entities.Logs;
 using QuickBank.Helpers;
 
 namespace QuickBank.Controllers
 {
-    [Authorize(Roles = "BASIC, ADMIN")]
+    [Authorize(Roles = "BASIC")]
     public class FacilityController : Controller
     {
         private readonly IFacilityService facilityService;
@@ -19,26 +16,25 @@ namespace QuickBank.Controllers
         private readonly ICreditCardService creditCardService;
         private readonly IFacilityValidationService facilityValidationService;
         private readonly IUserHelper userHelper;
-        private readonly ILogService logService;
 
         public FacilityController(
             IFacilityService facilityService,
             ISavingAccountService savingAccountService,
             ICreditCardService creditCardService,
             IFacilityValidationService facilityValidationService,
-            IUserHelper userHelper,
-            ILogService logService)
+            IUserHelper userHelper
+        )
         {
             this.facilityService = facilityService;
             this.savingAccountService = savingAccountService;
             this.creditCardService = creditCardService;
             this.facilityValidationService = facilityValidationService;
             this.userHelper = userHelper;
-            this.logService = logService;
         }
 
 
-        [Authorize(Roles = "BASIC")]
+        #region Transfer
+
         public async Task<IActionResult> Transfer()
         {
             var tsvm = new TransferSaveViewModel
@@ -50,7 +46,6 @@ namespace QuickBank.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> Transfer(TransferSaveViewModel tsvm)
         {
             // Validations before transfer
@@ -63,6 +58,10 @@ namespace QuickBank.Controllers
             return View("TransactionConfirmed");
         }
 
+        #endregion
+
+
+        #region CashAdvance
 
         public async Task<IActionResult> CashAdvance()
         {
@@ -89,5 +88,8 @@ namespace QuickBank.Controllers
 
             return View("TransactionConfirmed");
         }
+
+        #endregion
+
     }
 }
