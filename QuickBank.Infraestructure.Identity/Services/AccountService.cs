@@ -118,29 +118,18 @@ namespace QuickBank.Infrastructure.Identity.Services
         {
             await signInManager.SignOutAsync();
         }
+        public async Task<bool> DuplicateUserName(string userName)
+        {
+            return (await userManager.FindByNameAsync(userName)) != null ? true:false;
+        }
+        public async Task<bool> DuplicateEmail(string email)
+        {
+            return (await userManager.FindByEmailAsync(email)) != null ? true : false;
+        }
 
         public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin)
         {
-            RegisterResponse response = new()
-            {
-                HasError = false
-            };
-
-            var DuplicateUserName = await userManager.FindByNameAsync(request.UserName);
-            if (DuplicateUserName != null)
-            {
-                response.HasError = true;
-                response.ErrorDescription = $"this UserName '{request.UserName}' in use";
-                return response;
-            }
-
-            var DuplicateEmail = await userManager.FindByEmailAsync(request.Email);
-            if (DuplicateEmail != null)
-            {
-                response.HasError = true;
-                response.ErrorDescription = $"this Email '{request.Email}' is already registered";
-                return response;
-            }
+            RegisterResponse response = new(){ HasError = false};
             
             ApplicationUser userToRegister = new()
             {

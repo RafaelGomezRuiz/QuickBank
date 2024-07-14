@@ -16,6 +16,15 @@ namespace QuickBank.Core.Application.Services.User
             this._accountService = _accountService;
             this._mapper = _mapper;
         }
+        public async Task<bool> DuplicateUserName(string userName)
+        {
+            return await _accountService.DuplicateUserName(userName);
+        }
+        public async Task<bool> DuplicateEmail(string email)
+        {
+            return await _accountService.DuplicateEmail(email);
+        }
+
         public async Task<IEnumerable<UserViewModel>> GetActiveUsersAsync()
         {
             return (await GetAllAsync()).Where(user=>user.Status==(int)EUserStatus.ACTIVE && user.Roles[0] ==ERoles.BASIC.ToString());

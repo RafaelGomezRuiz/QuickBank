@@ -20,7 +20,7 @@ namespace QuickBank.Core.Application.Services.Products
             this.mapper = mapper;
         }
 
-        public async Task<CreditCardViewModel> GetAvailableLoanAsync()
+        public async Task<CreditCardViewModel> GetAvailableCreditCardsAsync()
         {
             return (await base.GetAllAsync()).FirstOrDefault(loan => loan.Status == (int)EProductStatus.INACTIVE && loan.UserId == null);
         }
@@ -42,7 +42,7 @@ namespace QuickBank.Core.Application.Services.Products
             string newCreditCardNumber = CodeStringGenerator.GenerateProductNumber();
             bool creditCardNumberExists = (await base.GetAllAsync()).Any(loan => loan.CardNumber == newCreditCardNumber);
 
-            var creditCardToSet = await GetAvailableLoanAsync();
+            var creditCardToSet = await GetAvailableCreditCardsAsync();
 
             if (creditCardToSet == null)
             {

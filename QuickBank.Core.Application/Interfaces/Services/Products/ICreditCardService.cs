@@ -10,5 +10,6 @@ namespace QuickBank.Core.Application.Interfaces.Services.Products
         Task<List<CreditCardViewModel>?> GetAllByUserIdWithBalanceAsync(string userId);
         Task SetCreditCard(CreditCardSaveViewModel setCreditCard);
         Task<List<CreditCardViewModel>?> GetActiveAsync();
+        Task<CreditCardViewModel> GetAvailableCreditCardsAsync();
     }
 }

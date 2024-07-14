@@ -6,8 +6,11 @@ using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
+using QuickBank.Core.Application.Services.Facilities;
+using QuickBank.Core.Application.Services.User;
 using QuickBank.Core.Application.ViewModels.Products;
 using QuickBank.Core.Application.ViewModels.User;
+using QuickBank.Helpers;
 
 namespace QuickBank.Controllers
 {
@@ -18,17 +21,24 @@ namespace QuickBank.Controllers
         protected readonly ISavingAccountService savingAccountService;
         protected readonly ILoanService loanService;
         protected readonly ICreditCardService creditCardService;
+        protected readonly IUserValidationService userValidationService;
+        protected readonly IProductValidationService productValidationService;
+
 
         public AdministrationUserController(
             IUserService userService,
             ISavingAccountService savingAccountService,
             ILoanService loanService,
-            ICreditCardService creditCardService)
+            ICreditCardService creditCardService,
+            IUserValidationService userValidationService,
+            IProductValidationService productValidationService)
         {
             this.userService = userService;
             this.savingAccountService = savingAccountService;
             this.loanService = loanService;
             this.creditCardService = creditCardService;
+            this.userValidationService= userValidationService;
+            this.productValidationService = productValidationService;
         }
         public async Task<IActionResult> Index()
         {
@@ -43,6 +53,10 @@ namespace QuickBank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(UserSaveViewModel userSaveViewModel)
         {
+            ModelState.AddModelErrorRange(await userValidationService.UserSaveValidation(userSaveViewModel));
+            ModelState.AddModelErrorRange(await userValidationService.PasswordValidation(userSaveViewModel));
+            ModelState.AddModelErrorRange(await productValidationService.AvailableSavingAccounts());
+
             if (!ModelState.IsValid)
             {
                 return View("SaveUser", userSaveViewModel);
@@ -139,18 +153,19 @@ namespace QuickBank.Controllers
         [HttpGet]
         public async Task<IActionResult> SetSavingAccount(string ownerId)
         {
+            ModelState.AddModelErrorRange(await productValidationService.AvailableSavingAccounts());
+            if (!ModelState.IsValid)
+            {
+                return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
+            }
             SetSavingAccount savingAccount = new()
             {
                 UserId = ownerId,
             };
-            //Mensaje que valide si se creo o no
-            try
-            {
+
                 await savingAccountService.SetSavingAccount(savingAccount);
-            }catch(Exception ex)
-            {
+
                 return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
-            }
 
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
         }
@@ -165,6 +180,11 @@ namespace QuickBank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetLoan(LoanSaveViewModel loanSaveViewModel)
         {
+            ModelState.AddModelErrorRange(await productValidationService.AvailableLoans());
+            if (!ModelState.IsValid)
+            {
+                return View(loanSaveViewModel);
+            }
             await loanService.SetLoan(loanSaveViewModel);
             var userPrincipalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(loanSaveViewModel.OwnerId);
             userPrincipalSavingAccount.Balance += loanSaveViewModel.Amount;

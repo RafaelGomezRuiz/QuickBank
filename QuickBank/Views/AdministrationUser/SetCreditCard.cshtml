@@ -13,6 +13,8 @@
                 <h4>Agregar tarjeta de credito</h4>
             </div>
             <div class="card-body">
+                @Html.ValidationMessage("ArentAvailableCreditCards", "", new { @class = "text-danger" })
+
                 <form asp-controller="AdministrationUser" asp-action="SetCreditCard">
                     <div class="mb-3">
                         <label asp-for="AmountAvailable" class="form-label">Limit credit card: </label>

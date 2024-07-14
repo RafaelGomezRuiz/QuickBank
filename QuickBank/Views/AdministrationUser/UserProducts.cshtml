@@ -27,6 +27,10 @@
                             <h3 class="text-white">Listado de productos</h3>
                         </div>
                         <div class="card-body">
+                            @Html.ValidationMessage("ArentAvailableLoans", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("ArentAvailableCreditCards", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("ArentAvailableSavingsAccounts", "", new { @class = "text-danger" })
+
                             <div class="row">
                                 <h3>SavingAccounts</h3>
                                 @foreach (var item in Model.SavingAccounts)

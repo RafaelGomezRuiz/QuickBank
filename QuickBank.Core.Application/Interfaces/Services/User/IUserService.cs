@@ -17,6 +17,7 @@ namespace QuickBank.Core.Application.Interfaces.Services.User
         Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel resetPassword);
         Task<IEnumerable<UserViewModel>> GetActiveUsersAsync();
         Task<IEnumerable<UserViewModel>> GetInactiveUsersAsync();
-
+        Task<bool> DuplicateUserName(string userName);
+        Task<bool> DuplicateEmail(string email);
     }
 }

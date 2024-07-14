@@ -13,5 +13,7 @@ namespace QuickBank.Core.Application.Interfaces.Services.User
         Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin);
         Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request);
         Task SignOutAsync();
+        Task<bool> DuplicateUserName(string userName);
+        Task<bool> DuplicateEmail(string email);
     }
 }

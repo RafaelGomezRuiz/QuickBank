@@ -15,6 +15,9 @@
                 <h4>@(editMode ? $"Editando al usuario: {Model.FirstName} {Model.LastName}" : "Creando un nuevo usuario")</h4>
             </div>
             <div class="card-body">
+                @* Show Message if the user cant be saved *@
+                @Html.ValidationMessage("ArentAvailableSavingsAccounts", "", new { @class = "text-danger" })
+
                 <form method="post" asp-controller="AdministrationUser" id="formSaveUser" asp-action="@(editMode ? "Edit" : "Add")">
                     <div class="mb-3">
                         <label asp-for="FirstName" class="form-label">FirstName: </label>
@@ -37,12 +40,15 @@
                         <label asp-for="Email" class="form-label">Email: </label>
                         <input asp-for="Email" class="form-control"></input>
                         <span asp-validation-for="Email" class="text-danger"></span>
+                        @Html.ValidationMessage("DuplicateEmail", "", new { @class = "text-danger" })
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="UserName" class="form-label">UserName: </label>
                         <input asp-for="UserName" asp-for="UserName" class="form-control">
                         <span asp-validation-for="UserName" class="text-danger"></span>
+                        @Html.ValidationMessage("DuplicateUserName", "", new { @class = "text-danger" })
+
                     </div>
 
                     @if(editMode==true)
@@ -51,6 +57,11 @@
                             123Pa$$word!
                             <label asp-for="Password" class="form-label">Contrasenia: </label>
                             <input asp-for="Password" class="form-control">
+                            @Html.ValidationMessage("MinPasswordLength", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("LowerCase", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("UpperCase", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("RequireDigit", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("RequireNonAlphanumeric", "", new { @class = "text-danger" })
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
 
@@ -64,13 +75,20 @@
                     {
                         <div class="mb-3">
                             <label asp-for="Password" class="form-label">Contrasenia: </label>
-                            <input required asp-for="Password" class="form-control">
+                            <input asp-for="Password" class="form-control">
                             <span asp-validation-for="Password" class="text-danger"></span>
+                            @Html.ValidationMessage("PasswordRequired", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("MinPasswordLength", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("LowerCase", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("UpperCase", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("RequireDigit", "", new { @class = "text-danger" })
+                            @Html.ValidationMessage("RequireNonAlphanumeric", "", new { @class = "text-danger" })
+
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="ConfirmPassword" class="form-label">Confirmar Contrasenia: </label>
-                            <input required asp-for="ConfirmPassword" class="form-control">
+                            <input asp-for="ConfirmPassword" class="form-control">
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     }
@@ -91,6 +109,7 @@
                                 <option value="@ERoles.BASIC">@ERoles.BASIC.ToString()</option>
                                 <option value="@ERoles.ADMIN">@ERoles.ADMIN.ToString()</option>
                             </select>
+                            @Html.ValidationMessage("InvalidUserType", "", new { @class = "text-danger" })
                             <span asp-validation-for="UserType" class="text-danger"></span>
                         </div>
                     }
@@ -102,12 +121,14 @@
                             <label asp-for="InitialAmount" class="form-label">Initial Amount:</label>
                             <input asp-for="InitialAmount" class="form-control" type="number" min="0" value="0" />
                             <span asp-validation-for="InitialAmount" class="text-danger"></span>
+                            @Html.ValidationMessage("InitialAmountNull", "", new { @class = "text-danger" })
                         </div>
                     }
                     <div id="initialAmountDiv" class="mb-3" style="display:none">
                         <label asp-for="InitialAmount" class="form-label">Initial Amount:</label>
                         <input asp-for="InitialAmount" class="form-control" type="number" min="0" value="0" />
                         <span asp-validation-for="InitialAmount" class="text-danger"></span>
+                        @Html.ValidationMessage("InitialAmountNull", "", new { @class = "text-danger" })
                     </div>
 
 

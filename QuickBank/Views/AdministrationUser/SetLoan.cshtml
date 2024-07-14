@@ -13,6 +13,8 @@
                 <h4>Agregar prestamo</h4>
             </div>
             <div class="card-body">
+                @Html.ValidationMessage("ArentAvailableLoans", "", new { @class = "text-danger" })
+
                 <form asp-controller="AdministrationUser" asp-action="SetLoan">
                     <div class="mb-3">
                         <label asp-for="Amount" class="form-label">Amount: </label>
