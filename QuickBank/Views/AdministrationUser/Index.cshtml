@@ -17,37 +17,8 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-3">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-light">
-                    <h3>Filtros</h3>
-                </div>
-                <div class="card-body">
-                    <div class="card-title">
-                        <h3 class="card-title"> Categorias</h3>
-                        <form method="post" asp-controller="Home" asp-action="Index">
-                            <div class="=mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" value="null" type="radio" name="CategoryId" id="category-all" />
-                                    <label class="form-check-label" for="category-all">Todas</label>
-                                </div>
-                            </div>
-                            @* @foreach (CategoryViewModel category in ViewBag.Categories)
-                            {
-                                <div class="=mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" value="@category.Id" type="radio" name="CategoryId" id="category-@category.Id" />
-                                        <label class="form-check-label" for="category-@category.Id">@category.Name</label>
-                                    </div>
-                                </div>
-                            } *@
-                            <button type="submit" class="btn btn-primary">Filtrar</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-9">
+        
+        <div class="col-10 offset-1">
             <div class="row">
 
                 @if (Model == null || Model.Count == 0)

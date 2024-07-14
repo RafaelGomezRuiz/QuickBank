@@ -19,7 +19,6 @@ namespace QuickBank.Controllers
         protected readonly ILoanService loanService;
         protected readonly ICreditCardService creditCardService;
 
-
         public AdministrationUserController(
             IUserService userService,
             ISavingAccountService savingAccountService,
@@ -120,7 +119,7 @@ namespace QuickBank.Controllers
             {
                 SavingAccountViewModel savingAccountViewModel = await savingAccountService.GetPrincipalSavingAccountAsync(userSaveViewModel.Id);
                 savingAccountViewModel.Balance += (double)userSaveViewModel.InitialAmount;
-                savingAccountService.UpdateAsync(savingAccountViewModel, savingAccountViewModel.Id);
+                await savingAccountService.UpdateAsync(savingAccountViewModel, savingAccountViewModel.Id);
             }
             return RedirectRoutesHelper.routeAdmininistrationUserIndex;
         }
@@ -128,16 +127,12 @@ namespace QuickBank.Controllers
         [HttpGet]
         public async Task<IActionResult> UserProducts(string ownerId)
         {
-            var userSavingAccounts = await savingAccountService.GetAllByUserIdAsync(ownerId);
-            var userLoans = await loanService.GetAllByUserIdAsync(ownerId);
-            var userCredictCards = await creditCardService.GetAllByUserIdAsync(ownerId);
-
             UserProductsViewModel userProducts = new()
             {
                 OwnerId = ownerId,
-                SavingAccounts = userSavingAccounts,
-                Loans = userLoans,
-                CreditCards = userCredictCards
+                SavingAccounts = await savingAccountService.GetAllByUserIdAsync(ownerId),
+                Loans = await loanService.GetAllByUserIdAsync(ownerId),
+                CreditCards = await creditCardService.GetAllByUserIdAsync(ownerId)
             };
             return View(userProducts);
         }
@@ -162,10 +157,7 @@ namespace QuickBank.Controllers
         [HttpGet]
         public async Task<IActionResult> SetLoan(string ownerId)
         {
-            LoanSaveViewModel loanSaveViewModel = new()
-            {
-                OwnerId = ownerId,
-            };
+            LoanSaveViewModel loanSaveViewModel = new() { OwnerId = ownerId};
             return View(loanSaveViewModel);
         }
         
@@ -183,10 +175,7 @@ namespace QuickBank.Controllers
         [HttpGet]
         public async Task<IActionResult> SetCreditCard(string ownerId)
         {
-            CreditCardSaveViewModel creditCardSaveViewModel = new()
-            {
-                OwnerId = ownerId,
-            };
+            CreditCardSaveViewModel creditCardSaveViewModel = new(){OwnerId = ownerId,};
             return View(creditCardSaveViewModel);
         }
 
@@ -254,7 +243,5 @@ namespace QuickBank.Controllers
             await creditCardService.DeleteAsync(id);
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
         }
-
-
     }
 }
