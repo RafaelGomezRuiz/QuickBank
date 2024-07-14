@@ -17,31 +17,6 @@ namespace QuickBank.Infrastructure.Persistence.Contexts
         public DbSet<TransferLogEntity> TransferLogs { get; set; }
 
 
-        #region MaybeForDelete
-
-        //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
-        //{
-        //    foreach (var entry in ChangeTracker.Entries<AuditableBaseEntity>())
-        //    {
-        //        switch (entry.State)
-        //        {
-        //            case EntityState.Added:
-        //                entry.Entity.CreatedBy = "Default";
-        //                entry.Entity.CreatedTime = DateTime.Now;
-        //                break;
-        //            case EntityState.Modified:
-        //                entry.Entity.LastUpdatedBy = "Default";
-        //                entry.Entity.LastUpdatedTime = DateTime.Now;
-        //                break;
-        //        }
-        //    }
-
-        //    return base.SaveChangesAsync(cancellationToken);
-        //}
-
-        #endregion
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
