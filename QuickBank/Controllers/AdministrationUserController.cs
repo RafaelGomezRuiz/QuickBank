@@ -158,16 +158,11 @@ namespace QuickBank.Controllers
             {
                 return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
             }
-            SetSavingAccount savingAccount = new()
-            {
-                UserId = ownerId,
-            };
+            SetSavingAccount savingAccount = new(){UserId = ownerId,};
 
-                await savingAccountService.SetSavingAccount(savingAccount);
-
-                return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
-
+            await savingAccountService.SetSavingAccount(savingAccount);
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
+
         }
         [HttpGet]
         public async Task<IActionResult> SetLoan(string ownerId)
@@ -185,10 +180,8 @@ namespace QuickBank.Controllers
             {
                 return View(loanSaveViewModel);
             }
+
             await loanService.SetLoan(loanSaveViewModel);
-            var userPrincipalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(loanSaveViewModel.OwnerId);
-            userPrincipalSavingAccount.Balance += loanSaveViewModel.Amount;
-            await savingAccountService.UpdateAsync(userPrincipalSavingAccount, userPrincipalSavingAccount.Id);
             return RedirectToRoute(new {Controller="AdministrationUser",Action="UserProducts",loanSaveViewModel.OwnerId});
         }
 

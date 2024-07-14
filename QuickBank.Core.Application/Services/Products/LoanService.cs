@@ -12,12 +12,16 @@ namespace QuickBank.Core.Application.Services.Products
     public class LoanService : GenericService<LoanViewModel, LoanViewModel, LoanEntity>, ILoanService
     {
         protected readonly ILoanRepository loanRepository;
+        protected readonly ISavingAccountService savingAccountService;
+
         protected readonly IMapper mapper;
 
-        public LoanService(ILoanRepository loanRepository, IMapper mapper) : base(loanRepository, mapper)
+        public LoanService(ILoanRepository loanRepository, IMapper mapper, ISavingAccountService savingAccountService) : base(loanRepository, mapper)
         {
             this.loanRepository = loanRepository;
             this.mapper = mapper;
+            this.savingAccountService = savingAccountService;
+
         }
         public async Task<LoanViewModel> GetAvailableLoanAsync()
         {
@@ -44,11 +48,6 @@ namespace QuickBank.Core.Application.Services.Products
 
             var loanToSet = await GetAvailableLoanAsync();
 
-            if (loanToSet == null)
-            {
-                throw new InvalidOperationException("No available saving accounts.");
-            }
-
             while (loanNumberExists)
             {
                 newLoanNumber = CodeStringGenerator.GenerateProductNumber();
@@ -61,6 +60,10 @@ namespace QuickBank.Core.Application.Services.Products
             loanToSet.LoanNumber = newLoanNumber;
             var loanEntity = mapper.Map<LoanEntity>(loanToSet);
             await loanRepository.UpdateAsync(loanEntity, loanEntity.Id);
+
+            var userPrincipalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(setLoan.OwnerId);
+            userPrincipalSavingAccount.Balance += setLoan.Amount;
+            await savingAccountService.UpdateAsync(userPrincipalSavingAccount, userPrincipalSavingAccount.Id);
         }
     }
 }

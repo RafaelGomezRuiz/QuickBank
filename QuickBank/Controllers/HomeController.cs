@@ -16,6 +16,8 @@ namespace QuickBank.Controllers
         private readonly ILoanService loanService;
         private readonly ILogService logService;
         private readonly IUserService userService;
+        private readonly IProductService productService;
+
 
         private readonly IUserHelper userHelper;
 
@@ -25,7 +27,8 @@ namespace QuickBank.Controllers
             ILoanService loanService,
             IUserHelper userHelper,
             ILogService logService,
-            IUserService userService)
+            IUserService userService,
+            IProductService productService)
         {
             this.savingAccountService = savingAccountService;
             this.creditCardService = creditCardService;
@@ -33,6 +36,8 @@ namespace QuickBank.Controllers
             this.userHelper = userHelper;
             this.logService = logService;
             this.userService = userService;
+            this.productService = productService;
+
         }
 
         [Authorize(Roles = "ADMIN")]
@@ -42,10 +47,6 @@ namespace QuickBank.Controllers
             {
                 TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
             }
-            var savingAccounts = (await savingAccountService.GetActiveAsync()).Count;
-            var loans = (await loanService.GetActiveAsync()).Count;
-            var creditCards = (await creditCardService.GetActiveAsync()).Count;
-
             HomeAdminViewModel homeAdminViewModel = new()
             {
                 PayLogs = (await logService.GetAllPayLogsAsync()).Count,
@@ -54,7 +55,7 @@ namespace QuickBank.Controllers
                 DailyTransferLogs = (await logService.GetDailyTransferLogsAsync()).Count(),
                 UsersActive = (await userService.GetActiveUsersAsync()).Count(),
                 UsersInactive = (await userService.GetInactiveUsersAsync()).Count(),
-                ProductsAssigned = savingAccounts + loans + creditCards
+                ProductsAssigned = await productService.GetAssignedProducts()
             };
             return View(homeAdminViewModel);
         }

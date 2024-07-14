@@ -2,6 +2,7 @@
 using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Interfaces.Services.User;
+using QuickBank.Core.Application.Services.Products;
 using QuickBank.Core.Application.ViewModels.Auth;
 using QuickBank.Core.Application.ViewModels.User;
 
@@ -90,5 +91,7 @@ namespace QuickBank.Core.Application.Services.User
             ResetPasswordRequest resetPasswordRequest = _mapper.Map<ResetPasswordRequest>(resetPassword);
             return await _accountService.ResetPasswordAsync(resetPasswordRequest);
         }
+
+
     }
 }
