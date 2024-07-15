@@ -110,15 +110,16 @@ namespace QuickBank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UserSaveViewModel userSaveViewModel)
         {
+            ModelState.AddModelErrorRange(await userValidationService.UserSaveValidation(userSaveViewModel));
+            ModelState.AddModelErrorRange(await userValidationService.PasswordValidation(userSaveViewModel));
+            ModelState.AddModelErrorRange(await productValidationService.AvailableSavingAccounts());
+
             if (!ModelState.IsValid)
             {
                 return View("SaveUser", userSaveViewModel);
             }
             var updateResult = await userService.UpdateUserAsync(userSaveViewModel);
-            if (updateResult.HasError)
-            {
-                //Version que hacer
-            }
+
             if (userSaveViewModel.UserType == ERoles.BASIC)
             {
                 SavingAccountViewModel savingAccountViewModel = await savingAccountService.GetPrincipalSavingAccountAsync(userSaveViewModel.Id);
