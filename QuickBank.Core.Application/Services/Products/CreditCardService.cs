@@ -22,11 +22,11 @@ namespace QuickBank.Core.Application.Services.Products
 
         public async Task<CreditCardViewModel> GetAvailableCreditCardsAsync()
         {
-            return (await base.GetAllAsync()).FirstOrDefault(loan => loan.Status == (int)EProductStatus.INACTIVE && loan.UserId == null);
+            return (await base.GetAllAsync()).FirstOrDefault(loan => loan.Status == (int)EProductStatus.INACTIVE && loan.OwnerId == null);
         }
         public async Task<List<CreditCardViewModel>?> GetAllByUserIdAsync(string userId)
         {
-            return (await base.GetAllAsync()).Where(ccvm => ccvm.UserId == userId).ToList();
+            return (await base.GetAllAsync()).Where(ccvm => ccvm.OwnerId == userId).ToList();
         }
         public async Task<List<CreditCardViewModel>?> GetActiveAsync()
         {
@@ -56,7 +56,7 @@ namespace QuickBank.Core.Application.Services.Products
 
             creditCardToSet.Status = (int)EProductStatus.ACTIVE;
             creditCardToSet.LimitCredit = setCreditCard.AmountAvailable;
-            creditCardToSet.UserId = setCreditCard.OwnerId;
+            creditCardToSet.OwnerId = setCreditCard.OwnerId;
             creditCardToSet.CardNumber = newCreditCardNumber;
             var creditCardEntity = mapper.Map<CreditCardEntity>(creditCardToSet);
             await creditCardRepository.UpdateAsync(creditCardEntity, creditCardEntity.Id);

@@ -52,16 +52,12 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> Add(UserSaveViewModel userSaveViewModel)
         {
             if (userSaveViewModel.UserType == ERoles.BASIC)
-            {
                 ModelState.AddModelErrorRange(await productValidationService.AvailableSavingAccounts());
-            }
+            
             ModelState.AddModelErrorRange(await userValidationService.UserSaveValidation(userSaveViewModel));
             ModelState.AddModelErrorRange(await userValidationService.PasswordValidation(userSaveViewModel));
 
-            if (!ModelState.IsValid)
-            {
-                return View("SaveUser", userSaveViewModel);
-            }
+            if (!ModelState.IsValid) { return View("SaveUser", userSaveViewModel); }
 
             var origin = Request.Headers["origin"];
             RegisterResponse response = await userService.RegisterAsync(userSaveViewModel, origin);
@@ -70,14 +66,6 @@ namespace QuickBank.Controllers
                 userSaveViewModel.HasError = response.HasError;
                 userSaveViewModel.ErrorDescription = response.ErrorDescription;
                 return View("SaveUser", userSaveViewModel);
-            }
-            if (userSaveViewModel.UserType == ERoles.BASIC)
-            {
-                SetSavingAccount setSavingAccount = new()
-                {
-                    UserId = response.Id,
-                    InitialAmount = (double)userSaveViewModel.InitialAmount
-                };
             }
             return RedirectRoutesHelper.routeAdminHome;
         }
@@ -104,6 +92,13 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             UserSaveViewModel user = await userService.FindyByIdAsync(id);
+            if (user.Roles[0] == ERoles.BASIC.ToString()) {
+                user.UserType = ERoles.BASIC;
+            }
+            else
+            {
+                user.UserType = ERoles.ADMIN;
+            }
             return View("SaveUser", user);
         }
 
@@ -115,16 +110,10 @@ namespace QuickBank.Controllers
             ModelState.AddModelErrorRange(await userValidationService.PasswordValidation(userSaveViewModel));
 
             if (!ModelState.IsValid)
-            {
                 return View("SaveUser", userSaveViewModel);
-            }
-            var updateResult = await userService.UpdateUserAsync(userSaveViewModel);
-            if (userSaveViewModel.UserType == ERoles.BASIC)
-            {
-                SavingAccountViewModel savingAccountViewModel = await savingAccountService.GetPrincipalSavingAccountAsync(userSaveViewModel.Id);
-                savingAccountViewModel.Balance += (double)userSaveViewModel.InitialAmount;
-                savingAccountService.UpdateAsync(savingAccountViewModel, savingAccountViewModel.Id);
-            }
+            
+            await userService.UpdateUserAsync(userSaveViewModel);
+
             return RedirectRoutesHelper.routeAdmininistrationUserIndex;
         }
 
@@ -145,9 +134,8 @@ namespace QuickBank.Controllers
         {
             ModelState.AddModelErrorRange(await productValidationService.AvailableSavingAccounts());
             if (!ModelState.IsValid)
-            {
                 return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
-            }
+            
             SetSavingAccount savingAccount = new() { UserId = ownerId };
 
             await savingAccountService.SetSavingAccount(savingAccount);
@@ -167,9 +155,7 @@ namespace QuickBank.Controllers
         {
             ModelState.AddModelErrorRange(await productValidationService.AvailableLoans());
             if (!ModelState.IsValid)
-            {
                 return View(loanSaveViewModel);
-            }
 
             await loanService.SetLoan(loanSaveViewModel);
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", loanSaveViewModel.OwnerId });
@@ -219,9 +205,8 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> DeleteLoanPost(int id)
         {
             LoanViewModel loanOwnerId = await loanService.GetByIdAsync(id);
-            string ownerId = loanOwnerId.UserId;
             await loanService.DeleteAsync(id);
-            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", loanOwnerId.OwnerId });
         }
 
         [HttpGet]
@@ -235,9 +220,8 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> DeleteCreditCardPost(int id)
         {
             CreditCardViewModel creditCardOwnerId = await creditCardService.GetByIdAsync(id);
-            string ownerId = creditCardOwnerId.UserId;
             await creditCardService.DeleteAsync(id);
-            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", creditCardOwnerId.OwnerId });
         }
 
     }

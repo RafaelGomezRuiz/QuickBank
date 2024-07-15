@@ -1,12 +1,14 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using QuickBank.Core.Application.Dtos;
 using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Dtos.Email;
 using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Facilities;
+using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
+using QuickBank.Core.Application.ViewModels.Products;
 using QuickBank.Infrastructure.Identity.Entities;
 using System.Text;
 
@@ -16,22 +18,27 @@ namespace QuickBank.Infrastructure.Identity.Services
     {
         protected readonly UserManager<ApplicationUser> userManager;
         protected readonly SignInManager<ApplicationUser> signInManager;
+        protected readonly ISavingAccountService savingAccountService;
         protected readonly IEmailService emailService;
-        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService)
+        public AccountService(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ISavingAccountService savingAccountService,
+            IEmailService emailService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailService = emailService;
+            this.savingAccountService = savingAccountService;
         }
         public async Task<IEnumerable<AuthenticationResponse>> GetAllAsync()
         {
-            IEnumerable<ApplicationUser> users= userManager.Users.ToList();
-            List<AuthenticationResponse> authResponse=new List<AuthenticationResponse>();
+            IEnumerable<ApplicationUser> users = userManager.Users.ToList();
+            List<AuthenticationResponse> authResponse = new List<AuthenticationResponse>();
 
             foreach (var authResponseUser in users)
             {
                 var rolesList = await userManager.GetRolesAsync(authResponseUser).ConfigureAwait(false);
-                 authResponse.Add( new AuthenticationResponse
+                authResponse.Add(new AuthenticationResponse
                 {
                     Id = authResponseUser.Id,
                     FirstName = authResponseUser.FirstName,
@@ -45,7 +52,7 @@ namespace QuickBank.Infrastructure.Identity.Services
                     IsVerified = authResponseUser.EmailConfirmed,
                 });
             }
-            
+
             return authResponse;
         }
         public async Task<AuthenticationResponse> FindByIdAsync(string id)
@@ -100,7 +107,7 @@ namespace QuickBank.Infrastructure.Identity.Services
             response.Id = user.Id;
             response.UserName = user.UserName;
             response.FirstName = user.FirstName;
-            response.LastName = user.LastName ;
+            response.LastName = user.LastName;
             response.Email = user.Email;
             response.IdCard = user.IdCard;
             response.PhoneNumber = user.PhoneNumber;
@@ -120,7 +127,7 @@ namespace QuickBank.Infrastructure.Identity.Services
         }
         public async Task<bool> DuplicateUserName(string userName)
         {
-            return (await userManager.FindByNameAsync(userName)) != null ? true:false;
+            return (await userManager.FindByNameAsync(userName)) != null ? true : false;
         }
         public async Task<bool> DuplicateEmail(string email)
         {
@@ -129,8 +136,8 @@ namespace QuickBank.Infrastructure.Identity.Services
 
         public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin)
         {
-            RegisterResponse response = new(){ HasError = false};
-            
+            RegisterResponse response = new() { HasError = false };
+
             ApplicationUser userToRegister = new()
             {
                 FirstName = request.FirstName,
@@ -138,17 +145,24 @@ namespace QuickBank.Infrastructure.Identity.Services
                 UserName = request.UserName,
                 Email = request.Email,
                 IdCard = request.IdCard,
-                EmailConfirmed=true,
-                PhoneNumberConfirmed=true,
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
                 Status = Convert.ToInt32(EUserStatus.ACTIVE),
             };
 
-            var userCreated = await userManager.CreateAsync(userToRegister, request.Password);
+            var userCreated = await userManager.CreateAsync(userToRegister, request.Password!);
             if (userCreated.Succeeded)
             {
                 if (request.UserType == ERoles.BASIC)
                 {
                     await userManager.AddToRoleAsync(userToRegister, ERoles.BASIC.ToString());
+                    var applicationUser = await userManager.FindByEmailAsync(request.Email!);
+                    SetSavingAccount setSavingAccount = new()
+                    {
+                        UserId = applicationUser.Id,
+                        InitialAmount = (double)request.InitialAmount!
+                    };
+                    await savingAccountService.SetSavingAccount(setSavingAccount);
                 }
                 else if (request.UserType == ERoles.ADMIN)
                 {
@@ -161,7 +175,7 @@ namespace QuickBank.Infrastructure.Identity.Services
                 response.ErrorDescription = $"Has ocurred an error trying to save the user";
                 return response;
             }
-            ApplicationUser userRegistered= await userManager.FindByEmailAsync(request.Email);
+            ApplicationUser userRegistered = await userManager.FindByEmailAsync(request.Email);
             response.Id = userRegistered.Id;
             return response;
         }
@@ -260,6 +274,13 @@ namespace QuickBank.Infrastructure.Identity.Services
             userToUpdate.Status = responseUserVm.Status;
             userToUpdate.Email = responseUserVm.Email;
             userToUpdate.PhoneNumber = responseUserVm.PhoneNumber;
+
+            if (responseUserVm.UserType == ERoles.BASIC.ToString())
+            {
+                SavingAccountViewModel savingAccountViewModel = await savingAccountService.GetPrincipalSavingAccountAsync(responseUserVm.Id);
+                savingAccountViewModel.Balance += (double)responseUserVm.InitialAmount!;
+                await savingAccountService.UpdateAsync(savingAccountViewModel, savingAccountViewModel.Id);
+            }
 
             var userUpdatedSuccessfully = await userManager.UpdateAsync(userToUpdate);
             if (!userUpdatedSuccessfully.Succeeded)

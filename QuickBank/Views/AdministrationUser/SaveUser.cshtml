@@ -15,6 +15,14 @@
                 <h4>@(editMode ? $"Editando al usuario: {Model.FirstName} {Model.LastName}" : "Creando un nuevo usuario")</h4>
             </div>
             <div class="card-body">
+                @* this is for a server error saving the user *@
+                @if (Model.ErrorDescription == "Has ocurred an error trying to save the user")
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <p>@Model.ErrorDescription</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
                 @* Show Message if the user cant be saved *@
                     @Html.ValidationMessage("ArentAvailableSavingsAccounts", "", new { @class = "text-danger" })
                     @Html.ValidationMessage("UserDoesntExists", "", new { @class = "text-danger" })
@@ -98,11 +106,11 @@
                     {
                         <div class="mb-3">
                             <label asp-for="UserType" class="form-label">User Type:</label>
-                            <input asp-for="UserType" value=@(Model.Roles[0]) class="form-control" readonly />
+                            <input asp-for="UserType" class="form-control" readonly />
                         </div>
                     }
                     else
-                    {
+                    {@Model.UserType
                         <div class="mb-3">
                             <label asp-for="UserType" class="form-label">User Type:</label>
                             <select asp-for="UserType"  id="UserType" class="form-select" onchange="toggleInitialAmount()">

@@ -38,12 +38,7 @@ namespace QuickBank.Core.Application.Mappings
                 .ForMember(destino => destino.PhoneNumber, otp => otp.Ignore())
                 .ReverseMap()
                 .ForMember(destino => destino.Password, otp => otp.Ignore())
-                .ForMember(destino => destino.ConfirmPassword, otp => otp.Ignore())
-                .ForMember(destino => destino.InitialAmount, otp => otp.Ignore())
-                .ForMember(destino => destino.UserType, otp => otp.Ignore());
-
-
-
+                .ForMember(destino => destino.ConfirmPassword, otp => otp.Ignore());
 
             #endregion
 
@@ -54,12 +49,16 @@ namespace QuickBank.Core.Application.Mappings
                 .ReverseMap()
                 .ForMember(destino => destino.UserId, otp => otp.MapFrom(src => src.OwnerId));
 
-
             CreateMap<CreditCardEntity, CreditCardViewModel>()
-                .ReverseMap();
+                .ForMember(destino => destino.OwnerId, otp => otp.MapFrom(src => src.UserId))
+                .ReverseMap()
+                .ForMember(destino => destino.UserId, otp => otp.MapFrom(src => src.OwnerId));
 
             CreateMap<LoanEntity, LoanViewModel>()
-                .ReverseMap();
+                .ForMember(destino => destino.OwnerId, otp => otp.MapFrom(src => src.UserId))
+                .ReverseMap()
+                .ForMember(destino => destino.UserId, otp => otp.MapFrom(src => src.OwnerId));
+
 
             #endregion
 

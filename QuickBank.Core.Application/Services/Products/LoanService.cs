@@ -25,11 +25,11 @@ namespace QuickBank.Core.Application.Services.Products
         }
         public async Task<LoanViewModel> GetAvailableLoanAsync()
         {
-            return (await base.GetAllAsync()).FirstOrDefault(loan => loan.Status == (int)EProductStatus.INACTIVE && loan.UserId == null);
+            return (await base.GetAllAsync()).FirstOrDefault(loan => loan.Status == (int)EProductStatus.INACTIVE && loan.OwnerId == null);
         }
         public async Task<List<LoanViewModel>?> GetAllByUserIdAsync(string userId)
         {
-            return (await base.GetAllAsync()).Where(loan => loan.UserId == userId).ToList();
+            return (await base.GetAllAsync()).Where(loan => loan.OwnerId == userId).ToList();
         }
 
         public async Task<List<LoanViewModel>?> GetActiveAsync()
@@ -55,7 +55,7 @@ namespace QuickBank.Core.Application.Services.Products
 
             loanToSet.Status = (int)EProductStatus.INACTIVE;
             loanToSet.Amount = setLoan.Amount;
-            loanToSet.UserId = setLoan.OwnerId;
+            loanToSet.OwnerId = setLoan.OwnerId;
             loanToSet.Description = setLoan.Description;
             loanToSet.LoanNumber = newLoanNumber;
             var loanEntity = mapper.Map<LoanEntity>(loanToSet);

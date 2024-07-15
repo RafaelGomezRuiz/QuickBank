@@ -11,6 +11,6 @@
         public int Status { get; set; }
         public DateTime ApplicationDate { get; set; }
         public DateTime AprovalDate { get; set; }
-        public string? UserId { get; set; }
+        public string? OwnerId { get; set; }
     }
 }
