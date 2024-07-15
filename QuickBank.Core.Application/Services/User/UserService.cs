@@ -2,7 +2,6 @@
 using QuickBank.Core.Application.Dtos.Account;
 using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Interfaces.Services.User;
-using QuickBank.Core.Application.Services.Products;
 using QuickBank.Core.Application.ViewModels.Auth;
 using QuickBank.Core.Application.ViewModels.User;
 
@@ -28,7 +27,7 @@ namespace QuickBank.Core.Application.Services.User
 
         public async Task<IEnumerable<UserViewModel>> GetActiveUsersAsync()
         {
-            return (await GetAllAsync()).Where(user=>user.Status==(int)EUserStatus.ACTIVE && user.Roles[0] ==ERoles.BASIC.ToString());
+            return (await GetAllAsync()).Where(user => user.Status == (int)EUserStatus.ACTIVE && user.Roles[0] == ERoles.BASIC.ToString());
         }
         public async Task<IEnumerable<UserViewModel>> GetInactiveUsersAsync()
         {
@@ -36,8 +35,8 @@ namespace QuickBank.Core.Application.Services.User
         }
         public async Task<IEnumerable<UserViewModel>> GetAllAsync()
         {
-            var usersResponse= await _accountService.GetAllAsync();
-            var usersReturn=_mapper.Map<IEnumerable<UserViewModel>>(usersResponse);
+            var usersResponse = await _accountService.GetAllAsync();
+            var usersReturn = _mapper.Map<IEnumerable<UserViewModel>>(usersResponse);
             return usersReturn;
         }
         public async Task<UserSaveViewModel> FindyByIdAsync(string id)
