@@ -30,13 +30,14 @@ namespace QuickBank.Infrastructure.Identity.Services
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IMapper mapper,
+            ISavingAccountService savingAccountService,
             IEmailService emailService
         )
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.mapper = mapper;
-            ISavingAccountService savingAccountService,
+            this.savingAccountService=savingAccountService;
             this.emailService = emailService;
             this.savingAccountService = savingAccountService;
         }
