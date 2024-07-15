@@ -16,7 +16,8 @@
             </div>
             <div class="card-body">
                 @* Show Message if the user cant be saved *@
-                @Html.ValidationMessage("ArentAvailableSavingsAccounts", "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("ArentAvailableSavingsAccounts", "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("UserDoesntExists", "", new { @class = "text-danger" })
 
                 <form method="post" asp-controller="AdministrationUser" id="formSaveUser" asp-action="@(editMode ? "Edit" : "Add")">
                     <div class="mb-3">
@@ -115,15 +116,7 @@
                     }
 
 
-                    @if(editMode){
-                        
-                        <div id="initialAmountDiv" class="mb-3" style="display:none">
-                            <label asp-for="InitialAmount" class="form-label">Initial Amount:</label>
-                            <input asp-for="InitialAmount" class="form-control" type="number" min="0" value="0" />
-                            <span asp-validation-for="InitialAmount" class="text-danger"></span>
-                            @Html.ValidationMessage("InitialAmountNull", "", new { @class = "text-danger" })
-                        </div>
-                    }
+                    
                     <div id="initialAmountDiv" class="mb-3" style="display:none">
                         <label asp-for="InitialAmount" class="form-label">Initial Amount:</label>
                         <input asp-for="InitialAmount" class="form-control" type="number" min="0" value="0" />

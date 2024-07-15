@@ -1,11 +1,4 @@
-﻿using QuickBank.Core.Application.Helpers;
-using QuickBank.Core.Application.Interfaces.Services.Products;
-using QuickBank.Core.Application.ViewModels.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using QuickBank.Core.Application.Interfaces.Services.Products;
 
 namespace QuickBank.Core.Application.Services.Products
 {
@@ -28,7 +21,7 @@ namespace QuickBank.Core.Application.Services.Products
         {
             var errors = new Dictionary<string, string>();
             var availableSavingAcounts = await savingAccountService.GetAvailableSavingAccountAsync();
-            if (availableSavingAcounts == null )
+            if (availableSavingAcounts == null)
                 errors.Add("ArentAvailableSavingsAccounts", "The aren't saving accounts");
             return errors;
         }

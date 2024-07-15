@@ -6,8 +6,6 @@ using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
-using QuickBank.Core.Application.Services.Facilities;
-using QuickBank.Core.Application.Services.User;
 using QuickBank.Core.Application.ViewModels.Products;
 using QuickBank.Core.Application.ViewModels.User;
 using QuickBank.Helpers;
@@ -37,7 +35,7 @@ namespace QuickBank.Controllers
             this.savingAccountService = savingAccountService;
             this.loanService = loanService;
             this.creditCardService = creditCardService;
-            this.userValidationService= userValidationService;
+            this.userValidationService = userValidationService;
             this.productValidationService = productValidationService;
         }
         public async Task<IActionResult> Index()
@@ -53,9 +51,12 @@ namespace QuickBank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(UserSaveViewModel userSaveViewModel)
         {
+            if (userSaveViewModel.UserType == ERoles.BASIC)
+            {
+                ModelState.AddModelErrorRange(await productValidationService.AvailableSavingAccounts());
+            }
             ModelState.AddModelErrorRange(await userValidationService.UserSaveValidation(userSaveViewModel));
             ModelState.AddModelErrorRange(await userValidationService.PasswordValidation(userSaveViewModel));
-            ModelState.AddModelErrorRange(await productValidationService.AvailableSavingAccounts());
 
             if (!ModelState.IsValid)
             {
@@ -110,16 +111,14 @@ namespace QuickBank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UserSaveViewModel userSaveViewModel)
         {
-            ModelState.AddModelErrorRange(await userValidationService.UserSaveValidation(userSaveViewModel));
+            ModelState.AddModelErrorRange(await userValidationService.UserUpdateValidation(userSaveViewModel));
             ModelState.AddModelErrorRange(await userValidationService.PasswordValidation(userSaveViewModel));
-            ModelState.AddModelErrorRange(await productValidationService.AvailableSavingAccounts());
 
             if (!ModelState.IsValid)
             {
                 return View("SaveUser", userSaveViewModel);
             }
             var updateResult = await userService.UpdateUserAsync(userSaveViewModel);
-
             if (userSaveViewModel.UserType == ERoles.BASIC)
             {
                 SavingAccountViewModel savingAccountViewModel = await savingAccountService.GetPrincipalSavingAccountAsync(userSaveViewModel.Id);
@@ -149,7 +148,7 @@ namespace QuickBank.Controllers
             {
                 return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
             }
-            SetSavingAccount savingAccount = new(){ UserId = ownerId };
+            SetSavingAccount savingAccount = new() { UserId = ownerId };
 
             await savingAccountService.SetSavingAccount(savingAccount);
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
@@ -158,10 +157,10 @@ namespace QuickBank.Controllers
         [HttpGet]
         public async Task<IActionResult> SetLoan(string ownerId)
         {
-            LoanSaveViewModel loanSaveViewModel = new() { OwnerId = ownerId};
+            LoanSaveViewModel loanSaveViewModel = new() { OwnerId = ownerId };
             return View(loanSaveViewModel);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetLoan(LoanSaveViewModel loanSaveViewModel)
@@ -173,13 +172,13 @@ namespace QuickBank.Controllers
             }
 
             await loanService.SetLoan(loanSaveViewModel);
-            return RedirectToRoute(new {Controller="AdministrationUser",Action="UserProducts",loanSaveViewModel.OwnerId});
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", loanSaveViewModel.OwnerId });
         }
 
         [HttpGet]
         public async Task<IActionResult> SetCreditCard(string ownerId)
         {
-            CreditCardSaveViewModel creditCardSaveViewModel = new(){OwnerId = ownerId,};
+            CreditCardSaveViewModel creditCardSaveViewModel = new() { OwnerId = ownerId, };
             return View(creditCardSaveViewModel);
         }
 
@@ -203,7 +202,7 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> DeleteSavingAccountPost(int id)
         {
             //Lazy alternativa es cambiaele a SavingAcountService y al vm de userId a Owner id haciendo una migracion
-            SavingAccountViewModel savingAccountOwner= await savingAccountService.GetByIdAsync(id);
+            SavingAccountViewModel savingAccountOwner = await savingAccountService.GetByIdAsync(id);
 
             await savingAccountService.DeleteAsync(id);
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", savingAccountOwner.OwnerId });
@@ -220,9 +219,9 @@ namespace QuickBank.Controllers
         public async Task<IActionResult> DeleteLoanPost(int id)
         {
             LoanViewModel loanOwnerId = await loanService.GetByIdAsync(id);
-            string ownerId =loanOwnerId.UserId;
+            string ownerId = loanOwnerId.UserId;
             await loanService.DeleteAsync(id);
-            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId});
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
         }
 
         [HttpGet]

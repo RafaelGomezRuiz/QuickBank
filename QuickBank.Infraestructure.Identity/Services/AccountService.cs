@@ -252,35 +252,6 @@ namespace QuickBank.Infrastructure.Identity.Services
             };
             ApplicationUser userToUpdate = await userManager.FindByIdAsync(responseUserVm.Id);
 
-            if (userToUpdate == null)
-            {
-                response.HasError = true;
-                response.ErrorDescription = "User not found";
-                return response;
-            }
-
-            if (userToUpdate.UserName != responseUserVm.UserName)
-            {
-                var DuplicateUserName = await userManager.FindByNameAsync(responseUserVm.UserName);
-                if (DuplicateUserName != null)
-                {
-                    response.HasError = true;
-                    response.ErrorDescription = $"this UserName '{responseUserVm.UserName}' in use";
-                    return response;
-                }
-            }
-
-            if (userToUpdate.Email != responseUserVm.Email)
-            {
-                var DuplicateEmail = await userManager.FindByEmailAsync(responseUserVm.Email);
-                if (DuplicateEmail != null)
-                {
-                    response.HasError = true;
-                    response.ErrorDescription = $"this Email '{responseUserVm.Email}' is already registered";
-                    return response;
-                }
-            }
-
             userToUpdate.Id = responseUserVm.Id;
             userToUpdate.FirstName = responseUserVm.FirstName;
             userToUpdate.LastName = responseUserVm.LastName;

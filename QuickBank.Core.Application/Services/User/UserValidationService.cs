@@ -37,6 +37,37 @@ namespace QuickBank.Core.Application.Services.User
 
             return errors;
         }
+        public async Task<Dictionary<string, string>> UserUpdateValidation(UserSaveViewModel userSaveViewModel)
+        {
+            var errors = new Dictionary<string, string>();
+            var userToUpdate = await userService.FindyByIdAsync(userSaveViewModel.Id);
+            var sameEmail = userToUpdate.Email == userSaveViewModel.Email;
+            var sameUserName = userToUpdate.UserName == userSaveViewModel.UserName;
+
+            if (userToUpdate == null)
+            {
+                errors.Add("UserDoesntExists", "No existe una cuenta con esas credenciales");
+                return errors;
+            }
+            if (userSaveViewModel.Email != null && !sameEmail)
+            {
+                bool duplicateEmail = await userService.DuplicateEmail(userSaveViewModel.Email);
+                if (duplicateEmail) errors.Add("DuplicateEmail", "Email already in use");
+            }
+            if (userSaveViewModel.UserName != null && !sameUserName)
+            {
+                bool duplicateUserName = await userService.DuplicateUserName(userSaveViewModel.UserName);
+                if (duplicateUserName) errors.Add("DuplicateUserName", "Username already in use");
+            }
+
+            bool initialAmountNull = (userSaveViewModel.InitialAmount == null ? true : false);
+            if (initialAmountNull) errors.Add("InitialAmountNull", "Debes introducir un valor numerico");
+
+            bool invalidUserType = (userSaveViewModel.UserType.ToString() == string.Empty ? true : false);
+            if (invalidUserType) errors.Add("InvalidUserType", "Debes eligir un rol valido");
+
+            return errors;
+        }
         public async Task<Dictionary<string, string>> PasswordValidation(UserSaveViewModel userSaveViewModel)
         {
             var errors = new Dictionary<string, string>();
@@ -44,11 +75,14 @@ namespace QuickBank.Core.Application.Services.User
             var upperCasePattern = @"[A-Z]";
             var hasNumberPattern = @"\d";
             var nonAlphanumericPattern = @"\W";
+            bool editMode = userSaveViewModel.Id != null;
 
-            if (userSaveViewModel.Password == null)
+            if (userSaveViewModel.Password == null && !editMode)
+            {
                 errors.Add("PasswordRequired", $"The password is required");
-            
-            if (userSaveViewModel.Password != null)
+                return errors;
+            }
+            else if(userSaveViewModel.Password != null)
             {
                 // Check if password meets the minimum length requirement
                 if (userSaveViewModel.Password.Length < BusinessLogicConstantsHelper.MinPasswordLength)
