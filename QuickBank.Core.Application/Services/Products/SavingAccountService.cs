@@ -23,17 +23,17 @@ namespace QuickBank.Core.Application.Services.Products
 
         public async Task<SavingAccountViewModel> GetAvailableSavingAccountAsync()
         {
-            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Status == (int)EProductStatus.INACTIVE && savm.UserId == null);
+            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Status == (int)EProductStatus.INACTIVE && savm.OwnerId == null);
         }
 
         public async Task<SavingAccountViewModel> GetPrincipalSavingAccountAsync(string userId)
         {
-            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Principal == true && savm.UserId == userId);
+            return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Principal == true && savm.OwnerId == userId);
         }
 
         public async Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId)
         {
-            return (await base.GetAllAsync()).Where(savm => savm.UserId == userId).ToList();
+            return (await base.GetAllAsync()).Where(savm => savm.OwnerId == userId).ToList();
         }
         public async Task<List<SavingAccountViewModel>?> GetActiveAsync()
         {
@@ -67,7 +67,7 @@ namespace QuickBank.Core.Application.Services.Products
             savingAccountVm.Status = (int)EProductStatus.ACTIVE;
             savingAccountVm.Principal = isFirstAccount;
             savingAccountVm.Balance = setSavingAccount.InitialAmount;
-            savingAccountVm.UserId = setSavingAccount.UserId;
+            savingAccountVm.OwnerId = setSavingAccount.UserId;
             savingAccountVm.AccountNumber = accountNumber;
             var savingAccountEntity = mapper.Map<SavingAccountEntity>(savingAccountVm);
             await savingAccountRepository.UpdateAsync(savingAccountEntity, savingAccountEntity.Id);
@@ -78,7 +78,7 @@ namespace QuickBank.Core.Application.Services.Products
 
             if (savingAccountOwner.Balance > 0)
             {
-                SavingAccountViewModel principalSavingAccount = await GetPrincipalSavingAccountAsync(savingAccountOwner.UserId);
+                SavingAccountViewModel principalSavingAccount = await GetPrincipalSavingAccountAsync(savingAccountOwner.OwnerId);
                 principalSavingAccount.Balance += savingAccountOwner.Balance;
                 await UpdateAsync(principalSavingAccount, principalSavingAccount.Id);
             }

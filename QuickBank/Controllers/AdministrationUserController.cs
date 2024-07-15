@@ -77,16 +77,6 @@ namespace QuickBank.Controllers
                     UserId = response.Id,
                     InitialAmount = (double)userSaveViewModel.InitialAmount
                 };
-
-                try
-                {
-                    await savingAccountService.SetSavingAccount(setSavingAccount);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    ModelState.AddModelError(string.Empty, "No available saving accounts.");
-                    return View("SaveUser", userSaveViewModel);
-                }
             }
             return RedirectRoutesHelper.routeAdminHome;
         }
@@ -158,7 +148,7 @@ namespace QuickBank.Controllers
             {
                 return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
             }
-            SetSavingAccount savingAccount = new(){UserId = ownerId,};
+            SetSavingAccount savingAccount = new(){ UserId = ownerId };
 
             await savingAccountService.SetSavingAccount(savingAccount);
             return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
@@ -213,10 +203,9 @@ namespace QuickBank.Controllers
         {
             //Lazy alternativa es cambiaele a SavingAcountService y al vm de userId a Owner id haciendo una migracion
             SavingAccountViewModel savingAccountOwner= await savingAccountService.GetByIdAsync(id);
-            string ownerId = savingAccountOwner.UserId;
 
             await savingAccountService.DeleteAsync(id);
-            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", ownerId });
+            return RedirectToRoute(new { Controller = "AdministrationUser", Action = "UserProducts", savingAccountOwner.OwnerId });
         }
 
         [HttpGet]

@@ -56,7 +56,7 @@ namespace QuickBank.Core.Application.Services.Facilities
         public async Task<ConfirmPayViewModel> GetExpressPayConfirmation(string numberAccountToPay)
         {
             var savingAccountToPay = await savingAccountService.GetViewModelByNumberAccountAsync(numberAccountToPay);
-            var userFromSavingAccountToPay = await accountService.FindByIdAsync(savingAccountToPay.UserId);
+            var userFromSavingAccountToPay = await accountService.FindByIdAsync(savingAccountToPay.OwnerId);
 
             return CreatePayConfirmation
             (

@@ -10,7 +10,7 @@ namespace QuickBank.Core.Application.ViewModels.Products
         public double Balance { get; set; }
         public int Status { get; set; }
         public bool Principal { get; set; }
-        public string? UserId { get; set; }
+        public string? OwnerId { get; set; }
 
         // Navegation properties
         public ICollection<BeneficeViewModel>? Benefices { get; set; }

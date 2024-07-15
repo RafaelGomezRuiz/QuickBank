@@ -50,7 +50,10 @@ namespace QuickBank.Core.Application.Mappings
             #region Products
 
             CreateMap<SavingAccountEntity, SavingAccountViewModel>()
-                .ReverseMap();
+                .ForMember(destino => destino.OwnerId, otp => otp.MapFrom(src => src.UserId))
+                .ReverseMap()
+                .ForMember(destino => destino.UserId, otp => otp.MapFrom(src => src.OwnerId));
+
 
             CreateMap<CreditCardEntity, CreditCardViewModel>()
                 .ReverseMap();

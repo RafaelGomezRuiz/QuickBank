@@ -122,7 +122,7 @@ namespace QuickBank.Core.Application.Services.Facilities
             bool numberAccountCharactersIsValid = !numberAccountIsNull && bsvm.NumberAccount.Length == BusinessLogicConstantsHelper.MaxLengthNumberAccount;
             bool savingAccountExist = savingAccount != null;
             bool savingAccountToPayIsActive = savingAccountExist && savingAccount.Status == (int)EProductStatus.ACTIVE;
-            bool savingAccountIsNotTheCurrentUser = savingAccountExist && savingAccount.UserId != user.Id;
+            bool savingAccountIsNotTheCurrentUser = savingAccountExist && savingAccount.OwnerId != user.Id;
             bool beneficeExist = userBenefies.Any(bvm => bvm.BenefitedSavingAccount.AccountNumber == bsvm.NumberAccount);
 
             if (numberAccountIsNull) errors.Add("InvalidNumberAccountNull", "The number account field cannot be empty");

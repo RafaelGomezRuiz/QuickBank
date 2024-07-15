@@ -6,6 +6,5 @@ namespace QuickBank.Core.Application.Interfaces.Services.User
     {
         Task<Dictionary<string, string>> UserSaveValidation(UserSaveViewModel userSaveViewModel);
         Task<Dictionary<string, string>> PasswordValidation(UserSaveViewModel userSaveViewModel);
-
     }
 }

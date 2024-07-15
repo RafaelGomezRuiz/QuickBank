@@ -57,7 +57,7 @@ namespace QuickBank.Core.Application.Services.Facilities
 
             foreach (var benefice in benefices)
             {
-                var user = users.FirstOrDefault(user => user.Id == benefice.BenefitedSavingAccount.UserId);
+                var user = users.FirstOrDefault(user => user.Id == benefice.BenefitedSavingAccount.OwnerId);
                 benefice.BenefitedFullName = $"{user.UserName} {user.LastName}";
             }
 
