@@ -60,7 +60,7 @@ namespace QuickBank.Controllers
             if (!ModelState.IsValid) { return View("SaveUser", userSaveViewModel); }
 
             var origin = Request.Headers["origin"];
-            RegisterResponse response = await userService.RegisterAsync(userSaveViewModel, origin);
+            RegisterResponse response = await userService.RegisterAsync(userSaveViewModel);
             if (response.HasError)
             {
                 userSaveViewModel.HasError = response.HasError;

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Azure;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using QuickBank.Core.Application.Dtos;
 using QuickBank.Core.Application.Dtos.Account;
@@ -16,189 +19,156 @@ namespace QuickBank.Infrastructure.Identity.Services
 {
     public class AccountService : IAccountService
     {
-        protected readonly UserManager<ApplicationUser> userManager;
-        protected readonly SignInManager<ApplicationUser> signInManager;
-        protected readonly ISavingAccountService savingAccountService;
-        protected readonly IEmailService emailService;
-        public AccountService(UserManager<ApplicationUser> userManager,
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IMapper mapper;
+        private readonly IEmailService emailService;
+        private readonly ISavingAccountService savingAccountService;
+
+
+        public AccountService(
+            UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ISavingAccountService savingAccountService,
-            IEmailService emailService)
+            IMapper mapper,
+            IEmailService emailService
+        )
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.mapper = mapper;
+            ISavingAccountService savingAccountService,
             this.emailService = emailService;
             this.savingAccountService = savingAccountService;
         }
+
+
         public async Task<IEnumerable<AuthenticationResponse>> GetAllAsync()
         {
-            IEnumerable<ApplicationUser> users = userManager.Users.ToList();
-            List<AuthenticationResponse> authResponse = new List<AuthenticationResponse>();
+            var applicationUsers = userManager.Users.ToList();
+            var authResponses = new List<AuthenticationResponse>();
 
-            foreach (var authResponseUser in users)
+            foreach (var user in applicationUsers)
             {
-                var rolesList = await userManager.GetRolesAsync(authResponseUser).ConfigureAwait(false);
-                authResponse.Add(new AuthenticationResponse
-                {
-                    Id = authResponseUser.Id,
-                    FirstName = authResponseUser.FirstName,
-                    LastName = authResponseUser.LastName,
-                    UserName = authResponseUser.UserName,
-                    Email = authResponseUser.Email,
-                    PhoneNumber = authResponseUser.PhoneNumber,
-                    Status = authResponseUser.Status,
-                    IdCard = authResponseUser.IdCard,
-                    Roles = rolesList.ToList(),
-                    IsVerified = authResponseUser.EmailConfirmed,
-                });
+                var rolesList = await userManager.GetRolesAsync(user).ConfigureAwait(false);
+                var response = mapper.Map<AuthenticationResponse>(user);
+                response.Roles = rolesList.ToList();
+                authResponses.Add(response);
             }
 
-            return authResponse;
+            return authResponses;
         }
-        public async Task<AuthenticationResponse> FindByIdAsync(string id)
+
+        public async Task<AuthenticationResponse> FindByIdAsync(string userId)
         {
-            ApplicationUser user = await userManager.FindByIdAsync(id);
-            AuthenticationResponse response = new();
+            var applicationUser = await userManager.FindByIdAsync(userId);
+            var response = mapper.Map<AuthenticationResponse>(applicationUser);
+            response.Roles = (await userManager.GetRolesAsync(applicationUser!).ConfigureAwait(false)).ToList();
 
-            response.Id = user.Id;
-            response.FirstName = user.FirstName;
-            response.LastName = user.LastName;
-            response.UserName = user.UserName;
-            response.Email = user.Email;
-            response.PhoneNumber = user.PhoneNumber;
-            response.Status = user.Status;
-            response.IdCard = user.IdCard;
-            var rolesList = await userManager.GetRolesAsync(user).ConfigureAwait(false);
-
-            response.Roles = rolesList.ToList();
-            response.IsVerified = user.EmailConfirmed;
             return response;
         }
+
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {
-            AuthenticationResponse response = new();
-            ApplicationUser? user = await userManager.FindByEmailAsync(request.Email);
-            if (user == null)
+            // Resouces
+            var applicationUser = await userManager.FindByEmailAsync(request.Email);
+            var responseWithErrors = new AuthenticationResponse();
+
+            if (applicationUser == null)
             {
-                response.HasError = true;
-                response.ErrorDescription = $"No accounts with this {request.Email}";
-                return response;
-            }
-            var result = await signInManager.PasswordSignInAsync(user.UserName, request.Password, false, false);
-            if (!result.Succeeded)
-            {
-                response.HasError = true;
-                response.ErrorDescription = $"Invalid credentials for {request.Email}";
-                return response;
-            }
-            if (!user.EmailConfirmed)
-            {
-                response.HasError = true;
-                response.ErrorDescription = $"Acount not confirmed for {request.Email}";
-                return response;
-            }
-            if (user.Status != (int)EUserStatus.ACTIVE)
-            {
-                response.HasError = true;
-                response.ErrorDescription = $"Acount inactive for {request.Email}, please communicate with the admin";
-                return response;
+                responseWithErrors.HasError = true;
+                responseWithErrors.ErrorDescription = $"No accounts with this {request.Email}";
+                return responseWithErrors;
             }
 
-            response.Id = user.Id;
-            response.UserName = user.UserName;
-            response.FirstName = user.FirstName;
-            response.LastName = user.LastName;
-            response.Email = user.Email;
-            response.IdCard = user.IdCard;
-            response.PhoneNumber = user.PhoneNumber;
+            var resultCredential = await signInManager.PasswordSignInAsync(applicationUser.UserName, request.Password, false, false);
+            if (!resultCredential.Succeeded)
+            {
+                responseWithErrors.HasError = true;
+                responseWithErrors.ErrorDescription = $"Invalid credentials for {request.Email}";
+                return responseWithErrors;
+            }
 
-            var rolesList = await userManager.GetRolesAsync(user).ConfigureAwait(false);
+            if (!applicationUser.EmailConfirmed)
+            {
+                responseWithErrors.HasError = true;
+                responseWithErrors.ErrorDescription = $"Acount not confirmed for {request.Email}";
+                return responseWithErrors;
+            }
 
-            response.Roles = rolesList.ToList();
-            response.IsVerified = user.EmailConfirmed;
-            response.Status = user.Status;
+            if (applicationUser.Status == (int)EUserStatus.INACTIVE)
+            {
+                responseWithErrors.HasError = true;
+                responseWithErrors.ErrorDescription = $"Acount inactive for {request.Email}, please communicate with the admin";
+                return responseWithErrors;
+            }
 
-            return response;
+            var responseWithData = mapper.Map<AuthenticationResponse>(applicationUser);
+            responseWithData.Roles = (await userManager.GetRolesAsync(applicationUser).ConfigureAwait(false)).ToList();
+
+            return responseWithData;
         }
 
         public async Task SignOutAsync()
         {
             await signInManager.SignOutAsync();
         }
+
         public async Task<bool> DuplicateUserName(string userName)
         {
-            return (await userManager.FindByNameAsync(userName)) != null ? true : false;
+            return (await userManager.FindByNameAsync(userName)) != null;
         }
+
         public async Task<bool> DuplicateEmail(string email)
         {
-            return (await userManager.FindByEmailAsync(email)) != null ? true : false;
+            return (await userManager.FindByEmailAsync(email)) != null;
         }
 
-        public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin)
+        public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request)
         {
-            RegisterResponse response = new() { HasError = false };
+            // Resources
+            RegisterResponse response = new();
+            ApplicationUser userToRegister = mapper.Map<ApplicationUser>(request);
+            userToRegister.EmailConfirmed = true;
+            userToRegister.PhoneNumberConfirmed = true;
+            userToRegister.Status = (int)EUserStatus.ACTIVE;
 
-            ApplicationUser userToRegister = new()
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                UserName = request.UserName,
-                Email = request.Email,
-                IdCard = request.IdCard,
-                EmailConfirmed = true,
-                PhoneNumberConfirmed = true,
-                Status = Convert.ToInt32(EUserStatus.ACTIVE),
-            };
-
-            var userCreated = await userManager.CreateAsync(userToRegister, request.Password!);
-            if (userCreated.Succeeded)
-            {
-                if (request.UserType == ERoles.BASIC)
-                {
-                    await userManager.AddToRoleAsync(userToRegister, ERoles.BASIC.ToString());
-                    var applicationUser = await userManager.FindByEmailAsync(request.Email!);
-                    SetSavingAccount setSavingAccount = new()
-                    {
-                        UserId = applicationUser.Id,
-                        InitialAmount = (double)request.InitialAmount!
-                    };
-                    await savingAccountService.SetSavingAccount(setSavingAccount);
-                }
-                else if (request.UserType == ERoles.ADMIN)
-                {
-                    await userManager.AddToRoleAsync(userToRegister, ERoles.ADMIN.ToString());
-                }
-            }
-            else
+            // Creation
+            var resultCreation = await userManager.CreateAsync(userToRegister, request.Password);
+            if (!resultCreation.Succeeded)
             {
                 response.HasError = true;
                 response.ErrorDescription = $"Has ocurred an error trying to save the user";
                 return response;
             }
-            ApplicationUser userRegistered = await userManager.FindByEmailAsync(request.Email);
+            if (request.UserType == ERoles.BASIC)
+            {
+                await userManager.AddToRoleAsync(userToRegister, ERoles.BASIC.ToString());
+                var applicationUser = await userManager.FindByEmailAsync(request.Email!);
+                SetSavingAccount setSavingAccount = new()
+                {
+                    UserId = applicationUser.Id,
+                    InitialAmount = (double)request.InitialAmount!
+                };
+                await savingAccountService.SetSavingAccount(setSavingAccount);
+            }
+            else if (request.UserType == ERoles.ADMIN)
+            {
+                await userManager.AddToRoleAsync(userToRegister, ERoles.ADMIN.ToString());
+            }
+            ApplicationUser userRegistered= await userManager.FindByEmailAsync(request.Email);
             response.Id = userRegistered.Id;
+
             return response;
         }
-        //LeftJoinExpression the method to AdminUser
 
-        //public async Task<string> ConfirmAccountAsync(string userId, string token)
-        //{
-        //    ApplicationUser user = await userManager.FindByIdAsync(userId);
-        //    if (user == null)
-        //    {
-        //        return $"No accounts registered with this user";
-        //    }
-        //    token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-        //    var result = await userManager.ConfirmEmailAsync(user, token);
-        //    if (result.Succeeded)
-        //    {
-        //        return $"Account confirmed for {user.UserName}. Yuo can use the app";
-        //    }
-        //    else
-        //    {
-        //        return $"An error occured while confirming {user.UserName} try again";
-        //    }
-        //}
+        /*
+         
+            ME QUEDEEE AQUI
+
+            Tener en cuenta que RegisterResponse comente muchas propiedades ya que no se usarn
+            Y me quede para seguir con el forgot password
+         
+         */
 
         public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
         {
@@ -309,17 +279,5 @@ namespace QuickBank.Infrastructure.Identity.Services
             var verificationUri = Uri.ToString();
             return verificationUri;
         }
-
-        //private async Task<string> SendVerificationEmailUri(ApplicationUser user, string origin)
-        //{
-        //    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        //    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        //    var route = "User/ConfirmEmail";
-        //    var Uri = new Uri(string.Concat($"{origin}/", route));
-        //    var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "userId", user.Id);
-        //    verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", code);
-        //    return verificationUri;
-        //}
-
     }
 }

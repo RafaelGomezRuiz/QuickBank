@@ -8,7 +8,7 @@ namespace QuickBank.Core.Application.Interfaces.Services.User
     {
         Task<IEnumerable<UserViewModel>> GetAllAsync();
         Task<UserSaveViewModel> FindyByIdAsync(string id);
-        Task<RegisterResponse> RegisterAsync(UserSaveViewModel vm, string origin);
+        Task<RegisterResponse> RegisterAsync(UserSaveViewModel vm);
         Task<UserSaveViewModel> UpdateUserAsync(UserSaveViewModel saveUserViewModel);
         Task SignOutAsync();
         //Task<string> ConfirmEmailAsync(string userId, string token);

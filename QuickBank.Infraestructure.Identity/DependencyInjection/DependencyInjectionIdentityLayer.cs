@@ -10,6 +10,7 @@ using QuickBank.Infrastructure.Identity.Entities;
 using QuickBank.Infrastructure.Identity.Seeds;
 using QuickBank.Infrastructure.Identity.Services;
 using QuickBank.Infrastructure.Persistence.Seeds.Users;
+using System.Reflection;
 
 namespace QuickBank.Infrastructure.Identity.DependencyInjection
 {
@@ -53,6 +54,7 @@ namespace QuickBank.Infrastructure.Identity.DependencyInjection
             #endregion
 
             #region Services
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddTransient<IAccountService, AccountService>();
             #endregion
         }

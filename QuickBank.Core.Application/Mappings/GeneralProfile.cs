@@ -21,13 +21,13 @@ namespace QuickBank.Core.Application.Mappings
             #endregion
 
             #region User
+
             CreateMap<UserViewModel, AuthenticationResponse>()
                 .ForMember(destino => destino.HasError, otp => otp.Ignore())
                 .ForMember(destino => destino.ErrorDescription, otp => otp.Ignore())
                 .ForMember(destino => destino.IsVerified, otp => otp.Ignore())
                 .ReverseMap()
                 .ForMember(destino => destino.Password, otp => otp.Ignore());
-
 
             CreateMap<UserSaveViewModel, RegisterRequest>()
                 .ReverseMap()
