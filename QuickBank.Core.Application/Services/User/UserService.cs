@@ -47,10 +47,10 @@ namespace QuickBank.Core.Application.Services.User
             return user;
         }
 
-        public async Task<RegisterResponse> RegisterAsync(UserSaveViewModel vm, string origin)
+        public async Task<RegisterResponse> RegisterAsync(UserSaveViewModel vm)
         {
             RegisterRequest registerRequest = _mapper.Map<RegisterRequest>(vm);
-            RegisterResponse registerResponse = await _accountService.RegisterUserAsync(registerRequest, origin);
+            RegisterResponse registerResponse = await _accountService.RegisterUserAsync(registerRequest);
             return registerResponse;
         }
 
