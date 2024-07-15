@@ -72,6 +72,17 @@ namespace QuickBank.Core.Application.Services.Products
             var savingAccountEntity = mapper.Map<SavingAccountEntity>(savingAccountVm);
             await savingAccountRepository.UpdateAsync(savingAccountEntity, savingAccountEntity.Id);
         }
-        
+        public override async Task DeleteAsync(int entityId)
+        {
+            SavingAccountViewModel savingAccountOwner = await GetByIdAsync(entityId);
+
+            if (savingAccountOwner.Balance > 0)
+            {
+                SavingAccountViewModel principalSavingAccount = await GetPrincipalSavingAccountAsync(savingAccountOwner.UserId);
+                principalSavingAccount.Balance += savingAccountOwner.Balance;
+                await UpdateAsync(principalSavingAccount, principalSavingAccount.Id);
+            }
+            await base.DeleteAsync(entityId);
+        }
     }
 }
