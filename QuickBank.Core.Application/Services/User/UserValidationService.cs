@@ -37,6 +37,7 @@ namespace QuickBank.Core.Application.Services.User
 
             return errors;
         }
+
         public async Task<Dictionary<string, string>> UserUpdateValidation(UserSaveViewModel userSaveViewModel)
         {
             var errors = new Dictionary<string, string>();

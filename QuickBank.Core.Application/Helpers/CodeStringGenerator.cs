@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QuickBank.Core.Application.Helpers
+﻿namespace QuickBank.Core.Application.Helpers
 {
     public static class CodeStringGenerator
     {
@@ -33,16 +27,14 @@ namespace QuickBank.Core.Application.Helpers
 
         public static string GenerateProductNumber()
         {
-            string productNumber =
-                Convert.ToChar(GetRandomCharacter(Numbers)).ToString();
+            string numberGenerated = string.Empty;
 
-            string allCharacters = Numbers;
-            for (int i = productNumber.Length; i < BusinessLogicConstantsHelper.MaxLengthNumberAccount; i++)
+            for (int i = 0; i < BusinessLogicConstantsHelper.MaxLengthNumberAccount; i++)
             {
-                productNumber += GetRandomCharacter(allCharacters);
+                numberGenerated += GetRandomCharacter(Numbers);
             }
 
-            return new string(productNumber.ToCharArray().OrderBy(c => random.Next()).ToArray());
+            return numberGenerated;
         }
 
         private static char GetRandomCharacter(string characters)

@@ -20,7 +20,7 @@ namespace QuickBank.Core.Application.Services.Products
         }
         public async Task<int> GetAssignedProducts()
         {
-            var savingAccounts = (await savingAccountService.GetActiveAsync()).Count;
+            var savingAccounts = (await savingAccountService.GetAllActiveAsync()).Count;
             var loans = (await loanService.GetActiveAsync()).Count;
             var creditCards = (await creditCardService.GetActiveAsync()).Count;
             return savingAccounts + loans + creditCards;

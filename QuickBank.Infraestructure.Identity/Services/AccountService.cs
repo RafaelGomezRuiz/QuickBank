@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using QuickBank.Core.Application.Dtos;
@@ -37,7 +35,7 @@ namespace QuickBank.Infrastructure.Identity.Services
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.mapper = mapper;
-            this.savingAccountService=savingAccountService;
+            this.savingAccountService = savingAccountService;
             this.emailService = emailService;
             this.savingAccountService = savingAccountService;
         }
@@ -129,11 +127,13 @@ namespace QuickBank.Infrastructure.Identity.Services
             // Resources
             RegisterResponse response = new();
             ApplicationUser userToRegister = mapper.Map<ApplicationUser>(request);
+
+            // Dafault values for user when is created
             userToRegister.EmailConfirmed = true;
             userToRegister.PhoneNumberConfirmed = true;
             userToRegister.Status = (int)EUserStatus.ACTIVE;
 
-            // Creation
+            // Try to create the user
             var resultCreation = await userManager.CreateAsync(userToRegister, request.Password);
             if (!resultCreation.Succeeded)
             {
@@ -141,35 +141,25 @@ namespace QuickBank.Infrastructure.Identity.Services
                 response.ErrorDescription = $"Has ocurred an error trying to save the user";
                 return response;
             }
+
+            // Set roles for created user
+            await userManager.AddToRoleAsync(userToRegister, request.UserType.ToString());
+
+            // Assing saving account if the user created is a basic user
             if (request.UserType == ERoles.BASIC)
             {
-                await userManager.AddToRoleAsync(userToRegister, ERoles.BASIC.ToString());
-                var applicationUser = await userManager.FindByEmailAsync(request.Email!);
-                SetSavingAccount setSavingAccount = new()
-                {
-                    UserId = applicationUser.Id,
+                SetSavingAccount setSavingAccount = new() {
+                    UserId = userToRegister.Id,
                     InitialAmount = (double)request.InitialAmount!
                 };
                 await savingAccountService.SetSavingAccount(setSavingAccount);
             }
-            else if (request.UserType == ERoles.ADMIN)
-            {
-                await userManager.AddToRoleAsync(userToRegister, ERoles.ADMIN.ToString());
-            }
-            ApplicationUser userRegistered= await userManager.FindByEmailAsync(request.Email);
-            response.Id = userRegistered.Id;
+
+            // Set id of user creatde to the response
+            response.Id = userToRegister.Id;
 
             return response;
         }
-
-        /*
-         
-            ME QUEDEEE AQUI
-
-            Tener en cuenta que RegisterResponse comente muchas propiedades ya que no se usarn
-            Y me quede para seguir con el forgot password
-         
-         */
 
         public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
         {
@@ -229,46 +219,32 @@ namespace QuickBank.Infrastructure.Identity.Services
             return response;
         }
 
-        public async Task<AuthenticationResponse> UpdateUserAsync(AuthenticationResponse responseUserVm)
+        public async Task<AuthenticationResponse> UpdateUserAsync(AuthenticationResponse request)
         {
-            AuthenticationResponse response = new()
-            {
-                HasError = false
-            };
-            ApplicationUser userToUpdate = await userManager.FindByIdAsync(responseUserVm.Id);
+            // Resources
+            var response = new AuthenticationResponse();
+            var userToUpdate = mapper.Map<ApplicationUser>(request);
 
-            userToUpdate.Id = responseUserVm.Id;
-            userToUpdate.FirstName = responseUserVm.FirstName;
-            userToUpdate.LastName = responseUserVm.LastName;
-            userToUpdate.UserName = responseUserVm.UserName;
-            userToUpdate.IdCard = responseUserVm.IdCard;
-            userToUpdate.Status = responseUserVm.Status;
-            userToUpdate.Email = responseUserVm.Email;
-            userToUpdate.PhoneNumber = responseUserVm.PhoneNumber;
-
-            if (responseUserVm.UserType == ERoles.BASIC.ToString())
+            // Credit the balance from the request in the principal saving account
+            if (request.UserType == nameof(ERoles.BASIC))
             {
-                SavingAccountViewModel savingAccountViewModel = await savingAccountService.GetPrincipalSavingAccountAsync(responseUserVm.Id);
-                savingAccountViewModel.Balance += (double)responseUserVm.InitialAmount!;
-                await savingAccountService.UpdateAsync(savingAccountViewModel, savingAccountViewModel.Id);
+                var principalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(userToUpdate.Id);
+                principalSavingAccount.Balance += (double)request.InitialAmount!;
+                await savingAccountService.UpdateAsync(principalSavingAccount, principalSavingAccount.Id);
             }
 
-            var userUpdatedSuccessfully = await userManager.UpdateAsync(userToUpdate);
-            if (!userUpdatedSuccessfully.Succeeded)
+            // Try to update the user
+            var resultUpdate = await userManager.UpdateAsync(userToUpdate); /////////////////////////////// NOS QUEDAMOS AQUII PARA ARREGLARRR
+            if (!resultUpdate.Succeeded)
             {
                 response.HasError = true;
                 response.ErrorDescription = "An ocurred an error updating the user try again";
                 return response;
             }
-            ApplicationUser userUpdated = await userManager.FindByIdAsync(responseUserVm.Id);
-            response.Id = userUpdated.Id;
-            response.UserName = userUpdated.UserName;
-            response.Email = userUpdated.Email;
-            response.PhoneNumber = userUpdated.PhoneNumber;
-            var rolesList = await userManager.GetRolesAsync(userUpdated).ConfigureAwait(false);
 
-            response.Roles = rolesList.ToList();
-            response.IsVerified = userUpdated.EmailConfirmed;
+            // Fill the response with data
+            response = mapper.Map<AuthenticationResponse>(userToUpdate);
+            response.Roles = (await userManager.GetRolesAsync(userToUpdate).ConfigureAwait(false)).ToList();
 
             return response;
         }

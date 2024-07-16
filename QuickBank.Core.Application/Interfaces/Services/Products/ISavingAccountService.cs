@@ -7,11 +7,11 @@ namespace QuickBank.Core.Application.Interfaces.Services.Products
 {
     public interface ISavingAccountService : IGenericService<SavingAccountViewModel, SavingAccountViewModel, SavingAccountEntity>
     {
-        Task<SavingAccountViewModel> GetPrincipalSavingAccountAsync(string userId);
-        Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId);
+        Task<SavingAccountViewModel?> GetAvailableSavingAccountAsync();
+        Task<SavingAccountViewModel?> GetPrincipalSavingAccountAsync(string userId);
+        Task<List<SavingAccountViewModel>?> GetAllActiveAsync();
         Task<SavingAccountViewModel?> GetViewModelByNumberAccountAsync(string numberAccount);
         Task SetSavingAccount(SetSavingAccount setSavingAccount);
-        Task<List<SavingAccountViewModel>?> GetActiveAsync();
-        Task<SavingAccountViewModel> GetAvailableSavingAccountAsync();
+        Task<List<SavingAccountViewModel>?> GetAllByUserIdAsync(string userId);
     }   
 }

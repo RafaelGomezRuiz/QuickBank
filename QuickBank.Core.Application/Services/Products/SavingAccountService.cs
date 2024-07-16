@@ -21,12 +21,12 @@ namespace QuickBank.Core.Application.Services.Products
             this.mapper = mapper;
         }
 
-        public async Task<SavingAccountViewModel> GetAvailableSavingAccountAsync()
+        public async Task<SavingAccountViewModel?> GetAvailableSavingAccountAsync()
         {
             return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Status == (int)EProductStatus.INACTIVE && savm.OwnerId == null);
         }
 
-        public async Task<SavingAccountViewModel> GetPrincipalSavingAccountAsync(string userId)
+        public async Task<SavingAccountViewModel?> GetPrincipalSavingAccountAsync(string userId)
         {
             return (await base.GetAllAsync()).FirstOrDefault(savm => savm.Principal == true && savm.OwnerId == userId);
         }
@@ -35,9 +35,10 @@ namespace QuickBank.Core.Application.Services.Products
         {
             return (await base.GetAllAsync()).Where(savm => savm.OwnerId == userId).ToList();
         }
-        public async Task<List<SavingAccountViewModel>?> GetActiveAsync()
+
+        public async Task<List<SavingAccountViewModel>?> GetAllActiveAsync()
         {
-            return (await base.GetAllAsync()).Where(savm => savm.Status==(int)EProductStatus.ACTIVE).ToList();
+            return (await base.GetAllAsync()).Where(savm => savm.Status == (int)EProductStatus.ACTIVE).ToList();
         }
 
         public async Task<SavingAccountViewModel?> GetViewModelByNumberAccountAsync(string numberAccount)
@@ -47,41 +48,49 @@ namespace QuickBank.Core.Application.Services.Products
 
         public async Task SetSavingAccount(SetSavingAccount setSavingAccount)
         {
-            var userAccounts = await GetAllByUserIdAsync(setSavingAccount.UserId);
-            bool isFirstAccount = userAccounts.Count == 0;
-            string accountNumber = CodeStringGenerator.GenerateProductNumber();
-            bool accountNumberExists = (await base.GetAllAsync()).Any(savm => savm.AccountNumber == accountNumber);
+            // Get the available saving account
+            var savingsAccountAvailable = await GetAvailableSavingAccountAsync();
 
-            var savingAccountVm = await GetAvailableSavingAccountAsync();
-
-            if (savingAccountVm == null)
+            // Set the random account number
+            while (true)
             {
-                throw new InvalidOperationException("No available saving accounts.");
+                string productRandomNumber = CodeStringGenerator.GenerateProductNumber();
+                bool productNumberExists = (await base.GetAllAsync()).Any(savm => savm.AccountNumber == productRandomNumber);
+
+                if (!productNumberExists)
+                {
+                    savingsAccountAvailable.AccountNumber = productRandomNumber;
+                    break;
+                }
             }
 
-            while (accountNumberExists)
-            {
-                accountNumber = CodeStringGenerator.GenerateProductNumber();
-            }
+            // Set the principal of secondary account
+            savingsAccountAvailable.Principal = GetPrincipalSavingAccountAsync(setSavingAccount.UserId) != null;
 
-            savingAccountVm.Status = (int)EProductStatus.ACTIVE;
-            savingAccountVm.Principal = isFirstAccount;
-            savingAccountVm.Balance = setSavingAccount.InitialAmount;
-            savingAccountVm.OwnerId = setSavingAccount.UserId;
-            savingAccountVm.AccountNumber = accountNumber;
-            var savingAccountEntity = mapper.Map<SavingAccountEntity>(savingAccountVm);
-            await savingAccountRepository.UpdateAsync(savingAccountEntity, savingAccountEntity.Id);
+            // Set some default values of saving account
+            savingsAccountAvailable.Status = (int)EProductStatus.ACTIVE;
+            savingsAccountAvailable.Balance = setSavingAccount.InitialAmount;
+            savingsAccountAvailable.OwnerId = setSavingAccount.UserId;
+
+            // Update the entity
+            await base.UpdateAsync(savingsAccountAvailable, savingsAccountAvailable.Id);
         }
+
+
         public override async Task DeleteAsync(int entityId)
         {
-            SavingAccountViewModel savingAccountOwner = await GetByIdAsync(entityId);
+            // Get saving account to delete
+            var savingAccountToDelete = await GetByIdAsync(entityId);
 
-            if (savingAccountOwner.Balance > 0)
+            // Check if the saving account have balance
+            if (savingAccountToDelete.Balance > 0)
             {
-                SavingAccountViewModel principalSavingAccount = await GetPrincipalSavingAccountAsync(savingAccountOwner.OwnerId);
-                principalSavingAccount.Balance += savingAccountOwner.Balance;
+                var principalSavingAccount = await GetPrincipalSavingAccountAsync(savingAccountToDelete.OwnerId);
+                principalSavingAccount.Balance += savingAccountToDelete.Balance;
                 await UpdateAsync(principalSavingAccount, principalSavingAccount.Id);
             }
+
+            // Delete the saving account
             await base.DeleteAsync(entityId);
         }
     }

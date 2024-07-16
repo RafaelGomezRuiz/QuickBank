@@ -36,6 +36,7 @@ namespace QuickBank.Infrastructure.Identity.Mappings
                     .ForMember(dest => dest.UserType, opt => opt.Ignore())
                     .ForMember(dest => dest.InitialAmount, opt => opt.Ignore())
                     .ReverseMap()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
                     .ForMember(dest => dest.AccessFailedCount, opt => opt.Ignore())
                     .ForMember(dest => dest.ConcurrencyStamp, opt => opt.Ignore())
