@@ -73,24 +73,6 @@ namespace QuickBank.Core.Application.Services.User
             await _accountService.SignOutAsync();
         }
 
-        //public async Task<string> ConfirmEmailAsync(string userId, string token)
-        //{
-        //    return await _accountService.ConfirmAccountAsync(userId, token);
-        //}
-
-        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordViewModel forgotPasswordVm, string origin)
-        {
-            ForgotPasswordRequest forgotPasswordRequest = _mapper.Map<ForgotPasswordRequest>(forgotPasswordVm);
-            ForgotPasswordResponse forgotPasswordResponse = await _accountService.ForgotPasswordAsync(forgotPasswordRequest, origin);
-            return forgotPasswordResponse;
-        }
-
-        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel resetPassword)
-        {
-            ResetPasswordRequest resetPasswordRequest = _mapper.Map<ResetPasswordRequest>(resetPassword);
-            return await _accountService.ResetPasswordAsync(resetPasswordRequest);
-        }
-
 
     }
 }

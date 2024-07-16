@@ -12,9 +12,7 @@ namespace QuickBank.Core.Application.Interfaces.Services.User
         Task<UserSaveViewModel> UpdateUserAsync(UserSaveViewModel saveUserViewModel);
         Task SignOutAsync();
         //Task<string> ConfirmEmailAsync(string userId, string token);
-        Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordViewModel forgotPasswordVm, string origin);
         Task<AuthenticationResponse> LoginAsync(LoginViewModel vm);
-        Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel resetPassword);
         Task<IEnumerable<UserViewModel>> GetActiveUsersAsync();
         Task<IEnumerable<UserViewModel>> GetInactiveUsersAsync();
         Task<bool> DuplicateUserName(string userName);

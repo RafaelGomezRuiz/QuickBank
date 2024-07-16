@@ -11,6 +11,7 @@ using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
 using QuickBank.Core.Application.ViewModels.Products;
 using QuickBank.Infrastructure.Identity.Entities;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace QuickBank.Infrastructure.Identity.Services
@@ -161,64 +162,8 @@ namespace QuickBank.Infrastructure.Identity.Services
             return response;
         }
 
-        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
-        {
-            ForgotPasswordResponse response = new()
-            {
-                HasError = false
-            };
-            ApplicationUser user = await userManager.FindByEmailAsync(request.Email);
 
-            if (user == null)
-            {
-                response.HasError = true;
-                response.ErrorDescription = $"There are no user registered with this '{request.Email}' emailaddress";
-                return response;
-            }
-
-            var code = await userManager.GeneratePasswordResetTokenAsync(user);
-            var newPassword = CodeStringGenerator.GeneratePassword();
-            var result = await userManager.ResetPasswordAsync(user, code, newPassword);
-            if (!result.Succeeded)
-            {
-                response.HasError = true;
-                response.ErrorDescription = $"An error has ocurred resetting the password try again";
-                return response;
-            }
-            var LoginAddress = await SendForgotPasswordUri(origin);
-            await emailService.SendAsync(new EmailRequest()
-            {
-                To = user.Email,
-                Body = $"Reset successfully, this is your new password: {newPassword} Click here to join the app! {LoginAddress}",
-                Subject = "Password Resseted"
-            });
-            return response;
-        }
-
-        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request)
-        {
-            ResetPasswordResponse response = new()
-            {
-                HasError = false
-            };
-            var user = await userManager.FindByEmailAsync(request.Email);
-            if (user == null)
-            {
-                response.HasError = true;
-                response.ErrorDescription = $"No accounts registered with this '{request.Email}' email address ";
-                return response;
-            }
-            request.Token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
-            var result = await userManager.ResetPasswordAsync(user, request.Token, request.Password);
-            if (!result.Succeeded)
-            {
-                response.HasError = true;
-                response.ErrorDescription = $"An error has ocurred rsetting the password try again";
-                return response;
-            }
-            return response;
-        }
-
+        
         public async Task<AuthenticationResponse> UpdateUserAsync(AuthenticationResponse request)
         {
             // Resources
@@ -228,7 +173,10 @@ namespace QuickBank.Infrastructure.Identity.Services
             // Credit the balance from the request in the principal saving account
             if (request.UserType == nameof(ERoles.BASIC))
             {
-                var principalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(userToUpdate.Id);
+                //Ya solucione el problemas was that the were passing the id like a chain let me explain
+                //    from request(parameter) to the mapper.Map then that same id that came from the in
+                //    that is now on the mapper we're passing it again to the GetPrincipalSavingAccount
+                var principalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(request.Id);
                 principalSavingAccount.Balance += (double)request.InitialAmount!;
                 await savingAccountService.UpdateAsync(principalSavingAccount, principalSavingAccount.Id);
             }
@@ -249,12 +197,5 @@ namespace QuickBank.Infrastructure.Identity.Services
             return response;
         }
 
-        private async Task<string> SendForgotPasswordUri(string origin)
-        {
-            var route = "User/Index";
-            var Uri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = Uri.ToString();
-            return verificationUri;
-        }
     }
 }
