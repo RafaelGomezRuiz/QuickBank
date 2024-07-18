@@ -46,8 +46,8 @@ namespace QuickBank.Infrastructure.Identity.DependencyInjection
             {
                 options.LoginPath = "/Auth/Login";
                 //falta el de acceso denegado
-                options.AccessDeniedPath= "/Auth/AccessDenied";
 
+                options.AccessDeniedPath = "/Auth/AccessDenied";
             });
 
             services.AddAuthentication();

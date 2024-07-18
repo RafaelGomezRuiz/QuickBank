@@ -33,6 +33,7 @@ namespace QuickBank.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.HasErrors = true;
                 return View(loginVm);
             }
 
@@ -53,6 +54,7 @@ namespace QuickBank.Controllers
             {
                 loginVm.HasError = true;
                 loginVm.ErrorDescription = responseLogin.ErrorDescription;
+                ViewBag.HasErrors = true;
                 return View(loginVm);
             }
         }
