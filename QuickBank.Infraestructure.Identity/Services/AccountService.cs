@@ -162,8 +162,19 @@ namespace QuickBank.Infrastructure.Identity.Services
         {
             // Resources
             var response = new AuthenticationResponse();
-            var userToUpdate = mapper.Map<ApplicationUser>(request);
 
+            ApplicationUser userToUpdate = new ApplicationUser();
+
+            userToUpdate.Id = request.Id;
+            userToUpdate.FirstName = request.FirstName;
+            userToUpdate.LastName = request.LastName;
+            userToUpdate.UserName = request.UserName;
+            userToUpdate.IdCard = request.IdCard;
+            userToUpdate.Status = request.Status;
+            userToUpdate.Email = request.Email;
+            userToUpdate.PhoneNumber = request.PhoneNumber;
+
+            
             // Credit the balance from the request in the principal saving account
             if (request.UserType == nameof(ERoles.BASIC))
             {
