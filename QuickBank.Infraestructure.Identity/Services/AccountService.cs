@@ -162,8 +162,7 @@ namespace QuickBank.Infrastructure.Identity.Services
         {
             // Resources
             var response = new AuthenticationResponse();
-
-            ApplicationUser userToUpdate = new ApplicationUser();
+            ApplicationUser userToUpdate = await userManager.FindByIdAsync(request.Id);
 
             userToUpdate.Id = request.Id;
             userToUpdate.FirstName = request.FirstName;
@@ -173,6 +172,17 @@ namespace QuickBank.Infrastructure.Identity.Services
             userToUpdate.Status = request.Status;
             userToUpdate.Email = request.Email;
             userToUpdate.PhoneNumber = request.PhoneNumber;
+
+            //ApplicationUser userToUpdate = new ApplicationUser();
+
+            //userToUpdate.Id = request.Id;
+            //userToUpdate.FirstName = request.FirstName;
+            //userToUpdate.LastName = request.LastName;
+            //userToUpdate.UserName = request.UserName;
+            //userToUpdate.IdCard = request.IdCard;
+            //userToUpdate.Status = request.Status;
+            //userToUpdate.Email = request.Email;
+            //userToUpdate.PhoneNumber = request.PhoneNumber;
 
             
             // Credit the balance from the request in the principal saving account
