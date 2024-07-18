@@ -4,37 +4,70 @@
     ViewData["Title"] = "Login";
 }
 
-<div class="container-fluid">
-    <div class="col-6 offset-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-                @if(Model.HasError)
-                {
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <p>@Model.ErrorDescription</p>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="row p-0 m-0">
+    <div class="col-lg-6 d-flex align-items-center justify-content-center" style="position: relative; overflow: hidden;">
+        <img src="~/img/banck_img.jpg" class="img-fluid" alt="Bank Image" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(50%);">
+        <div style="position: relative; z-index: 1; text-align: center; color: #fff;">
+            <h1 class="display-4 mb-4 fw-bold">QuickBank</h1>
+            <p class="lead">Your trusted digital bank.</p>
+            <hr class="text-light"/>
+        </div>
+    </div>
+
+
+    <div class="col-lg-6 d-flex align-items-center justify-content-center" style="height: 100vh;">
+        <div class="card shadow border-0 rounded-3" style="width: 60%;">
+            <div class="card-body p-4">
+                <div class="text-secondary text-center mb-5">
+                    <h1 class="fw-bold">Log<span class="bg-primary text-light pe-2 ps-2 ms-1" style="border-radius: 1rem;">in</span></h1>
+                </div>
+
+
+                @if (ViewBag.HasErrors as bool? ?? false) {
+                    <div class="d-flex justify-content-center mb-3">
+                        <div id="myToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex justify-content-center">
+                                <div class="toast-body p-0 d-flex justify-content-center">
+                                    @Html.ValidationSummary(false, "", new { @class = "text-light pt-3" })
+                                    @if (Model.HasError)
+                                    {
+                                        <p class="pt-3"> @Model.ErrorDescription</p>
+                                    }
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                        </div>
                     </div>
                 }
+
                 <form method="post" asp-controller="Auth" asp-action="Login">
-                    <div class="mb-3">
-                        <label asp-for="Email" class="form-label">Email</label>
+                    <div class="mb-4">
+                        <div>
+                            <i class="bi bi-envelope-fill text-secondary pe-2"></i>
+                            <label asp-for="Email" class="form-label">Email</label>
+                        </div>
                         <input class="form-control" asp-for="Email">
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="Password" class="form-label">Contraseña</label>
+                    <div class="mb-4">
+                        <div>
+                            <i class="bi bi-shield-lock-fill text-secondary pe-2"></i>
+                            <label asp-for="Password" class="form-label">Password</label>
+                        </div>
                         <input type="password" class="form-control" asp-for="Password">
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <a asp-controller="User" asp-action="ForgotPassword" class="btn btn-link">Olvidé mi contraseña</a>
-                        </div>
-                        <div>
-                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-                        </div>
+                    <div class="mb-3 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Log In</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var myToast = document.getElementById('myToast');
+        var toast = new bootstrap.Toast(myToast);
+        toast.show();
+    });
+</script>

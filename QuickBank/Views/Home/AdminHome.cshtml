@@ -6,106 +6,252 @@
 @model HomeAdminViewModel;
 @{
     ViewData["Title"] = "Admin Home";
-    string notificationFromRedirectioned = ViewBag.NotificationFromRedirectioned as string;
     // Current user logged
     var user = userHelper.GetUser();
 }
 
-
-@if (!string.IsNullOrEmpty(notificationFromRedirectioned))
-{
-    <div class="alert alert-info">@notificationFromRedirectioned</div>
-}
-
-
 <div class="container-fluid">
-    <h1>Dashboard</h1>
+    
 
     <div class="container">
+        <h1 class="mt-4 fw-bold bg-primary text-light rounded-3 p-1 m-3 ps-4">Dashboard</h1>
+        <!-- Tarjetas con gráficos -->
         <div class="row">
-            <div class="col-md-12">
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h3>Transacciones</h3>
-                    </div>
+            <div class="col-md-6">
+                <div class="card border-0">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4"><strong>Título</strong></div>
-                            <div class="col-md-4"><strong>Total</strong></div>
-                            <div class="col-md-4"><strong>Diarias</strong></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">Transacciones</div>
-                            <div class="col-md-4">@Model.TransferLogs</div>
-                            <div class="col-md-4">@Model.DailyTransferLogs</div>
-                        </div>
+                        <h3 class="card-title fw-light">Transactions</h3>
+                        <canvas id="transaccionesChart" style="max-height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <h3 class="card-title fw-light">Payments</h3>
+                        <canvas id="pagosChart" style="max-height: 400px;"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card mb-4">
-                    <div class="card-header bg-success text-white">
-                        <h3>Pagos</h3>
-                    </div>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card border-0">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4"><strong>Título</strong></div>
-                            <div class="col-md-4"><strong>Total</strong></div>
-                            <div class="col-md-4"><strong>Diarias</strong></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">Pagos</div>
-                            <div class="col-md-4">@Model.PayLogs</div>
-                            <div class="col-md-4">@Model.DailyPayLogs</div>
-                        </div>
+                        <h3 class="card-title fw-light">Clients</h3>
+                        <canvas id="clientesChart" style="max-height: 300px;"></canvas>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card mb-4">
-                    <div class="card-header bg-info text-white">
-                        <h3>Clientes</h3>
-                    </div>
+            <div class="col-md-6">
+                <div class="card border-0">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4"><strong>Título</strong></div>
-                            <div class="col-md-4"><strong>Activos</strong></div>
-                            <div class="col-md-4"><strong>Inactivos</strong></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">Clientes</div>
-                            <div class="col-md-4">@Model.UsersActive</div>
-                            <div class="col-md-4">@Model.UsersInactive</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card mb-4">
-                    <div class="card-header bg-warning text-white">
-                        <h3>Productos</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4"><strong>Título</strong></div>
-                            <div class="col-md-4"><strong>Asignados</strong></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">Productos</div>
-                            <div class="col-md-4">@Model.ProductsAssigned</div>
-                        </div>
+                        <h3 class="card-title fw-light">Products</h3>
+                        <canvas id="productosChart" style="max-height: 300px;"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
+<!-- Botón para abrir el modal -->
+<button type="button" id="openModalBtn" data-bs-toggle="modal" data-bs-target="#errorModal" hidden> a</button>
+
+<!-- Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="bi bi-x-octagon-fill fa-3x" style="color: red;"></i>
+                <p class="mt-3" style="color: red; font-size: 1.25rem;">You cannot perform this action</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .close-button {
+        background-color: #dc3545;
+        border: none; 
+        color: white;
+        font-size: 2rem;
+    }
+
+    .modal-header.bg-danger {
+        background-color: #dc3545;
+    }
+
+    .modal-body i {
+        color: red;
+    }
+
+    .modal-body p {
+        color: red;
+        font-size: 1.25rem;
+    }
+
+    .card {
+        transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+</style>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Simular clic en el botón al cargar la página
+        var openModalBtn = document.getElementById("openModalBtn");
+
+        @if (ViewBag.LoginAccessDenied as bool? ?? false)
+        {
+            <text>openModalBtn.click(); </text>
+        }
+        
+    });
+</script>
+
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // JavaScript code to set up charts using Chart.js
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Transactions Chart
+        var transaccionesData = {
+            labels: ["Total Transactions", "Daily Transactions"],
+            datasets: [{
+                label: 'Quantity',
+                data: [@Model.TransferLogs, @Model.DailyTransferLogs],
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                tension: 0.1
+            }]
+        };
+
+        var transaccionesConfig = {
+            type: 'line',
+            data: transaccionesData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        var transaccionesChart = new Chart(
+            document.getElementById('transaccionesChart'),
+            transaccionesConfig
+        );
+
+        // Payments Chart
+        var pagosData = {
+            labels: ["Total Payments", "Daily Payments"],
+            datasets: [{
+                label: 'Quantity',
+                data: [@Model.PayLogs, @Model.DailyPayLogs],
+                backgroundColor: [
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(75, 192, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        var pagosConfig = {
+            type: 'bar',
+            data: pagosData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        var pagosChart = new Chart(
+            document.getElementById('pagosChart'),
+            pagosConfig
+        );
+
+        // Clients Chart
+        var clientesData = {
+            labels: ['Active Clients', 'Inactive Clients'],
+            datasets: [{
+                label: 'Clients',
+                data: [@Model.UsersActive, @Model.UsersInactive],
+                backgroundColor: [
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 205, 86, 0.6)',
+                ],
+                hoverOffset: 4,
+                borderWidth: 0
+            }]
+        };
+
+        var clientesConfig = {
+            type: 'doughnut',
+            data: clientesData,
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                }
+            }
+        };
+
+        var clientesChart = new Chart(
+            document.getElementById('clientesChart'),
+            clientesConfig
+        );
+
+        // Products Chart
+        var productosData = {
+            labels: ["Assigned Products"],
+            datasets: [{
+                label: 'Quantity',
+                data: [@Model.ProductsAssigned],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        var productosConfig = {
+            type: 'bar',
+            data: productosData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        var productosChart = new Chart(
+            document.getElementById('productosChart'),
+            productosConfig
+        );
+    });
+</script>

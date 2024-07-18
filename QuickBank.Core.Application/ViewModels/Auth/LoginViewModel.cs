@@ -9,10 +9,10 @@ namespace QuickBank.Core.Application.ViewModels.Auth
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Debe colocar su email")]
+        [Required(ErrorMessage = "You must enter your email")]
         [DataType(DataType.Text)]
         public string? Email { get; set; }
-        [Required(ErrorMessage = "Debe colocar una contrasenia")]
+        [Required(ErrorMessage = "You must enter a password")]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
         public bool HasError { get; set; }

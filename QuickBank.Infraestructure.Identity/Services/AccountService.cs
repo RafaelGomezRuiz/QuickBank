@@ -1,18 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
 using QuickBank.Core.Application.Dtos;
 using QuickBank.Core.Application.Dtos.Account;
-using QuickBank.Core.Application.Dtos.Email;
 using QuickBank.Core.Application.Enums;
-using QuickBank.Core.Application.Helpers;
 using QuickBank.Core.Application.Interfaces.Services.Facilities;
 using QuickBank.Core.Application.Interfaces.Services.Products;
 using QuickBank.Core.Application.Interfaces.Services.User;
-using QuickBank.Core.Application.ViewModels.Products;
 using QuickBank.Infrastructure.Identity.Entities;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
 namespace QuickBank.Infrastructure.Identity.Services
 {
@@ -149,7 +143,8 @@ namespace QuickBank.Infrastructure.Identity.Services
             // Assing saving account if the user created is a basic user
             if (request.UserType == ERoles.BASIC)
             {
-                SetSavingAccount setSavingAccount = new() {
+                SetSavingAccount setSavingAccount = new()
+                {
                     UserId = userToRegister.Id,
                     InitialAmount = (double)request.InitialAmount!
                 };
@@ -163,13 +158,23 @@ namespace QuickBank.Infrastructure.Identity.Services
         }
 
 
-        
         public async Task<AuthenticationResponse> UpdateUserAsync(AuthenticationResponse request)
         {
             // Resources
             var response = new AuthenticationResponse();
-            var userToUpdate = mapper.Map<ApplicationUser>(request);
 
+            ApplicationUser userToUpdate = new ApplicationUser();
+
+            userToUpdate.Id = request.Id;
+            userToUpdate.FirstName = request.FirstName;
+            userToUpdate.LastName = request.LastName;
+            userToUpdate.UserName = request.UserName;
+            userToUpdate.IdCard = request.IdCard;
+            userToUpdate.Status = request.Status;
+            userToUpdate.Email = request.Email;
+            userToUpdate.PhoneNumber = request.PhoneNumber;
+
+            
             // Credit the balance from the request in the principal saving account
             if (request.UserType == nameof(ERoles.BASIC))
             {

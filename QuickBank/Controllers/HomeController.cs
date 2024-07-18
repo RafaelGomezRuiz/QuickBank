@@ -43,10 +43,13 @@ namespace QuickBank.Controllers
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> AdminHome()
         {
-            if (HttpContext.Items.ContainsKey("NotificationFromRedirectioned"))
+            // Check for denied action
+            if (TempData.ContainsKey("LoginAccessDenied"))
             {
-                TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
+                ViewBag.LoginAccessDenied = TempData["LoginAccessDenied"] as bool?;
             }
+
+            // Create the model
             HomeAdminViewModel homeAdminViewModel = new()
             {
                 PayLogs = (await logService.GetAllPayLogsAsync()).Count,
@@ -57,6 +60,7 @@ namespace QuickBank.Controllers
                 UsersInactive = (await userService.GetInactiveUsersAsync()).Count(),
                 ProductsAssigned = await productService.GetAssignedProducts()
             };
+
             return View(homeAdminViewModel);
         }
 
@@ -64,6 +68,12 @@ namespace QuickBank.Controllers
         [Authorize(Roles = "BASIC")]
         public async Task<IActionResult> BasicHome()
         {
+            // Check for denied action
+            if (TempData.ContainsKey("LoginAccessDenied"))
+            {
+                ViewBag.LoginAccessDenied = TempData["LoginAccessDenied"] as bool?;
+            }
+
             var user = userHelper.GetUser();
             var hbvm = new HomeBasicViewModel
             {
@@ -71,11 +81,6 @@ namespace QuickBank.Controllers
                 CreditCards = await creditCardService.GetAllByUserIdAsync(user.Id),
                 Loans = await loanService.GetAllByUserIdAsync(user.Id)
             };
-
-            //if (HttpContext.Items.ContainsKey("NotificationFromRedirectioned"))
-            //{
-            //    TempData["NotificationFromRedirectioned"] = HttpContext.Items["NotificationFromRedirectioned"] as string;
-            //}
 
             return View(hbvm);
         }

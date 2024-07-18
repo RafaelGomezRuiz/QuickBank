@@ -6,29 +6,52 @@
 @model string;
 
 @{
-    ViewData["Title"] = "access denied";
+    ViewData["Title"] = "Acceso denegado";
     AuthenticationResponse userLogged = userHelper.GetUser();
     string? principalUserRol = userLogged?.Roles![^1];
 }
 
 <div class="row mt-5">
-    <div class="col-6 offset-3">
-        <div class="card shadow-sm">
+    <div class="col-lg-6 offset-lg-3">
+        <div class="card shadow-lg border-0">
             <div class="card-body">
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    @switch (principalUserRol)
-                    {
-                        case nameof(ERoles.BASIC):
-                            <h2>No tiene permiso para acceder a esta seccion - <a class="btn btn-warning" asp-controller=Home asp-action="BasicHome"> Home</a></h2>
-                            break;
-                        case nameof(ERoles.ADMIN):
-                            <h2>No tiene permiso para acceder a esta seccion - <a class="btn btn-warning" asp-controller=Home asp-action="AdminHome"> Home</a></h2>
-                        break;
-                    }
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0 pe-3 ps-3">
+                        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h2 class="mb-3 text-danger fw-bold">Access denied</h2>
+                        <p class="mb-0 fw-lighter mb-2">You do not have permission to access this section.</p>
+                        @switch (principalUserRol)
+                        {
+                            case nameof(ERoles.BASIC):
+                                <p><a class="btn btn-warning btn-lg" asp-controller="Home" asp-action="BasicHome">Go to user area</a></p>
+                                break;
+                            case nameof(ERoles.ADMIN):
+                                <p><a class="btn btn-warning btn-lg" asp-controller="Home" asp-action="AdminHome">Go to admin area</a></p>
+                                break;
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+
+
+    .btn-warning {
+        background-color: #ffc107; /* Fondo amarillo */
+        border-color: #ffc107; /* Borde amarillo */
+    }
+
+        .btn-warning:hover {
+            background-color: #ffca2c; /* Color de fondo amarillo claro al pasar el ratón */
+            border-color: #ffca2c; /* Color de borde amarillo claro al pasar el ratón */
+        }
+
+    .bi-exclamation-triangle-fill {
+        font-size: 3rem; /* Tamaño grande para el ícono de peligro */
+    }
+</style>

@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using QuickBank.Controllers;
-using QuickBank.Core.Application.Interfaces.Helpers;
-using System.Net.NetworkInformation;
-
-using QuickBank.Core.Application.Enums;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using QuickBank.Core.Application.Dtos.Account;
-using Org.BouncyCastle.X509;
+using QuickBank.Core.Application.Enums;
 using QuickBank.Core.Application.Helpers;
+using QuickBank.Core.Application.Interfaces.Helpers;
 
 namespace QuickBank.Middlewares
 {
@@ -27,7 +24,12 @@ namespace QuickBank.Middlewares
         {
             if (userHelper.HasUser())
             {
-                context.HttpContext.Items["NotificationFromRedirectioned"] = "You are already logged in, you cant go to the login, and have been redirected to the home page.";
+
+                var tempData = context.HttpContext.RequestServices.GetService(typeof(ITempDataDictionaryFactory)) as ITempDataDictionaryFactory;
+                var tempDataDictionary = tempData.GetTempData(context.HttpContext);
+
+                tempDataDictionary["LoginAccessDenied"] = true;
+
                 switch (principalUserRol)
                 {
                     case nameof(ERoles.BASIC): context.Result = RedirectRoutesHelper.routeBasicHome; break;
