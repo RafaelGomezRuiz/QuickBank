@@ -23,34 +23,88 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
-                <h3>Transacciones</h3>
-                <p><strong>Total de transacciones:</strong> @Model.TransferLogs</p>
-                <p><strong>Transacciones del día:</strong> @Model.DailyTransferLogs</p>
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3>Transacciones</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4"><strong>Título</strong></div>
+                            <div class="col-md-4"><strong>Total</strong></div>
+                            <div class="col-md-4"><strong>Diarias</strong></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">Transacciones</div>
+                            <div class="col-md-4">@Model.TransferLogs</div>
+                            <div class="col-md-4">@Model.DailyTransferLogs</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <h3>Pagos</h3>
-                <p><strong>Total de pagos:</strong> @Model.PayLogs </p>
-                <p><strong>Pagos del día:</strong> @Model.DailyPayLogs</p>
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h3>Pagos</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4"><strong>Título</strong></div>
+                            <div class="col-md-4"><strong>Total</strong></div>
+                            <div class="col-md-4"><strong>Diarias</strong></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">Pagos</div>
+                            <div class="col-md-4">@Model.PayLogs</div>
+                            <div class="col-md-4">@Model.DailyPayLogs</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <h3>Clientes</h3>
-                <p><strong>Clientes activos:</strong> @Model.UsersActive</p>
-                <p><strong>Clientes inactivos:</strong> @Model.UsersInactive</p>
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h3>Clientes</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4"><strong>Título</strong></div>
+                            <div class="col-md-4"><strong>Activos</strong></div>
+                            <div class="col-md-4"><strong>Inactivos</strong></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">Clientes</div>
+                            <div class="col-md-4">@Model.UsersActive</div>
+                            <div class="col-md-4">@Model.UsersInactive</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Row 4: Productos -->
         <div class="row">
-            <div class="col-md-6">
-                <h3>Productos</h3>
-                <p><strong>Cantidad de productos asignados:</strong> @Model.ProductsAssigned</p>
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-white">
+                        <h3>Productos</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4"><strong>Título</strong></div>
+                            <div class="col-md-4"><strong>Asignados</strong></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">Productos</div>
+                            <div class="col-md-4">@Model.ProductsAssigned</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
