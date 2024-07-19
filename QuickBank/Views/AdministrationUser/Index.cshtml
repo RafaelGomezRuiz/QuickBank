@@ -10,95 +10,78 @@
     var userLoged = userHelper.GetUser();
 }
 
-<div class="container-fluid">
-    <div class="row mb-3">
-        
-    </div>
-    <div class="row">
-
-        <div class="col-10 offset-1">
-            <div class="row">
-
-                @if (Model == null || Model.Count == 0)
-                {
-                    <h3>No hay Usuarios</h3>
-                }
-                else
-                {
-                    <div class="col-12">
-                        <div class="card">
-                            <div class=" card-header d-flex justify-content-between me-0 pe-0  bg-primary ">
-                                <div class="col-4">
-                                    <h3 class="text-white">Listado de usuarios</h3>
-                                </div>
-                                <div class="pe-3">
-                                    <a asp-controller="AdministrationUser" asp-action="Add" class="btn btn-light text-primary"><i class="bi bi-plus">Add User</i></a>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                @Html.ValidationMessage("ArentAvailableSavingsAccounts", "", new { @class = "text-danger" })
-                                @Html.ValidationMessage("ArentAvailableLoans", "", new { @class = "text-danger" })
-                                @Html.ValidationMessage("ArentAvailableCreditCards", "", new { @class = "text-danger" })
-
-                                <table id="usersTable" class="table ">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>User Type</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model)
-                                        {
-                                            <tr>
-                                                <td>@item.FirstName @item.LastName</td>
-                                                <td>
-                                                    @foreach (var role in item.Roles)
-                                                    {
-                                                        <span class=" @(item.Roles[0] == ERoles.BASIC.ToString() ? "badge-warning" : "badge-success")">@role</span>
-                                                    }
-                                                </td>
-                                                <td>
-                                                    @(item.Status == (int)EUserStatus.ACTIVE ? "Activo" : "Inactivo")
-                                                </td>
-                                                <td>
-                                                    @if (item.Id != userLoged.Id)
-                                                    {
-                                                        <div class="">
-
-                                                        <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="ChangeUserState" class="btn col-3 @(item.Status ==(int)EUserStatus.ACTIVE ? "btn-danger" : "btn-success")">
-                                                            @(item.Status == (int)EUserStatus.ACTIVE ? "Inactivar" : "Activar")
-                                                        </a>
-                                                        <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="Edit" class="btn btn-primary">Edit</a>
-                                                        @if (item.Roles[0] == ERoles.BASIC.ToString())
-                                                        {
-                                                            <a asp-controller="AdministrationUser" asp-route-ownerId="@item.Id" asp-action="UserProducts" class="btn btn-primary">Ver productos</a>
-                                                        }
-                                                        </div>
-
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>You can't updated your own accoun'</p>
-                                                    }
-                                                </td>
-                                                
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                }
+<div class="container">
+    <div class="row mb-3 mt-4">
+        <div class="d-flex gap-2 p-0">
+            <div class="rounded-3 bg-primary p-1 flex-grow-1">
+                <h1 class="fw-bold text-light m-0 p-0 ms-4">User List</h1>
             </div>
+            <a asp-controller="AdministrationUser" asp-action="Add" class="btn btn-success text-light d-flex align-items-center"><i class="bi bi-plus"></i>Add User</a>
         </div>
+    </div>
+
+    <div class="row">
+        @if (Model == null || Model.Count == 0)
+        {
+            <h3>No hay Usuarios</h3>
+        }
+        else
+        {
+            <div class="col p-0">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <table id="usersTable" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>User Type</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.FirstName @item.LastName</td>
+                                        <td>
+                                            @foreach (var role in item.Roles)
+                                            {
+                                                <span class=" @(item.Roles[0] == ERoles.BASIC.ToString() ? "bg-warning" : "bg-success text-light") pe-2 ps-2 rounded-3">@role</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class=" @(item.Status == (int)EUserStatus.ACTIVE ? "bg-success" : "bg-danger") pe-2 ps-2 rounded-3 text-light">@((EUserStatus)item.Status)</span>
+                                        </td>
+                                        <td>
+                                            @if (item.Id != userLoged.Id)
+                                            {
+                                                <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="ChangeUserState" class="btn col-3 me-2 @(item.Status ==(int)EUserStatus.ACTIVE ? "btn-danger" : "btn-success")">
+                                                    @(item.Status == (int)EUserStatus.ACTIVE ? "activate" : "deactivate")
+                                                </a>
+                                                <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="Edit" class="btn btn-primary me-2">Edit</a>
+                                                @if (item.Roles[0] == ERoles.BASIC.ToString())
+                                                {
+                                                    <a asp-controller="AdministrationUser" asp-route-ownerId="@item.Id" asp-action="UserProducts" class="btn btn-primary">go to products</a>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <p class="fw-bold d-flex align-items-center m-0 p-0"><i class="bi bi-x text-danger fa-2x"></i>You can't updated your own account<i class="bi bi-x text-danger fa-2x"></i></p>
+                                            }
+                                        </td>
+                                                
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
-@* Incluir las bibliotecas de DataTables y jQuery *@
 @section Scripts {
         <script type="text/javascript" >
             $(document).ready(function () {
@@ -128,3 +111,13 @@
             });
     </script>
 }
+
+<style>
+    .card {
+        transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+</style>
