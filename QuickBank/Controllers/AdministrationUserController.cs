@@ -67,7 +67,7 @@ namespace QuickBank.Controllers
                 userSaveViewModel.ErrorDescription = response.ErrorDescription;
                 return View("SaveUser", userSaveViewModel);
             }
-            return RedirectRoutesHelper.routeAdminHome;
+            return RedirectRoutesHelper.routeAdmininistrationUserIndex;
         }
 
         [HttpGet]

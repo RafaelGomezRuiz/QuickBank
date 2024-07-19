@@ -8,117 +8,136 @@
     ViewData["Title"] = "Guardar usuario";
 }
 
-<div class="row">
-    <div class="col-6 offset-3">
-        <div class="card">
-            <div class="card-header bg-primary text-light">
-                <h4>@(editMode ? $"Editando al usuario: {Model.FirstName} {Model.LastName}" : "Create user")</h4>
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-8 offset-2">
+
+            <div class="rounded-3 bg-primary p-1 mb-4">
+                <h1 class="fw-bold text-light m-0 p-0 ms-4">@(editMode ? $"Editing the user: {Model.FirstName} {Model.LastName}" : "Create user")</h1>
             </div>
-            <div class="card-body">
-                @* this is for a server error saving the user *@
-                @if (Model.ErrorDescription == "Has ocurred an error trying to save the user")
-                {
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <p>@Model.ErrorDescription</p>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
-                @* Show Message if the user cant be saved *@
+
+            <div class="card border-0">
+                <div class="card-body">
+                    @* this is for a server error saving the user *@
+                    @if (Model.ErrorDescription == "Has ocurred an error trying to save the user")
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <p>@Model.ErrorDescription</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @* Show Message if the user cant be saved *@
                     @Html.ValidationMessage("ArentAvailableSavingsAccounts", "", new { @class = "text-danger" })
                     @Html.ValidationMessage("UserDoesntExists", "", new { @class = "text-danger" })
 
-                <form method="post" asp-controller="AdministrationUser" id="formSaveUser" asp-action="@(editMode ? "Edit" : "Add")">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="FirstName" class="form-label">First Name: </label>
-                            <input asp-for="FirstName" class="form-control">
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                    <form method="post" asp-controller="AdministrationUser" id="formSaveUser" asp-action="@(editMode ? "Edit" : "Add")">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FirstName" class="form-label">First Name: </label>
+                                <input asp-for="FirstName" class="form-control">
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LastName" class="form-label">Last Name: </label>
+                                <input asp-for="LastName" class="form-control">
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="IdCard" class="form-label">ID Card: </label>
+                                <input asp-for="IdCard" class="form-control">
+                                <span asp-validation-for="IdCard" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Email" class="form-label">Email: </label>
+                                <input asp-for="Email" class="form-control">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                                @Html.ValidationMessage("DuplicateEmail", "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="UserName" class="form-label">Username: </label>
+                                <input asp-for="UserName" class="form-control">
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                                @Html.ValidationMessage("DuplicateUserName", "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Password" class="form-label">Password: </label>
+                                <input asp-for="Password" class="form-control">
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                                @Html.ValidationMessage("PasswordRequired", "", new { @class = "text-danger" })
+                                @Html.ValidationMessage("MinPasswordLength", "", new { @class = "text-danger" })
+                                @Html.ValidationMessage("LowerCase", "", new { @class = "text-danger" })
+                                @Html.ValidationMessage("UpperCase", "", new { @class = "text-danger" })
+                                @Html.ValidationMessage("RequireDigit", "", new { @class = "text-danger" })
+                                @Html.ValidationMessage("RequireNonAlphanumeric", "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="UserType" class="form-label">User Type:</label>
+                                @if (editMode)
+                                {
+                                    <input asp-for="UserType" class="form-control" readonly />
+                                }
+                                else
+                                {
+                                    <select asp-for="UserType" id="UserType" class="form-select" onchange="toggleInitialAmount()">
+                                        <option value="0">Select an option</option>
+                                        <option value="@ERoles.BASIC">@ERoles.BASIC.ToString()</option>
+                                        <option value="@ERoles.ADMIN">@ERoles.ADMIN.ToString()</option>
+                                    </select>
+                                    @Html.ValidationMessage("InvalidUserType", "", new { @class = "text-danger" })
+                                    <span asp-validation-for="UserType" class="text-danger"></span>
+                                }
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label">Confirm Password: </label>
+                                <input asp-for="ConfirmPassword" class="form-control">
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-3" id="initialAmountDiv" style="display:none">
+                                <label asp-for="InitialAmount" class="form-label">Initial Amount: </label>
+                                <input asp-for="InitialAmount" class="form-control" type="number" min="0" value="0" step="any" />
+                                <span asp-validation-for="InitialAmount" class="text-danger"></span>
+                                @Html.ValidationMessage("InitialAmountNull", "", new { @class = "text-danger" })
+                            </div>
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="LastName" class="form-label">Last Name: </label>
-                            <input asp-for="LastName" class="form-control">
-                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="Status" />
+                        <input asp-for="Roles" type="hidden" />
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-controller="AdministrationUser" asp-action="Index" class="btn btn-warning">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="IdCard" class="form-label">ID Card: </label>
-                            <input asp-for="IdCard" class="form-control">
-                            <span asp-validation-for="IdCard" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Email" class="form-label">Email: </label>
-                            <input asp-for="Email" class="form-control">
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                            @Html.ValidationMessage("DuplicateEmail", "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="UserName" class="form-label">Username: </label>
-                            <input asp-for="UserName" class="form-control">
-                            <span asp-validation-for="UserName" class="text-danger"></span>
-                            @Html.ValidationMessage("DuplicateUserName", "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Password" class="form-label">Password: </label>
-                            <input asp-for="Password" class="form-control">
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                            @Html.ValidationMessage("PasswordRequired", "", new { @class = "text-danger" })
-                            @Html.ValidationMessage("MinPasswordLength", "", new { @class = "text-danger" })
-                            @Html.ValidationMessage("LowerCase", "", new { @class = "text-danger" })
-                            @Html.ValidationMessage("UpperCase", "", new { @class = "text-danger" })
-                            @Html.ValidationMessage("RequireDigit", "", new { @class = "text-danger" })
-                            @Html.ValidationMessage("RequireNonAlphanumeric", "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="ConfirmPassword" class="form-label">Confirm Password: </label>
-                            <input asp-for="ConfirmPassword" class="form-control">
-                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="UserType" class="form-label">User Type:</label>
-                            @if (editMode)
-                            {
-                                <input asp-for="UserType" class="form-control" readonly />
-                            }
-                            else
-                            {
-                                <select asp-for="UserType" id="UserType" class="form-select" onchange="toggleInitialAmount()">
-                                    <option value="">Select an option</option>
-                                    <option value="@ERoles.BASIC">@ERoles.BASIC.ToString()</option>
-                                    <option value="@ERoles.ADMIN">@ERoles.ADMIN.ToString()</option>
-                                </select>
-                                @Html.ValidationMessage("InvalidUserType", "", new { @class = "text-danger" })
-                                <span asp-validation-for="UserType" class="text-danger"></span>
-                            }
-                        </div>
-
-                        <div class="col-md-12 mb-3" id="initialAmountDiv" style="display:none">
-                            <label asp-for="InitialAmount" class="form-label">Initial Amount: </label>
-                            <input asp-for="InitialAmount" class="form-control" type="number" min="0" value="0" />
-                            <span asp-validation-for="InitialAmount" class="text-danger"></span>
-                            @Html.ValidationMessage("InitialAmountNull", "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="Status" />
-                    <input asp-for="Roles" type="hidden" />
-
-                    <div class="input-group">
-                        <a asp-controller="AdministrationUser" asp-action="Index" class="btn btn-warning">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .card {
+        transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+</style>
+
+
 @section Scripts {
     <script>
         function toggleInitialAmount() {

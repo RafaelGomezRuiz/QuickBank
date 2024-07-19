@@ -65,7 +65,7 @@ namespace QuickBank.Core.Application.Services.Products
             }
 
             // Set the principal of secondary account
-            savingsAccountAvailable.Principal = GetPrincipalSavingAccountAsync(setSavingAccount.UserId) != null;
+            savingsAccountAvailable.Principal = (await GetPrincipalSavingAccountAsync(setSavingAccount.UserId)) == null;
 
             // Set some default values of saving account
             savingsAccountAvailable.Status = (int)EProductStatus.ACTIVE;

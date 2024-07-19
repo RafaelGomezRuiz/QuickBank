@@ -172,32 +172,17 @@ namespace QuickBank.Infrastructure.Identity.Services
             userToUpdate.Status = request.Status;
             userToUpdate.Email = request.Email;
             userToUpdate.PhoneNumber = request.PhoneNumber;
-
-            //ApplicationUser userToUpdate = new ApplicationUser();
-
-            //userToUpdate.Id = request.Id;
-            //userToUpdate.FirstName = request.FirstName;
-            //userToUpdate.LastName = request.LastName;
-            //userToUpdate.UserName = request.UserName;
-            //userToUpdate.IdCard = request.IdCard;
-            //userToUpdate.Status = request.Status;
-            //userToUpdate.Email = request.Email;
-            //userToUpdate.PhoneNumber = request.PhoneNumber;
-
             
             // Credit the balance from the request in the principal saving account
             if (request.UserType == nameof(ERoles.BASIC))
             {
-                //Ya solucione el problemas was that the were passing the id like a chain let me explain
-                //    from request(parameter) to the mapper.Map then that same id that came from the in
-                //    that is now on the mapper we're passing it again to the GetPrincipalSavingAccount
                 var principalSavingAccount = await savingAccountService.GetPrincipalSavingAccountAsync(request.Id);
                 principalSavingAccount.Balance += (double)request.InitialAmount!;
                 await savingAccountService.UpdateAsync(principalSavingAccount, principalSavingAccount.Id);
             }
 
             // Try to update the user
-            var resultUpdate = await userManager.UpdateAsync(userToUpdate); /////////////////////////////// NOS QUEDAMOS AQUII PARA ARREGLARRR
+            var resultUpdate = await userManager.UpdateAsync(userToUpdate);
             if (!resultUpdate.Succeeded)
             {
                 response.HasError = true;

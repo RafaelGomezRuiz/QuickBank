@@ -57,7 +57,7 @@
                                             @if (item.Id != userLoged.Id)
                                             {
                                                 <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="ChangeUserState" class="btn col-3 me-2 @(item.Status ==(int)EUserStatus.ACTIVE ? "btn-danger" : "btn-success")">
-                                                    @(item.Status == (int)EUserStatus.ACTIVE ? "activate" : "deactivate")
+                                                    @(item.Status == (int)EUserStatus.ACTIVE ? "deactivate" : "activate")
                                                 </a>
                                                 <a asp-controller="AdministrationUser" asp-route-id="@item.Id" asp-action="Edit" class="btn btn-primary me-2">Edit</a>
                                                 @if (item.Roles[0] == ERoles.BASIC.ToString())

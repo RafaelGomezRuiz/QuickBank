@@ -34,6 +34,8 @@ namespace QuickBank.Core.Application.ViewModels.User
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; }
 
+        [Range(1,int.MaxValue, ErrorMessage = "Select a valid option")]
+
         public ERoles UserType { get; set; }
 
         public double? InitialAmount { get; set; }

@@ -28,7 +28,6 @@ namespace QuickBank.Controllers
 
         [ServiceFilter(typeof(LoginAuthorize))]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel loginVm)
         {
             if (!ModelState.IsValid)
