@@ -25,3 +25,12 @@ body {
 h1, h2, h3, p {
     font-family: 'Poppins', sans-serif;
 }
+
+.card {
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+

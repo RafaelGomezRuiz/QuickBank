@@ -8,10 +8,10 @@
 
 <div class="row">
     <div class="col-6 offset-3">
-        <div class="card">
-            <div class="card-header bg-dark text-light">
-                <h4>Agregar tarjeta de credito</h4>
-            </div>
+        <div class="rounded-3 bg-primary p-1 mb-4">
+            <h1 class="fw-bold text-light m-0 p-0 ms-4">Add Credit Card</h1>
+        </div>
+        <div class="card border-0">
             <div class="card-body">
                 @Html.ValidationMessage("ArentAvailableCreditCards", "", new { @class = "text-danger" })
 
@@ -24,8 +24,11 @@
                     <input type="hidden" asp-for="OwnerId"/>
                     <input type="hidden" asp-for="Id" />
 
-                    <a asp-controller="AdministrationUser" asp-route-ownerId="@Model.OwnerId" asp-action="UserProducts" class="btn btn-warning">cancel</a>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-controller="AdministrationUser" asp-route-ownerId="@Model.OwnerId" asp-action="UserProducts" class="btn btn-warning">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
                 </form>
             </div>
         </div>
