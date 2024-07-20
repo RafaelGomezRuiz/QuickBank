@@ -7,7 +7,11 @@
     var user = userHelper.GetUser();
 }
 
-<h2>TRANSFER BETWEEN ACCOUNTS</h2>
+<div class="card shadow col-5 offset-4">
+    <div class="card-header bg-secondary">
+        <h1 class="text-center text-light">Make Transfer</h1>
+    </div>
+    <div class="card-body">
 
 <form method="post" asp-controller="Facility" asp-action="Transfer">
     <div class="form-group">
@@ -30,7 +34,7 @@
         @Html.ValidationMessage("InvalidDestinyAccount", "", new { @class = "text-danger" })
     </div>
 
-    <div class="form-group">
+    <div class="form-group mb-3">
         <label asp-for="Amount" class="form-label">Amount</label>
         <input asp-for="Amount" class="form-control" type="number" step="any" />
         @Html.ValidationMessage("InvalidAmountNull", "", new { @class = "text-danger" })
@@ -49,6 +53,9 @@
     }
 
     <div class="input-group">
+            <a asp-controller="Home" asp-action="BasicHome" class="btn btn-warning">cancel</a>
         <button type="submit" class="btn btn-primary">Transfer</button>
     </div>
 </form>
+</div>
+</div>

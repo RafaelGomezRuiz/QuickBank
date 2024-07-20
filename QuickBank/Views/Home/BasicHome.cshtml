@@ -8,9 +8,9 @@
     var user = userHelper.GetUser();
 }
 
-<h2>Bienvenido, @user.FirstName @user.LastName</h2>
 
-<div class="products">
+<div class="products container">
+    <h2>Bienvenido, @user.FirstName @user.LastName</h2>
 
     <h3>Tus Cuentas de Ahorro</h3>
 
@@ -42,11 +42,11 @@
     }
 </div>
 
-<h3>Tus Tarjetas de Crédito</h3>
-
 @if (Model.CreditCards != null && Model.CreditCards.Count != 0)
 {
-    <table class="table shadow mb-2 rounded-3">
+    <table class="container table shadow mb-2 rounded-3">
+        <h3 class="container">Tus Tarjetas de Crédito</h3>
+
         <thead>
             <tr>
                 <th>Número de Tarjeta</th>
@@ -75,11 +75,13 @@ else
     <p>No tienes tarjetas de crédito.</p>
 }
  
-<h3>Tus Préstamos</h3>
 
 @if (Model.Loans != null && Model.Loans.Count != 0)
 {
-    <table class="table shadow mb-2 rounded-3">
+
+    <table class="container table shadow mb-2 rounded-3">
+        <h3 class="container">Tus Préstamos</h3>
+
         <thead>
             <tr>
                 <th>Número de Préstamo</th>
@@ -157,7 +159,6 @@ else
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Simular clic en el botón al cargar la página
         var openModalBtn = document.getElementById("openModalBtn");
 
     @if (ViewBag.LoginAccessDenied as bool? ?? false)
