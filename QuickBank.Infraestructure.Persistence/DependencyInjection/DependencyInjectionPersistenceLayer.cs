@@ -22,7 +22,7 @@ namespace QuickBank.Infrastructure.Persistence.DependencyInjection
             }
             else
             {
-                string? connectionString = configuration.GetConnectionStringWithEnviormentVariable("SqlServerConnection", "DOTNET_SERVER_NAME");
+                string? connectionString = configuration.GetConnectionString("SqlServerConnection");
 
                 services.AddDbContext<ApplicationContext>(
                     options => options.UseSqlServer(

@@ -28,7 +28,7 @@ namespace QuickBank.Infrastructure.Identity.DependencyInjection
             }
             else
             {
-                var connectionString = configuration.GetConnectionStringWithEnviormentVariable("IdentityConnection","DOTNET_SERVER_NAME");
+                var connectionString = configuration.GetConnectionString("IdentityConnection");
 
                 services.AddDbContext<IdentityContext>(options =>
                 {
